@@ -1,4 +1,4 @@
-# University-Timetable
+# University Timetable Maker
 Constraint solver written on Java + Prolog
 
 ## Авторы
