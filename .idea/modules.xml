@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/University-Timetable.iml" filepath="$PROJECT_DIR$/.idea/University-Timetable.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ru.nsu.fit.app/ru.nsu.fit.app.iml" filepath="$PROJECT_DIR$/ru.nsu.fit.app/ru.nsu.fit.app.iml" />
+    </modules>
+  </component>
+</project>
