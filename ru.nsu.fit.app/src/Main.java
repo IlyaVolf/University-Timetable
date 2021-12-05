@@ -3,7 +3,7 @@ import org.projog.api.QueryResult;
 
 import java.io.File;
 
-public class Main {
+/*public class Main {
     public static void main(String[] args) {
         Projog projog = new Projog();
         projog.consultFile(new File("test.pl"));
@@ -14,4 +14,4 @@ public class Main {
 
 
     }
-}
+}*/
