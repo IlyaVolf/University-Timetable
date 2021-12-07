@@ -11,6 +11,7 @@ public class GenerateWindow {
     JTree tree;
     JMenuBar menuBar;
     JPanel panel;
+    JList<String> faculties;
 
     private void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
         for (int i = startingIndex; i < rowCount; ++i) {
@@ -27,7 +28,7 @@ public class GenerateWindow {
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
         listModel.addElement("empty faculty");
-        JList<String> faculties = new JList<>(listModel);
+        faculties = new JList<>(listModel);
         JScrollPane scrollableList = new JScrollPane(faculties);
         JLabel label = new JLabel("List of faculties");
         JButton addButton = new JButton("add");
@@ -114,6 +115,17 @@ public class GenerateWindow {
 
         panel = createPanel();
         frame.add(panel, BorderLayout.CENTER);
+
+        JButton addEP = new JButton("Add Educational Program");
+        addEP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String faculty = String.valueOf(faculties.getSelectedValue());
+                // JOptionPane.showMessageDialog(frame, faculty);
+                new AddEducationalProgramWindow(faculty);
+            }
+        });
+        frame.add(addEP, BorderLayout.EAST);
 
     }
 }
