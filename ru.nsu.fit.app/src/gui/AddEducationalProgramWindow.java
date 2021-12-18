@@ -1,16 +1,23 @@
 package gui;
 
+import entities.EducationalProgram;
+import entities.Faculty;
+import managers.DatabaseManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
 
 public class AddEducationalProgramWindow {
     JFrame frame;
     JLabel label;
     JList<String> educationalPrograms;
     String faculty;
-    JTextField enterNewEducationalProgram;
+    JTextField enterNewEducationalProgramName;
+    JTextField enterNewSpecialization;
     JButton addButton;
     JButton addSubject;
     JButton addGroup;
@@ -26,22 +33,39 @@ public class AddEducationalProgramWindow {
         frame.add(this.label, BorderLayout.NORTH);
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        listModel.addElement("empty educational program");
+        try {
+            DatabaseManager manager = DatabaseManager.getInstance();
+            List<EducationalProgram> educationalProgramList = manager.getEducationalPrograms(faculty);
+            for (EducationalProgram educationalProgram: educationalProgramList) {
+                listModel.addElement("Educational program: " + educationalProgram.name + " Specialization: " + educationalProgram.specialization);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
         this.educationalPrograms = new JList<>(listModel);
         JScrollPane scrollableList = new JScrollPane(educationalPrograms);
         frame.add(scrollableList, BorderLayout.CENTER);
 
         JPanel addNewEdProgPanel = new JPanel();
-        this.enterNewEducationalProgram = new JTextField("Enter new Educational Program...");
+        this.enterNewEducationalProgramName = new JTextField("Enter new Educational Program name...");
+        this.enterNewSpecialization = new JTextField("Enter specialization...");
         this.addButton = new JButton("add");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String text = enterNewEducationalProgram.getText();
-                listModel.addElement(text);
+                String edPr = enterNewEducationalProgramName.getText();
+                String sp = enterNewSpecialization.getText();
+                try {
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    manager.addEducationalProgram(new EducationalProgram(faculty, edPr, sp));
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                listModel.addElement("Educational program: " + edPr + " Specialization: " + sp);
             }
         });
-        addNewEdProgPanel.add(enterNewEducationalProgram);
+        addNewEdProgPanel.add(enterNewEducationalProgramName);
+        addNewEdProgPanel.add(enterNewSpecialization);
         addNewEdProgPanel.add(addButton);
         frame.add(addNewEdProgPanel, BorderLayout.SOUTH);
 

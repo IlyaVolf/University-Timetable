@@ -1,12 +1,17 @@
 package gui;
 
+import entities.Faculty;
+import managers.DatabaseManager;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
 
-public class GenerateWindow {
+public class AddFacultyWindow {
     JFrame frame;
     JTree tree;
     JMenuBar menuBar;
@@ -27,7 +32,15 @@ public class GenerateWindow {
         JPanel panel = new JPanel();
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        listModel.addElement("empty faculty");
+        try {
+            DatabaseManager manager = DatabaseManager.getInstance();
+            List<Faculty> facultyList = manager.getAllFaculties();
+            for (Faculty faculty: facultyList) {
+                listModel.addElement(faculty.name);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
         faculties = new JList<>(listModel);
         JScrollPane scrollableList = new JScrollPane(faculties);
         JLabel label = new JLabel("List of faculties");
@@ -38,6 +51,12 @@ public class GenerateWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String text = enterNewFaculty.getText();
+                try {
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    manager.addFaculty(new Faculty(text));
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
                 listModel.addElement(text);
             }
         });
@@ -62,13 +81,30 @@ public class GenerateWindow {
         JMenu groups = new JMenu("Groups");
         JMenu teachers = new JMenu("Teachers");
         JMenu auditories = new JMenu("Auditories");
+        JMenu constraints = new JMenu("Constraints");
 
         JMenuItem generate = new JMenuItem("Generate!");
+        JMenuItem addAuditory = new JMenuItem("Add");
+        addAuditory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AddAuditoryWindow();
+            }
+        });
+        JMenuItem addConstraints = new JMenuItem("Add");
+        addConstraints.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AddConstraintsWindow();
+            }
+        });
         JMenuItem view = new JMenuItem("View");
         JMenuItem removeAll = new JMenuItem("Remove all");
         menu.add(generate);
         menu.add(view);
         menu.add(removeAll);
+        auditories.add(addAuditory);
+        constraints.add(addConstraints);
 
         mb.add(menu);
         mb.add(faculties);
@@ -77,6 +113,7 @@ public class GenerateWindow {
         mb.add(groups);
         mb.add(teachers);
         mb.add(auditories);
+        mb.add(constraints);
 
         return mb;
     }
@@ -99,8 +136,8 @@ public class GenerateWindow {
         return new JTree(structure);
     }
 
-    public GenerateWindow() {
-        frame = new JFrame("Generate Timetable");
+    public AddFacultyWindow() {
+        frame = new JFrame("Add Restrictions");
         //frame.setSize(600, 600);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);

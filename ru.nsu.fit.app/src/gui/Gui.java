@@ -9,7 +9,7 @@ public class Gui {
         startWindow.generateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GenerateWindow generateWindow = new GenerateWindow();
+                AddFacultyWindow generateWindow = new AddFacultyWindow();
 
             }
         });

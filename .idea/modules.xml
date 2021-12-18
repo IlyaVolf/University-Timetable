@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/University-Timetable.iml" filepath="$PROJECT_DIR$/.idea/University-Timetable.iml" />
       <module fileurl="file://$PROJECT_DIR$/ru.nsu.fit.app/ru.nsu.fit.app.iml" filepath="$PROJECT_DIR$/ru.nsu.fit.app/ru.nsu.fit.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ru.nsu.fit.app/ru.nsu.fit.app.gui.iml" filepath="$PROJECT_DIR$/ru.nsu.fit.app/ru.nsu.fit.app.gui.iml" />
     </modules>
   </component>
 </project>
