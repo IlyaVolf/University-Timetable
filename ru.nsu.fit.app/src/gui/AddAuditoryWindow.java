@@ -19,6 +19,7 @@ public class AddAuditoryWindow {
     JTextField enterCapacity;
     JTextField enterNumber;
     JButton addButton;
+    JButton deleteButton;
 
     public AddAuditoryWindow() {
         this.frame = new JFrame("Add Auditory");
@@ -45,9 +46,39 @@ public class AddAuditoryWindow {
         frame.add(scrollableList, BorderLayout.CENTER);
 
         JPanel addNewAuditoryPanel = new JPanel();
-        this.enterNumber = new JTextField("Enter auditory number...");
-        this.enterCapacity = new JTextField("Enter capacity...");
-        this.enterTypesOfClass = new JTextField("Enter types of class...");
+        addNewAuditoryPanel.setLayout(new GridLayout(8, 3, 20, 50));
+
+        addNewAuditoryPanel.add(new JLabel(""));
+        addNewAuditoryPanel.add(new JLabel(""));
+        addNewAuditoryPanel.add(new JLabel(""));
+
+        addNewAuditoryPanel.add(new JLabel("Enter auditory number: "));
+        this.enterNumber = new JTextField("", 20);
+        addNewAuditoryPanel.add(enterNumber);
+        addNewAuditoryPanel.add(new JLabel("[e.g \"1156\"]"));
+
+        addNewAuditoryPanel.add(new JLabel(""));
+        addNewAuditoryPanel.add(new JLabel(""));
+        addNewAuditoryPanel.add(new JLabel(""));
+
+        addNewAuditoryPanel.add(new JLabel("Enter capacity: "));
+        this.enterCapacity = new JTextField("", 20);
+        addNewAuditoryPanel.add(enterCapacity);
+        addNewAuditoryPanel.add(new JLabel("[e.g \"32\"]"));
+
+        addNewAuditoryPanel.add(new JLabel(""));
+        addNewAuditoryPanel.add(new JLabel(""));
+        addNewAuditoryPanel.add(new JLabel(""));
+
+        addNewAuditoryPanel.add(new JLabel("Enter types of class: "));
+        this.enterTypesOfClass = new JTextField("", 20);
+        addNewAuditoryPanel.add(enterTypesOfClass);
+        addNewAuditoryPanel.add(new JLabel("[e.g \"Lec\"]"));
+
+        addNewAuditoryPanel.add(new JLabel(""));
+        addNewAuditoryPanel.add(new JLabel(""));
+        addNewAuditoryPanel.add(new JLabel(""));
+
         this.addButton = new JButton("add");
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -65,10 +96,26 @@ public class AddAuditoryWindow {
                         " Capacity: " + capacity + " Types of classes: " + types);
             }
         });
-        addNewAuditoryPanel.add(enterNumber);
-        addNewAuditoryPanel.add(enterCapacity);
-        addNewAuditoryPanel.add(enterTypesOfClass);
+        addNewAuditoryPanel.add(new JLabel(""));
         addNewAuditoryPanel.add(addButton);
-        frame.add(addNewAuditoryPanel, BorderLayout.SOUTH);
+        addNewAuditoryPanel.add(new JLabel(""));
+        frame.add(addNewAuditoryPanel, BorderLayout.WEST);
+
+        deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = listModel.remove(auditories.getSelectedIndex());
+                String[] words = selected.split(" ");
+                Auditory auditory = new Auditory(words[7], words[3], words[1]);
+                try {
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    manager.deleteAuditory(auditory);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        frame.add(deleteButton, BorderLayout.EAST);
     }
 }

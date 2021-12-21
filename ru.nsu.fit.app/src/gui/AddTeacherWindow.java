@@ -1,5 +1,6 @@
 package gui;
 
+import entities.Auditory;
 import entities.Group;
 import entities.Teacher;
 import managers.DatabaseManager;
@@ -21,6 +22,7 @@ public class AddTeacherWindow {
     JTextField enterDaysTeacherWantWork;
     JTextField enterWeight;
     JButton addButton;
+    JButton deleteButton;
 
     public AddTeacherWindow(String subject) {
         this.subject = subject;
@@ -47,11 +49,37 @@ public class AddTeacherWindow {
         JScrollPane scrollableList = new JScrollPane(teachers);
         frame.add(scrollableList, BorderLayout.CENTER);
 
-        JPanel addNewSubjectPanel = new JPanel();
-        this.enterNewTeacherName = new JTextField("Enter new Subject...");
-        this.enterDaysTeacherCanWork = new JTextField("Enter days when teacher can work [1-7]...");
-        this.enterDaysTeacherWantWork = new JTextField("Enter days when teacher want work [1-7]...");
-        this.enterWeight = new JTextField("Enter weight...");
+        JPanel addNewTeacherPanel = new JPanel();
+        addNewTeacherPanel.setLayout(new GridLayout(8,3,20,50));
+
+        addNewTeacherPanel.add(new JLabel(""));
+        addNewTeacherPanel.add(new JLabel(""));
+        addNewTeacherPanel.add(new JLabel(""));
+
+        addNewTeacherPanel.add(new JLabel("Enter new Teacher: "));
+        this.enterNewTeacherName = new JTextField("", 20);
+        addNewTeacherPanel.add(enterNewTeacherName);
+        addNewTeacherPanel.add(new JLabel("[e.g \"Vladimir Vaskevich\"]"));
+
+        addNewTeacherPanel.add(new JLabel("Enter days when teacher can work: "));
+        this.enterDaysTeacherCanWork = new JTextField("", 20);
+        addNewTeacherPanel.add(enterDaysTeacherCanWork);
+        addNewTeacherPanel.add(new JLabel("[e.g \"[1,2,3,4,5]\"]"));
+
+        addNewTeacherPanel.add(new JLabel("Enter days when teacher want work: "));
+        this.enterDaysTeacherWantWork = new JTextField("", 20);
+        addNewTeacherPanel.add(enterDaysTeacherWantWork);
+        addNewTeacherPanel.add(new JLabel("[e.g \"[1,3,5]\"]"));
+
+        addNewTeacherPanel.add(new JLabel("Enter weight: "));
+        this.enterWeight = new JTextField("", 20);
+        addNewTeacherPanel.add(enterWeight);
+        addNewTeacherPanel.add(new JLabel("[e.g \"10\"]"));
+
+        addNewTeacherPanel.add(new JLabel(""));
+        addNewTeacherPanel.add(new JLabel(""));
+        addNewTeacherPanel.add(new JLabel(""));
+
         this.addButton = new JButton("add");
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -70,8 +98,27 @@ public class AddTeacherWindow {
                         wantWork + " Weight: " + weight);
             }
         });
-        addNewSubjectPanel.add(enterNewTeacherName);
-        addNewSubjectPanel.add(addButton);
-        frame.add(addNewSubjectPanel, BorderLayout.SOUTH);
+        //addNewSubjectPanel.add(enterNewTeacherName);
+        addNewTeacherPanel.add(new JLabel(""));
+        addNewTeacherPanel.add(addButton);
+        addNewTeacherPanel.add(new JLabel(""));
+        frame.add(addNewTeacherPanel, BorderLayout.WEST);
+
+        deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = listModel.remove(teachers.getSelectedIndex());
+                String[] words = selected.split(" ");
+                Teacher teacher = new Teacher(subject, words[1],words[4],words[7], words[9]);
+                try {
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    manager.deleteTeacher(teacher);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        frame.add(deleteButton, BorderLayout.EAST);
     }
 }

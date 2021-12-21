@@ -2,6 +2,7 @@ package gui;
 
 import entities.EducationalProgram;
 import entities.Group;
+import entities.Subject;
 import managers.DatabaseManager;
 
 import javax.swing.*;
@@ -20,6 +21,7 @@ public class AddGroupWindow {
     JTextField enterAmountOfStudents;
     JTextField enterYearOfStudy;
     JButton addButton;
+    JButton deleteButton;
 
     public AddGroupWindow(String educationalProgram) {
         this.educationalProgram = educationalProgram;
@@ -47,9 +49,39 @@ public class AddGroupWindow {
         frame.add(scrollableList, BorderLayout.CENTER);
 
         JPanel addNewGroupPanel = new JPanel();
-        this.enterNewGroupNumber = new JTextField("Enter new group...");
-        this.enterAmountOfStudents = new JTextField("Enter amount of students...");
-        this.enterYearOfStudy = new JTextField("Enter year of study...");
+        addNewGroupPanel.setLayout(new GridLayout(8, 3, 20, 50));
+
+        addNewGroupPanel.add(new JLabel(""));
+        addNewGroupPanel.add(new JLabel(""));
+        addNewGroupPanel.add(new JLabel(""));
+
+        addNewGroupPanel.add(new JLabel("Enter new group: "));
+        this.enterNewGroupNumber = new JTextField("", 20);
+        addNewGroupPanel.add(enterNewGroupNumber);
+        addNewGroupPanel.add(new JLabel("[e.g \"19213\"]"));
+
+        addNewGroupPanel.add(new JLabel(""));
+        addNewGroupPanel.add(new JLabel(""));
+        addNewGroupPanel.add(new JLabel(""));
+
+        addNewGroupPanel.add(new JLabel("Enter amount of students: "));
+        this.enterAmountOfStudents = new JTextField("", 20);
+        addNewGroupPanel.add(enterAmountOfStudents);
+        addNewGroupPanel.add(new JLabel("[e.g \"14\"]"));
+
+        addNewGroupPanel.add(new JLabel(""));
+        addNewGroupPanel.add(new JLabel(""));
+        addNewGroupPanel.add(new JLabel(""));
+
+        addNewGroupPanel.add(new JLabel("Enter year of study: "));
+        this.enterYearOfStudy = new JTextField("", 20);
+        addNewGroupPanel.add(enterYearOfStudy);
+        addNewGroupPanel.add(new JLabel("[e.g \"3\"]"));
+
+        addNewGroupPanel.add(new JLabel(""));
+        addNewGroupPanel.add(new JLabel(""));
+        addNewGroupPanel.add(new JLabel(""));
+
         this.addButton = new JButton("add");
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -67,10 +99,29 @@ public class AddGroupWindow {
                         " YearOfStudy: " + yearOfStudy);
             }
         });
-        addNewGroupPanel.add(enterNewGroupNumber);
-        addNewGroupPanel.add(enterAmountOfStudents);
-        addNewGroupPanel.add(enterYearOfStudy);
+
+        addNewGroupPanel.add(new JLabel(""));
         addNewGroupPanel.add(addButton);
-        frame.add(addNewGroupPanel, BorderLayout.SOUTH);
+        addNewGroupPanel.add(new JLabel(""));
+
+
+
+        frame.add(addNewGroupPanel, BorderLayout.WEST);
+
+        deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = listModel.remove(groups.getSelectedIndex());
+                String[] words = selected.split(" ");
+                Group group = new Group(educationalProgram, words[1], words[3], words[5]);
+                try {
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    manager.deleteGroup(group);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 }

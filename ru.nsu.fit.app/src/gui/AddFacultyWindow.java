@@ -1,5 +1,6 @@
 package gui;
 
+import entities.EducationalProgram;
 import entities.Faculty;
 import managers.DatabaseManager;
 
@@ -13,63 +14,120 @@ import java.util.List;
 
 public class AddFacultyWindow {
     JFrame frame;
-    JTree tree;
-    JMenuBar menuBar;
-    JPanel panel;
     JList<String> faculties;
+    JMenuBar menuBar;
+    JTextField enterNewFaculty;
+    JButton addButton;
+    JButton deleteButton;
+    JButton addEducationalProgram;
 
-    private void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
-        for (int i = startingIndex; i < rowCount; ++i) {
-            tree.expandRow(i);
-        }
+    public AddFacultyWindow() {
+        this.frame = new JFrame("Add Restrictions");
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setVisible(true);
 
-        if (tree.getRowCount() != rowCount) {
-            expandAllNodes(tree, rowCount, tree.getRowCount());
-        }
-    }
-
-    public JPanel createPanel() {
-        JPanel panel = new JPanel();
+        this.menuBar = createMenu();
+        frame.add(menuBar, BorderLayout.NORTH);
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
         try {
             DatabaseManager manager = DatabaseManager.getInstance();
             List<Faculty> facultyList = manager.getAllFaculties();
             for (Faculty faculty: facultyList) {
-                listModel.addElement(faculty.name);
+                listModel.addElement("Faculty: " + faculty.name);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        faculties = new JList<>(listModel);
+        this.faculties = new JList<>(listModel);
         JScrollPane scrollableList = new JScrollPane(faculties);
-        JLabel label = new JLabel("List of faculties");
-        JButton addButton = new JButton("add");
-        JTextField enterNewFaculty = new JTextField("Enter name of new faculty...");
+        frame.add(scrollableList, BorderLayout.CENTER);
+
+
         JPanel addNewFacultyPanel = new JPanel();
+        addNewFacultyPanel.setLayout(new GridLayout(8, 3, 20, 50));
+
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+
+        addNewFacultyPanel.add(new JLabel("Enter new Faculty name: "));
+        this.enterNewFaculty = new JTextField("", 20);
+        addNewFacultyPanel.add(enterNewFaculty);
+        addNewFacultyPanel.add(new JLabel("[e.g \"FIT\"]"));
+
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+
+        this.addButton = new JButton("add");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String text = enterNewFaculty.getText();
+                String faculty = enterNewFaculty.getText();
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
-                    manager.addFaculty(new Faculty(text));
+                    manager.addFaculty(new Faculty(faculty));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                listModel.addElement(text);
+                listModel.addElement("Faculty: " + faculty);
             }
         });
-        addNewFacultyPanel.add(enterNewFaculty);
+
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+
+        addNewFacultyPanel.add(new JLabel(""));
         addNewFacultyPanel.add(addButton);
+        addNewFacultyPanel.add(new JLabel(""));
 
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
+        addNewFacultyPanel.add(new JLabel(""));
 
-        panel.setLayout(new BorderLayout());
-        panel.add(label, BorderLayout.NORTH);
-        panel.add(scrollableList, BorderLayout.CENTER);
-        panel.add(addNewFacultyPanel, BorderLayout.SOUTH);
+        frame.add(addNewFacultyPanel, BorderLayout.WEST);
 
-        return panel;
+        JPanel addNewEntitiesPanel = new JPanel();
+        addNewEntitiesPanel.setLayout(new GridLayout(5, 1, 20, 50));
+        this.addEducationalProgram = new JButton("add EducationalProgram");
+        addEducationalProgram.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String educationalProgram = String.valueOf(faculties.getSelectedValue());
+                String[] words = educationalProgram.split(" ");
+                new AddEducationalProgramWindow(words[1]);
+            }
+        });
+
+        deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = listModel.remove(faculties.getSelectedIndex());
+                String[] words = selected.split(" ");
+                Faculty faculty = new Faculty(words[1]);
+                try {
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    manager.deleteFaculty(faculty.name);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        addNewEntitiesPanel.add(new JLabel(""));
+        addNewEntitiesPanel.add(addEducationalProgram);
+        addNewEntitiesPanel.add(new JLabel(""));
+        addNewEntitiesPanel.add(deleteButton);
+        addNewEntitiesPanel.add(new JLabel(""));
+        frame.add(addNewEntitiesPanel, BorderLayout.EAST);
     }
 
     public JMenuBar createMenu() {
@@ -118,51 +176,5 @@ public class AddFacultyWindow {
         return mb;
     }
 
-    public JTree createTree() {
-        DefaultMutableTreeNode structure = new DefaultMutableTreeNode("University");
-        DefaultMutableTreeNode faculty = new DefaultMutableTreeNode("Faculties");
-        DefaultMutableTreeNode educationalProgram = new DefaultMutableTreeNode("Educational Programs");
-        DefaultMutableTreeNode group = new DefaultMutableTreeNode("Groups");
-        DefaultMutableTreeNode subject = new DefaultMutableTreeNode("Subjects");
-        DefaultMutableTreeNode teacher = new DefaultMutableTreeNode("Teachers");
-        DefaultMutableTreeNode auditory = new DefaultMutableTreeNode("Auditories");
 
-        subject.add(teacher);
-        educationalProgram.add(subject);
-        educationalProgram.add(group);
-        faculty.add(educationalProgram);
-        structure.add(faculty);
-        structure.add(auditory);
-        return new JTree(structure);
-    }
-
-    public AddFacultyWindow() {
-        frame = new JFrame("Add Restrictions");
-        //frame.setSize(600, 600);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setVisible(true);
-
-        tree = createTree();
-        tree.setSize(200, 600);
-        frame.add(tree, BorderLayout.WEST);
-        expandAllNodes(tree, 0, tree.getRowCount());
-
-        menuBar = createMenu();
-        frame.add(menuBar, BorderLayout.NORTH);
-
-        panel = createPanel();
-        frame.add(panel, BorderLayout.CENTER);
-
-        JButton addEP = new JButton("Add Educational Program");
-        addEP.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String faculty = String.valueOf(faculties.getSelectedValue());
-                // JOptionPane.showMessageDialog(frame, faculty);
-                new AddEducationalProgramWindow(faculty);
-            }
-        });
-        frame.add(addEP, BorderLayout.EAST);
-
-    }
 }

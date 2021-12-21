@@ -2,6 +2,7 @@ package gui;
 
 import entities.EducationalProgram;
 import entities.Faculty;
+import entities.Subject;
 import managers.DatabaseManager;
 
 import javax.swing.*;
@@ -19,6 +20,7 @@ public class AddEducationalProgramWindow {
     JTextField enterNewEducationalProgramName;
     JTextField enterNewSpecialization;
     JButton addButton;
+    JButton deleteButton;
     JButton addSubject;
     JButton addGroup;
 
@@ -47,8 +49,30 @@ public class AddEducationalProgramWindow {
         frame.add(scrollableList, BorderLayout.CENTER);
 
         JPanel addNewEdProgPanel = new JPanel();
-        this.enterNewEducationalProgramName = new JTextField("Enter new Educational Program name...");
-        this.enterNewSpecialization = new JTextField("Enter specialization...");
+        addNewEdProgPanel.setLayout(new GridLayout(8, 3, 20, 50));
+
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+
+        addNewEdProgPanel.add(new JLabel("Enter new Educational Program name: "));
+        this.enterNewEducationalProgramName = new JTextField("", 20);
+        addNewEdProgPanel.add(enterNewEducationalProgramName);
+        addNewEdProgPanel.add(new JLabel("[e.g \"Bach\"]"));
+
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+
+        addNewEdProgPanel.add(new JLabel("Enter specialization: "));
+        this.enterNewSpecialization = new JTextField("", 20);
+        addNewEdProgPanel.add(enterNewSpecialization);
+        addNewEdProgPanel.add(new JLabel("[e.g \"ComputerScience\"]"));
+
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+
         this.addButton = new JButton("add");
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -64,32 +88,59 @@ public class AddEducationalProgramWindow {
                 listModel.addElement("Educational program: " + edPr + " Specialization: " + sp);
             }
         });
-        addNewEdProgPanel.add(enterNewEducationalProgramName);
-        addNewEdProgPanel.add(enterNewSpecialization);
+        addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(addButton);
-        frame.add(addNewEdProgPanel, BorderLayout.SOUTH);
+        addNewEdProgPanel.add(new JLabel(""));
+
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+        addNewEdProgPanel.add(new JLabel(""));
+        frame.add(addNewEdProgPanel, BorderLayout.WEST);
 
         JPanel addNewEntitiesPanel = new JPanel();
+        addNewEntitiesPanel.setLayout(new GridLayout(5, 1, 20, 50));
         this.addGroup = new JButton("add Group");
         this.addSubject = new JButton("add Subject");
         addGroup.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String educationalProgram = String.valueOf(educationalPrograms.getSelectedValue());
-                //JOptionPane.showMessageDialog(frame, educationalProgram);
-                new AddGroupWindow(educationalProgram);
+                String[] words = educationalProgram.split(" ");
+                new AddGroupWindow(words[2]);
             }
         });
         addSubject.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String educationalProgram = String.valueOf(educationalPrograms.getSelectedValue());
-                //JOptionPane.showMessageDialog(frame, educationalProgram);
-                new AddSubjectWindow(educationalProgram);
+                String[] words = educationalProgram.split(" ");
+                new AddSubjectWindow(words[2]);
             }
         });
+
+        deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = listModel.remove(educationalPrograms.getSelectedIndex());
+                String[] words = selected.split(" ");
+                EducationalProgram ep = new EducationalProgram(faculty, words[2], words[4]);
+                try {
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    manager.deleteEducationalProgram(ep);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        addNewEntitiesPanel.add(new JLabel(""));
         addNewEntitiesPanel.add(addGroup);
         addNewEntitiesPanel.add(addSubject);
+        addNewEntitiesPanel.add(deleteButton);
+        addNewEntitiesPanel.add(new JLabel(""));
         frame.add(addNewEntitiesPanel, BorderLayout.EAST);
     }
 
