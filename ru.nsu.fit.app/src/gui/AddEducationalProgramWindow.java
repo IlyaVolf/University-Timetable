@@ -49,25 +49,25 @@ public class AddEducationalProgramWindow {
         frame.add(scrollableList, BorderLayout.CENTER);
 
         JPanel addNewEdProgPanel = new JPanel();
-        addNewEdProgPanel.setLayout(new GridLayout(8, 3, 20, 50));
+        addNewEdProgPanel.setLayout(new GridLayout(8, 3, 5, 50));
 
         addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(new JLabel(""));
 
-        addNewEdProgPanel.add(new JLabel("Enter new Educational Program name: "));
+        addNewEdProgPanel.add(new JLabel("Educational Program name: "));
         this.enterNewEducationalProgramName = new JTextField("", 20);
         addNewEdProgPanel.add(enterNewEducationalProgramName);
-        addNewEdProgPanel.add(new JLabel("[e.g \"Bach\"]"));
+        addNewEdProgPanel.add(new JLabel("[e.g \"BACH,09.03.01,ComputerScience\"]"));
 
         addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(new JLabel(""));
 
-        addNewEdProgPanel.add(new JLabel("Enter specialization: "));
+        addNewEdProgPanel.add(new JLabel("Specialization: "));
         this.enterNewSpecialization = new JTextField("", 20);
         addNewEdProgPanel.add(enterNewSpecialization);
-        addNewEdProgPanel.add(new JLabel("[e.g \"ComputerScience\"]"));
+        addNewEdProgPanel.add(new JLabel("[e.g \"SoftwareEngineering\"]"));
 
         addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(new JLabel(""));
@@ -109,7 +109,7 @@ public class AddEducationalProgramWindow {
             public void actionPerformed(ActionEvent e) {
                 String educationalProgram = String.valueOf(educationalPrograms.getSelectedValue());
                 String[] words = educationalProgram.split(" ");
-                new AddGroupWindow(words[2]);
+                new AddGroupWindow(words[4]);
             }
         });
         addSubject.addActionListener(new ActionListener() {
@@ -117,7 +117,7 @@ public class AddEducationalProgramWindow {
             public void actionPerformed(ActionEvent e) {
                 String educationalProgram = String.valueOf(educationalPrograms.getSelectedValue());
                 String[] words = educationalProgram.split(" ");
-                new AddSubjectWindow(words[2]);
+                new AddSubjectWindow(words[4]);
             }
         });
 

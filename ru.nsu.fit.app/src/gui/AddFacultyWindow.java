@@ -149,6 +149,14 @@ public class AddFacultyWindow {
                 new AddAuditoryWindow();
             }
         });
+        JMenuItem addTeacher = new JMenuItem("Add");
+        addTeacher.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AddTeacherWindow("Undefined");
+            }
+        });
+
         JMenuItem addConstraints = new JMenuItem("Add");
         addConstraints.addActionListener(new ActionListener() {
             @Override
@@ -163,6 +171,7 @@ public class AddFacultyWindow {
         menu.add(removeAll);
         auditories.add(addAuditory);
         constraints.add(addConstraints);
+        teachers.add(addTeacher);
 
         mb.add(menu);
         mb.add(faculties);

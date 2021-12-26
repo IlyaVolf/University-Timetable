@@ -1,8 +1,6 @@
 package gui;
 
-import entities.Group;
 import entities.Subject;
-import entities.Teacher;
 import managers.DatabaseManager;
 
 import javax.swing.*;
@@ -16,19 +14,18 @@ public class AddSubjectWindow {
     JFrame frame;
     JLabel label;
     JList<String> subjects;
-    String educationalProgram;
+    String specialization;
     JTextField enterNewSubjectName;
     JTextField enterAmountOfSemesters;
     JTextField enterTypeOfClass;
     JTextField enterFrequency;
-    JTextField enterTeacherName;
     JTextField enterAmountOfGroups;
     JButton addButton;
     JButton deleteButton;
-    JButton addTeacher;
+    JButton selectTeacherButton;
 
-    public AddSubjectWindow(String educationalProgram) {
-        this.educationalProgram = educationalProgram;
+    public AddSubjectWindow(String specialization) {
+        this.specialization = specialization;
 
         this.frame = new JFrame("Add Subject");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -40,7 +37,7 @@ public class AddSubjectWindow {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         try {
             DatabaseManager manager = DatabaseManager.getInstance();
-            List<Subject> subjectList = manager.getSubjects(educationalProgram);
+            List<Subject> subjectList = manager.getSubjects(specialization);
             for (Subject subject: subjectList) {
                 listModel.addElement("Subject: " + subject.subjectName + " Semesters: " +
                         subject.semesters + " Teacher: " + subject.teacher + " Frequency: " +
@@ -67,10 +64,6 @@ public class AddSubjectWindow {
         addNewSubjectPanel.add(enterAmountOfSemesters);
         addNewSubjectPanel.add(new JLabel("[e.g \"2\"]"));
 
-        addNewSubjectPanel.add(new JLabel("Enter teacher name: "));
-        this.enterTeacherName = new JTextField("", 20);
-        addNewSubjectPanel.add(enterTeacherName);
-        addNewSubjectPanel.add(new JLabel("[e.g \"Denis Miginskii\"]"));
 
         addNewSubjectPanel.add(new JLabel("Enter frequency: "));
         this.enterFrequency = new JTextField("", 20);
@@ -93,19 +86,19 @@ public class AddSubjectWindow {
             public void actionPerformed(ActionEvent e) {
                 String name = enterNewSubjectName.getText();
                 String amountSemesters = enterAmountOfSemesters.getText();
-                String teacher = enterTeacherName.getText();
+                //String teacher = enterTeacherName.getText();
                 String freq = enterFrequency.getText();
                 String type = enterTypeOfClass.getText();
                 String groups = enterAmountOfGroups.getText();
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
-                    manager.addSubject(new Subject(educationalProgram, name, amountSemesters,
-                            type, freq, teacher, groups));
+                    manager.addSubject(new Subject(specialization, name, amountSemesters,
+                            type, freq, "Undefined", groups));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
                 listModel.addElement("Subject: " + name + " Semesters: " +
-                        amountSemesters + " Teacher: " + teacher + " Frequency: " +
+                        amountSemesters + " Teacher: " + "Undefined" + " Frequency: " +
                         freq + " Type: " + type + " Groups: " + groups);
             }
         });
@@ -114,19 +107,26 @@ public class AddSubjectWindow {
         addNewSubjectPanel.add(new JLabel(""));
         frame.add(addNewSubjectPanel, BorderLayout.WEST);
 
-        this.addTeacher = new JButton("add Teacher");
-        addTeacher.addActionListener(new ActionListener() {
+        this.selectTeacherButton = new JButton("select Teacher");
+        selectTeacherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String subject = String.valueOf(subjects.getSelectedValue());
-                new AddTeacherWindow(subject);
+                String selectedSubject = subjects.getSelectedValue();
+                String[] splitted = selectedSubject.split(" ");
+                new SelectTeacherWindow(splitted[1], specialization);
+                try {
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    //String teacher = manager.getTeacherName(educationalProgram, splitted[1]);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(4, 1, 20, 50));
         buttonsPanel.add(new JLabel(""));
-        buttonsPanel.add(addTeacher);
+        buttonsPanel.add(selectTeacherButton);
 
         deleteButton = new JButton("Delete");
         deleteButton.addActionListener(new ActionListener() {
@@ -134,7 +134,7 @@ public class AddSubjectWindow {
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(subjects.getSelectedIndex());
                 String[] words = selected.split(" ");
-                Subject subject = new Subject(educationalProgram, words[1], words[3], words[9],
+                Subject subject = new Subject(specialization, words[1], words[3], words[9],
                         words[7], words[5], words[11]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
