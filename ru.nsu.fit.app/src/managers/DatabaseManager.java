@@ -230,18 +230,19 @@ public class DatabaseManager {
         }
     }
 
-    public List<Subject> getSubjectsDuplicates(String specialization, String subjectName, String semesters) {
+    public List<Subject> getSubjectsDuplicates(String specialization, String subjectName, String semesters, String typesOfClass) {
         try {
             PreparedStatement statement = this.connection.prepareStatement(
-                    "SELECT TypeOfClass, Frequency, Teacher, AmountOfGroups FROM Subjects WHERE EducationalProgram = ? AND Name = ? AND Semesters = ?");
+                    "SELECT Frequency, Teacher, AmountOfGroups FROM Subjects WHERE EducationalProgram = ? AND Name = ? AND Semesters = ? AND TypeOfClass = ?");
             statement.setObject(1, specialization);
             statement.setObject(2, subjectName);
             statement.setObject(3, semesters);
+            statement.setObject(4, typesOfClass);
             List<Subject> subjects = new ArrayList<>();
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 subjects.add(new Subject(specialization, subjectName, semesters,
-                        resultSet.getString("TypeOfClass"), resultSet.getString("Frequency"),
+                        typesOfClass, resultSet.getString("Frequency"),
                         resultSet.getString("Teacher"), resultSet.getString("AmountOfGroups")));
             }
             return subjects;
