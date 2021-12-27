@@ -219,7 +219,7 @@ public class DatabaseManager {
     public List<String> getTypesOfClasses(String specialization, String subject, String semesters) {
         try {
             PreparedStatement statement = this.connection.prepareStatement(
-                    "SELECT TypeOfClass FROM Subjects WHERE EducationalProgram = ? AND Name = ? AND Semesters = ?");
+                    "SELECT DISTINCT TypeOfClass FROM Subjects WHERE EducationalProgram = ? AND Name = ? AND Semesters = ?");
             statement.setObject(1, specialization);
             statement.setObject(2, subject);
             statement.setObject(3, semesters);
