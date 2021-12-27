@@ -95,7 +95,7 @@ public class DatabaseManager {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "INSERT INTO Groups(`EducationalProgram`, `Number`, `AmountOfStudents`, `YearOfStudy`)" +
                         "VALUES(?, ?, ?, ?)")) {
-            statement.setObject(1, group.educationalProgram);
+            statement.setObject(1, group.specialization);
             statement.setObject(2, group.numberOfGroup);
             statement.setObject(3, group.amountOfStudents);
             statement.setObject(4, group.yearOfStudy);
@@ -139,14 +139,18 @@ public class DatabaseManager {
         }
     }
 
-    public void updateSubject(String specialization, String subject, String teacher) {
-        System.out.println(specialization + subject + teacher);
+    public void updateSubject(String specialization, String subject, String teacher,
+                              String semesters, String types, String frequency, String amountOfGroups) {
         try {
             PreparedStatement statement = this.connection.prepareStatement(
-                    "UPDATE Subjects SET Teacher = ? WHERE EducationalProgram = ? AND Name = ?");
+                    "UPDATE Subjects SET Teacher = ? WHERE EducationalProgram = ? AND Name = ? AND Semesters = ? AND TypeOfClass = ? AND Frequency = ? AND AmountOfGroups = ?");
             statement.setObject(1, teacher);
             statement.setObject(2, specialization);
             statement.setObject(3, subject);
+            statement.setObject(4, semesters);
+            statement.setObject(5, types);
+            statement.setObject(6, frequency);
+            statement.setObject(7, amountOfGroups);
             statement.execute();
 
             PreparedStatement statement1 = this.connection.prepareStatement(
@@ -198,7 +202,7 @@ public class DatabaseManager {
     public List<String> getSemestersOfSubject(String specialization, String subject) {
         try {
             PreparedStatement statement = this.connection.prepareStatement(
-                    "SELECT Semesters FROM Subjects WHERE EducationalProgram = ? AND Name = ?");
+                    "SELECT DISTINCT Semesters FROM Subjects WHERE EducationalProgram = ? AND Name = ?");
             statement.setObject(1, specialization);
             statement.setObject(2, subject);
             List<String> semesters = new ArrayList<>();
@@ -498,7 +502,7 @@ public class DatabaseManager {
     public void deleteGroup(Group group) {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "DELETE FROM Groups WHERE EducationalProgram = ? AND Number = ? AND AmountOfStudents = ? AND YearOfStudy = ?")) {
-            statement.setObject(1, group.educationalProgram);
+            statement.setObject(1, group.specialization);
             statement.setObject(2, group.numberOfGroup);
             statement.setObject(3, group.amountOfStudents);
             statement.setObject(4, group.yearOfStudy);

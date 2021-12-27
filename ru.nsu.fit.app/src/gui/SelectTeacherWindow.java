@@ -17,10 +17,19 @@ public class SelectTeacherWindow {
 
     String subject;
     String specialization;
+    String semesters;
+    String types;
+    String frequency;
+    String amountOfGroups;
 
-    public SelectTeacherWindow(String subject, String specialization) {
+    public SelectTeacherWindow(String subject, String specialization, String semesters,
+                               String types, String frequency, String amountOfGroups) {
         this.subject = subject;
         this.specialization = specialization;
+        this.semesters = semesters;
+        this.types = types;
+        this.frequency = frequency;
+        this.amountOfGroups = amountOfGroups;
         this.frame = new JFrame("Select Teacher");
         //frame.setSize(500, 500);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -48,9 +57,8 @@ public class SelectTeacherWindow {
                 String selected = teachers.getSelectedValue();
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
-                    System.out.println("Spec = " + specialization + ", Subject = "
-                    + subject + ", Selected = " + selected);
-                    manager.updateSubject(specialization, subject, selected);
+                    manager.updateSubject(specialization, subject, selected, semesters,
+                            types, frequency, amountOfGroups);
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }

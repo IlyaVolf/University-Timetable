@@ -113,7 +113,8 @@ public class AddSubjectWindow {
             public void actionPerformed(ActionEvent e) {
                 String selectedSubject = subjects.getSelectedValue();
                 String[] splitted = selectedSubject.split(" ");
-                new SelectTeacherWindow(splitted[1], specialization);
+                new SelectTeacherWindow(splitted[1], specialization, splitted[3],
+                        splitted[9], splitted[7], splitted[11]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
                     //String teacher = manager.getTeacherName(educationalProgram, splitted[1]);
