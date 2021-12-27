@@ -20,6 +20,7 @@ public class AddSubjectWindow {
     JTextField enterTypeOfClass;
     JTextField enterFrequency;
     JTextField enterAmountOfGroups;
+    JTextField enterTeacherName;
     JButton addButton;
     JButton deleteButton;
     JButton selectTeacherButton;
@@ -39,9 +40,9 @@ public class AddSubjectWindow {
             DatabaseManager manager = DatabaseManager.getInstance();
             List<Subject> subjectList = manager.getSubjects(specialization);
             for (Subject subject: subjectList) {
-                listModel.addElement("Subject: " + subject.subjectName + " Semesters: " +
-                        subject.semesters + " Teacher: " + subject.teacher + " Frequency: " +
-                        subject.frequency + " Type: " + subject.typeOfClass + " Groups: " +
+                listModel.addElement("Subject: \t" + subject.subjectName + "\t Semesters: \t" +
+                        subject.semesters + "\t Teacher: \t" + subject.teacher + "\t Frequency: \t" +
+                        subject.frequency + "\t Type: \t" + subject.typeOfClass + "\t Groups: \t" +
                         subject.amountOfGroups);
             }
         } catch (SQLException ex) {
@@ -59,7 +60,7 @@ public class AddSubjectWindow {
         addNewSubjectPanel.add(enterNewSubjectName);
         addNewSubjectPanel.add(new JLabel("[e.g \"SoftwareDesign\"]"));
 
-        addNewSubjectPanel.add(new JLabel("Enter amount of semesters: "));
+        addNewSubjectPanel.add(new JLabel("Enter semesters: "));
         this.enterAmountOfSemesters = new JTextField("", 20);
         addNewSubjectPanel.add(enterAmountOfSemesters);
         addNewSubjectPanel.add(new JLabel("[e.g \"5,6\"]"));
@@ -80,26 +81,31 @@ public class AddSubjectWindow {
         addNewSubjectPanel.add(enterAmountOfGroups);
         addNewSubjectPanel.add(new JLabel("[e.g \"2\"]"));
 
+        addNewSubjectPanel.add(new JLabel("Enter teacher: "));
+        this.enterTeacherName = new JTextField("", 20);
+        addNewSubjectPanel.add(enterTeacherName);
+        addNewSubjectPanel.add(new JLabel("[e.g \"Denis Miginskii\"]"));
+
         this.addButton = new JButton("add");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String name = enterNewSubjectName.getText();
                 String amountSemesters = enterAmountOfSemesters.getText();
-                //String teacher = enterTeacherName.getText();
+                String teacher = enterTeacherName.getText();
                 String freq = enterFrequency.getText();
                 String type = enterTypeOfClass.getText();
                 String groups = enterAmountOfGroups.getText();
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
                     manager.addSubject(new Subject(specialization, name, amountSemesters,
-                            type, freq, "Undefined", groups));
+                            type, freq, teacher, groups));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                listModel.addElement("Subject: " + name + " Semesters: " +
-                        amountSemesters + " Teacher: " + "Undefined" + " Frequency: " +
-                        freq + " Type: " + type + " Groups: " + groups);
+                listModel.addElement("Subject: \t" + name + "\t Semesters: \t" +
+                        amountSemesters + "\t Teacher: \t" + teacher + "\t Frequency: \t" +
+                        freq + "\t Type: \t" + type + "\t Groups: \t" + groups);
             }
         });
         addNewSubjectPanel.add(new JLabel(""));
@@ -127,14 +133,14 @@ public class AddSubjectWindow {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(4, 1, 20, 50));
         buttonsPanel.add(new JLabel(""));
-        buttonsPanel.add(selectTeacherButton);
+        buttonsPanel.add(new JLabel(""));
 
         deleteButton = new JButton("Delete");
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(subjects.getSelectedIndex());
-                String[] words = selected.split(" ");
+                String[] words = selected.split("\t");
                 Subject subject = new Subject(specialization, words[1], words[3], words[9],
                         words[7], words[5], words[11]);
                 try {

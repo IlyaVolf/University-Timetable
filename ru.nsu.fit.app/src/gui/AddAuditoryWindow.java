@@ -34,8 +34,8 @@ public class AddAuditoryWindow {
             DatabaseManager manager = DatabaseManager.getInstance();
             List<Auditory> auditoryList = manager.getAuditories();
             for (Auditory auditory: auditoryList) {
-                listModel.addElement("Number: " + auditory.number +
-                        " Capacity: " + auditory.capacity + " Types of classes: " +
+                listModel.addElement("Number: \t" + auditory.number +
+                        "\t Capacity: \t" + auditory.capacity + "\t Types of classes: \t" +
                         auditory.typesOfClass);
             }
         } catch (SQLException ex) {
@@ -93,8 +93,8 @@ public class AddAuditoryWindow {
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                listModel.addElement("Number: " + number +
-                        " Capacity: " + capacity + " Types of classes: " + types);
+                listModel.addElement("Number: \t" + number +
+                        "\t Capacity: \t" + capacity + "\t Types of classes: \t" + types);
             }
         });
         addNewAuditoryPanel.add(new JLabel(""));
@@ -107,7 +107,7 @@ public class AddAuditoryWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(auditories.getSelectedIndex());
-                String[] words = selected.split(" ");
+                String[] words = selected.split("\t");
                 Auditory auditory = new Auditory(words[7], words[3], words[1]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();

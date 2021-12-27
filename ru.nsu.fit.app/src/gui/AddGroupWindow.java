@@ -36,8 +36,8 @@ public class AddGroupWindow {
             DatabaseManager manager = DatabaseManager.getInstance();
             List<Group> groupList = manager.getGroups(specialization);
             for (Group group: groupList) {
-                listModel.addElement("Number: " + group.numberOfGroup + " Students: " +
-                        group.amountOfStudents + " YearOfStudy: " + group.yearOfStudy);
+                listModel.addElement("Number: \t" + group.numberOfGroup + "\t Students: \t" +
+                        group.amountOfStudents + "\t YearOfStudy: \t" + group.yearOfStudy);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -93,8 +93,8 @@ public class AddGroupWindow {
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                listModel.addElement("Number: " + number + " Students: " + amountOfStudents +
-                        " YearOfStudy: " + yearOfStudy);
+                listModel.addElement("Number: \t" + number + "\t Students: \t" + amountOfStudents +
+                        "\t YearOfStudy: \t" + yearOfStudy);
             }
         });
 
@@ -111,7 +111,7 @@ public class AddGroupWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(groups.getSelectedIndex());
-                String[] words = selected.split(" ");
+                String[] words = selected.split("\t");
                 Group group = new Group(specialization, words[1], words[3], words[5]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();

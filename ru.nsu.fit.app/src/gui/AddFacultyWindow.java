@@ -34,7 +34,7 @@ public class AddFacultyWindow {
             DatabaseManager manager = DatabaseManager.getInstance();
             List<Faculty> facultyList = manager.getAllFaculties();
             for (Faculty faculty: facultyList) {
-                listModel.addElement("Faculty: " + faculty.name);
+                listModel.addElement("Faculty: \t" + faculty.name);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -74,7 +74,7 @@ public class AddFacultyWindow {
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                listModel.addElement("Faculty: " + faculty);
+                listModel.addElement("Faculty: \t" + faculty);
             }
         });
 
@@ -102,7 +102,7 @@ public class AddFacultyWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String educationalProgram = String.valueOf(faculties.getSelectedValue());
-                String[] words = educationalProgram.split(" ");
+                String[] words = educationalProgram.split("\t");
                 new AddEducationalProgramWindow(words[1]);
             }
         });
@@ -112,7 +112,7 @@ public class AddFacultyWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(faculties.getSelectedIndex());
-                String[] words = selected.split(" ");
+                String[] words = selected.split("\t");
                 Faculty faculty = new Faculty(words[1]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();

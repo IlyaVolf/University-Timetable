@@ -39,7 +39,7 @@ public class AddEducationalProgramWindow {
             DatabaseManager manager = DatabaseManager.getInstance();
             List<EducationalProgram> educationalProgramList = manager.getEducationalPrograms(faculty);
             for (EducationalProgram educationalProgram: educationalProgramList) {
-                listModel.addElement("Educational program: " + educationalProgram.name + " Specialization: " + educationalProgram.specialization);
+                listModel.addElement("Educational program: \t" + educationalProgram.name + "\t Specialization: \t" + educationalProgram.specialization);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -58,7 +58,7 @@ public class AddEducationalProgramWindow {
         addNewEdProgPanel.add(new JLabel("Educational Program name: "));
         this.enterNewEducationalProgramName = new JTextField("", 20);
         addNewEdProgPanel.add(enterNewEducationalProgramName);
-        addNewEdProgPanel.add(new JLabel("[e.g \"BACH,09.03.01,ComputerScience\"]"));
+        addNewEdProgPanel.add(new JLabel("[e.g \"BACH, 09.03.01, Computer science\"]"));
 
         addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(new JLabel(""));
@@ -67,7 +67,7 @@ public class AddEducationalProgramWindow {
         addNewEdProgPanel.add(new JLabel("Specialization: "));
         this.enterNewSpecialization = new JTextField("", 20);
         addNewEdProgPanel.add(enterNewSpecialization);
-        addNewEdProgPanel.add(new JLabel("[e.g \"SoftwareEngineering\"]"));
+        addNewEdProgPanel.add(new JLabel("[e.g \"Software engineering\"]"));
 
         addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(new JLabel(""));
@@ -85,7 +85,7 @@ public class AddEducationalProgramWindow {
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                listModel.addElement("Educational program: " + edPr + " Specialization: " + sp);
+                listModel.addElement("Educational program: \t" + edPr + "\t Specialization: \t" + sp);
             }
         });
         addNewEdProgPanel.add(new JLabel(""));
@@ -108,16 +108,16 @@ public class AddEducationalProgramWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String educationalProgram = String.valueOf(educationalPrograms.getSelectedValue());
-                String[] words = educationalProgram.split(" ");
-                new AddGroupWindow(words[4]);
+                String[] words = educationalProgram.split("\t");
+                new AddGroupWindow(words[3]);
             }
         });
         addSubject.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String educationalProgram = String.valueOf(educationalPrograms.getSelectedValue());
-                String[] words = educationalProgram.split(" ");
-                new AddSubjectWindow(words[4]);
+                String[] words = educationalProgram.split("\t");
+                new AddSubjectWindow(words[3]);
             }
         });
 
@@ -126,7 +126,7 @@ public class AddEducationalProgramWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(educationalPrograms.getSelectedIndex());
-                String[] words = selected.split(" ");
+                String[] words = selected.split("\t");
                 EducationalProgram ep = new EducationalProgram(faculty, words[2], words[4]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();

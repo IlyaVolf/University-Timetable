@@ -1,4 +1,4 @@
-import entities.*;
+/*import entities.*;
 import managers.DatabaseManager;
 import org.projog.api.Projog;
 import org.projog.api.QueryResult;
@@ -88,7 +88,7 @@ public class Main {
                     concat(", ");
                     concat(auditories.get(i).capacity).
                     concat(").\n"));
-        }*/
+        }
 
         // Добавление факультетов
         ArrayList<Faculty> faculties = (ArrayList<Faculty>) dm.getAllFaculties();
@@ -161,7 +161,7 @@ public class Main {
                         concat(",").
                 ДОДЕЛАТЬ
                 }
-            }*/
+            }
 
         // Добавление предмета
 
@@ -208,4 +208,4 @@ public class Main {
             }
 
         }
-    }
+    }*/

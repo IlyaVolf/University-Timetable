@@ -39,8 +39,8 @@ public class AddTeacherWindow {
             DatabaseManager manager = DatabaseManager.getInstance();
             List<Teacher> teacherList = manager.getTeachers(subject);
             for (Teacher teacher: teacherList) {
-                listModel.addElement("Teacher: " + teacher.name + " Can work: " + teacher.daysTeacherCanWork +
-                        " Want work: " + teacher.daysTeacherWantWork + " Weight: " + teacher.weight);
+                listModel.addElement("Teacher: \t" + teacher.name + "\t Can work: \t" + teacher.daysTeacherCanWork +
+                        "\t Want work: \t" + teacher.daysTeacherWantWork + "\t Weight: \t" + teacher.weight);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -94,8 +94,8 @@ public class AddTeacherWindow {
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                listModel.addElement("Teacher: " + teacher + " Can work: " + canWork + " Want work: " +
-                        wantWork + " Weight: " + weight);
+                listModel.addElement("Teacher: \t" + teacher + "\t Can work: \t" + canWork + "\t Want work: \t" +
+                        wantWork + "\t Weight: \t" + weight);
             }
         });
         //addNewSubjectPanel.add(enterNewTeacherName);
@@ -109,7 +109,7 @@ public class AddTeacherWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(teachers.getSelectedIndex());
-                String[] words = selected.split(" ");
+                String[] words = selected.split("\t");
                 Teacher teacher = new Teacher(subject, words[1],words[4],words[7], words[9]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
