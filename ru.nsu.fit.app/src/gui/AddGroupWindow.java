@@ -1,8 +1,6 @@
 package gui;
 
-import entities.EducationalProgram;
 import entities.Group;
-import entities.Subject;
 import managers.DatabaseManager;
 
 import javax.swing.*;
@@ -16,15 +14,15 @@ public class AddGroupWindow {
     JFrame frame;
     JLabel label;
     JList<String> groups;
-    String educationalProgram;
+    String specialization;
     JTextField enterNewGroupNumber;
     JTextField enterAmountOfStudents;
     JTextField enterYearOfStudy;
     JButton addButton;
     JButton deleteButton;
 
-    public AddGroupWindow(String educationalProgram) {
-        this.educationalProgram = educationalProgram;
+    public AddGroupWindow(String specialization) {
+        this.specialization = specialization;
 
         this.frame = new JFrame("Add Group");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -36,7 +34,7 @@ public class AddGroupWindow {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         try {
             DatabaseManager manager = DatabaseManager.getInstance();
-            List<Group> groupList = manager.getGroups(educationalProgram);
+            List<Group> groupList = manager.getGroups(specialization);
             for (Group group: groupList) {
                 listModel.addElement("Number: " + group.numberOfGroup + " Students: " +
                         group.amountOfStudents + " YearOfStudy: " + group.yearOfStudy);
@@ -91,7 +89,7 @@ public class AddGroupWindow {
                 String yearOfStudy = enterYearOfStudy.getText();
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
-                    manager.addGroup(new Group(educationalProgram, number, amountOfStudents, yearOfStudy));
+                    manager.addGroup(new Group(specialization, number, amountOfStudents, yearOfStudy));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -114,7 +112,7 @@ public class AddGroupWindow {
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(groups.getSelectedIndex());
                 String[] words = selected.split(" ");
-                Group group = new Group(educationalProgram, words[1], words[3], words[5]);
+                Group group = new Group(specialization, words[1], words[3], words[5]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
                     manager.deleteGroup(group);

@@ -73,7 +73,7 @@ public class AddAuditoryWindow {
         addNewAuditoryPanel.add(new JLabel("Enter types of class: "));
         this.enterTypesOfClass = new JTextField("", 20);
         addNewAuditoryPanel.add(enterTypesOfClass);
-        addNewAuditoryPanel.add(new JLabel("[e.g \"Lec\"]"));
+        addNewAuditoryPanel.add(new JLabel("[e.g \"lec\", \"lab\", \"pr\"]"));
 
         addNewAuditoryPanel.add(new JLabel(""));
         addNewAuditoryPanel.add(new JLabel(""));
@@ -89,6 +89,7 @@ public class AddAuditoryWindow {
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
                     manager.addAuditory(new Auditory(types, capacity, number));
+
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }

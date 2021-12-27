@@ -4,9 +4,8 @@ import entities.*;
 import org.sqlite.JDBC;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DatabaseManager {
     private static final String DB = "jdbc:sqlite:timetable.sqlite";
@@ -14,7 +13,7 @@ public class DatabaseManager {
     private static DatabaseManager instance = null;
 
     public static synchronized DatabaseManager getInstance() throws SQLException {
-        if(instance == null) {
+        if (instance == null) {
             instance = new DatabaseManager();
         }
         return instance;
@@ -37,6 +36,7 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
     public List<Faculty> getAllFaculties() {
         try (Statement statement = this.connection.createStatement()) {
             List<Faculty> faculties = new ArrayList<>();
@@ -50,6 +50,7 @@ public class DatabaseManager {
             return Collections.emptyList();
         }
     }
+
     public void deleteFaculty(String name) {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "DELETE FROM Faculties WHERE Faculty = ?")) {
@@ -72,6 +73,7 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
     public List<EducationalProgram> getEducationalPrograms(String faculty) {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT EducationalProgram, Specialization FROM EducationalPrograms WHERE Faculty = ?")) {
@@ -102,14 +104,15 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-    public List<Group> getGroups(String educationalProgram) {
+
+    public List<Group> getGroups(String specialization) {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT Number, AmountOfStudents, YearOfStudy FROM Groups WHERE EducationalProgram = ?")) {
-            statement.setObject(1, educationalProgram);
+            statement.setObject(1, specialization);
             List<Group> groups = new ArrayList<>();
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                groups.add(new Group(educationalProgram, resultSet.getString("Number"),
+                groups.add(new Group(specialization, resultSet.getString("Number"),
                         resultSet.getString("AmountOfStudents"), resultSet.getString("YearOfStudy")));
             }
             return groups;
@@ -135,14 +138,36 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-    public List<Subject> getSubjects(String educationalProgram) {
+
+    public void updateSubject(String specialization, String subject, String teacher) {
+        System.out.println(specialization + subject + teacher);
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "UPDATE Subjects SET Teacher = ? WHERE EducationalProgram = ? AND Name = ?");
+            statement.setObject(1, teacher);
+            statement.setObject(2, specialization);
+            statement.setObject(3, subject);
+            statement.execute();
+
+            PreparedStatement statement1 = this.connection.prepareStatement(
+                    "UPDATE Teachers SET Subject = ? WHERE Name = ?");
+            statement1.setObject(1, subject);
+            statement1.setObject(2, teacher);
+            statement1.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Exception in update");
+        }
+    }
+
+    public List<Subject> getSubjects(String specialization) {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT Name, Semesters, TypeOfClass, Frequency, Teacher, AmountOfGroups FROM Subjects WHERE EducationalProgram = ?")) {
-            statement.setObject(1, educationalProgram);
+            statement.setObject(1, specialization);
             List<Subject> subjects = new ArrayList<>();
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                subjects.add(new Subject(educationalProgram, resultSet.getString("Name"),
+                subjects.add(new Subject(specialization, resultSet.getString("Name"),
                         resultSet.getString("Semesters"), resultSet.getString("TypeOfClass"),
                         resultSet.getString("Frequency"), resultSet.getString("teacher"),
                         resultSet.getString("AmountOfGroups")));
@@ -168,6 +193,7 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
     public List<Teacher> getTeachers(String subject) {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT Subject, Name, DaysCanWork, DaysWantWork, Weight FROM Teachers WHERE Subject = ?")) {
@@ -177,6 +203,38 @@ public class DatabaseManager {
             while (resultSet.next()) {
                 teachers.add(new Teacher(subject, resultSet.getString("Name"),
                         resultSet.getString("DaysCanWork"), resultSet.getString("DaysWantWork"),
+                        resultSet.getString("Weight")));
+            }
+            return teachers;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public String getTeacherName(String specialization, String subject) {
+        System.out.println("In method: spec = " + specialization + " subject = " + subject);
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT Teacher FROM Subjects WHERE EducationalProgram = ? AND Name = ?")) {
+            statement.setObject(1, specialization);
+            statement.setObject(2, subject);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.getString("Teacher");
+
+        } catch (SQLException e) {
+            return "Exception";
+        }
+    }
+
+    public List<Teacher> getAllTeachers() {
+        try (Statement statement = this.connection.createStatement()) {
+            List<Teacher> teachers = new ArrayList<>();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Teachers");
+            while (resultSet.next()) {
+                teachers.add(new Teacher(resultSet.getString("Subject"),
+                        resultSet.getString("Name"),
+                        resultSet.getString("DaysCanWork"),
+                        resultSet.getString("DaysWantWork"),
                         resultSet.getString("Weight")));
             }
             return teachers;
@@ -198,6 +256,7 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
     public List<Auditory> getAuditories() {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT TypeOfClass, Capacity, Number FROM Auditories")) {
@@ -211,6 +270,49 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
             return Collections.emptyList();
+        }
+    }
+
+    public List<String> getAuditoryTypes(String auditoryNumber) {
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "SELECT TypeOfClass FROM Auditories WHERE Number = ?");
+            statement.setObject(1, auditoryNumber);
+            String result = statement.executeQuery().getString("TypeOfClass");
+            String[] types = result.split(" ,");
+            return Arrays.stream(types).collect(Collectors.toList());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public Map<Integer, List<String>> getAllSpecializationGroups(String specialization) {
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "SELECT Number, YearOfStudy FROM Groups WHERE EducationalProgram = ? ORDER BY YearOfStudy");
+            statement.setObject(1, specialization);
+            ResultSet resultSet = statement.executeQuery();
+            Map<Integer, List<String>> groups = new HashMap<>();
+            while(resultSet.next()) {
+                int key = Integer.parseInt(resultSet.getString("YearOfStudy"));
+                List<String> values = groups.get(key);
+                if (values == null) {
+                    values = new ArrayList<>();
+                }
+                values.add(resultSet.getString("Number"));
+                groups.put(key, values);
+            }
+            for (Integer i:groups.keySet()) {
+                List<String> v = groups.get(i);
+                System.out.println("Course: " + i);
+                for (String s: v) {
+                    System.out.println(s);
+                }
+            }
+            return groups;
+        } catch(SQLException e) {
+            return null;
         }
     }
 
@@ -236,6 +338,7 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
     public Constraints getConstraints() {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT FirstClassStarts, ClassDuration, ShortBrakeDuration, LargeBrakeDuration, StudyDaysInWeek, StudyDaysInWeekForStudents, StudyDaysInWeekForTeachers, ClassesPerDay, ClassesPerDayStudents, ClassesPerDayTeachers, LunchBrake, Gaps, ClassroomFillness FROM Constraints")) {
