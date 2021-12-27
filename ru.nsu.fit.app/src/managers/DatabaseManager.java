@@ -179,6 +179,77 @@ public class DatabaseManager {
         }
     }
 
+    public List<String> getSubjectNames(String specialization) {
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "SELECT DISTINCT Name FROM Subjects WHERE EducationalProgram = ?");
+            statement.setObject(1, specialization);
+            List<String> names = new ArrayList<>();
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                names.add(resultSet.getString("Name"));
+            }
+            return names;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public List<String> getSemestersOfSubject(String specialization, String subject) {
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "SELECT Semesters FROM Subjects WHERE EducationalProgram = ? AND Name = ?");
+            statement.setObject(1, specialization);
+            statement.setObject(2, subject);
+            List<String> semesters = new ArrayList<>();
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                semesters.add(resultSet.getString("Semesters"));
+            }
+            return semesters;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public List<String> getTypesOfClasses(String specialization, String subject, String semesters) {
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "SELECT TypeOfClass FROM Subjects WHERE EducationalProgram = ? AND Name = ? AND Semesters = ?");
+            statement.setObject(1, specialization);
+            statement.setObject(2, subject);
+            statement.setObject(3, semesters);
+            List<String> types = new ArrayList<>();
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                types.add(resultSet.getString("TypeOfClass"));
+            }
+            return types;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public List<Subject> getSubjectsDuplicates(String specialization, String subjectName, String semesters) {
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "SELECT TypeOfClass, Frequency, Teacher, AmountOfGroups FROM Subjects WHERE EducationalProgram = ? AND Name = ? AND Semesters = ?");
+            statement.setObject(1, specialization);
+            statement.setObject(2, subjectName);
+            statement.setObject(3, semesters);
+            List<Subject> subjects = new ArrayList<>();
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                subjects.add(new Subject(specialization, subjectName, semesters,
+                        resultSet.getString("TypeOfClass"), resultSet.getString("Frequency"),
+                        resultSet.getString("Teacher"), resultSet.getString("AmountOfGroups")));
+            }
+            return subjects;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
     public void addTeacher(Teacher teacher) {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "INSERT INTO Teachers(`Subject`, `Name`, `DaysCanWork`, `DaysWantWork`, `Weight`)" +
@@ -294,7 +365,7 @@ public class DatabaseManager {
             statement.setObject(1, specialization);
             ResultSet resultSet = statement.executeQuery();
             Map<Integer, List<String>> groups = new HashMap<>();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 int key = Integer.parseInt(resultSet.getString("YearOfStudy"));
                 List<String> values = groups.get(key);
                 if (values == null) {
@@ -303,15 +374,15 @@ public class DatabaseManager {
                 values.add(resultSet.getString("Number"));
                 groups.put(key, values);
             }
-            for (Integer i:groups.keySet()) {
+            for (Integer i : groups.keySet()) {
                 List<String> v = groups.get(i);
                 System.out.println("Course: " + i);
-                for (String s: v) {
+                for (String s : v) {
                     System.out.println(s);
                 }
             }
             return groups;
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             return null;
         }
     }

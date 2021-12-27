@@ -62,7 +62,7 @@ public class AddSubjectWindow {
         addNewSubjectPanel.add(new JLabel("Enter amount of semesters: "));
         this.enterAmountOfSemesters = new JTextField("", 20);
         addNewSubjectPanel.add(enterAmountOfSemesters);
-        addNewSubjectPanel.add(new JLabel("[e.g \"2\"]"));
+        addNewSubjectPanel.add(new JLabel("[e.g \"5,6\"]"));
 
 
         addNewSubjectPanel.add(new JLabel("Enter frequency: "));
