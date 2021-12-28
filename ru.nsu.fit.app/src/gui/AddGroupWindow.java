@@ -121,5 +121,6 @@ public class AddGroupWindow {
                 }
             }
         });
+        frame.add(deleteButton, BorderLayout.EAST);
     }
 }

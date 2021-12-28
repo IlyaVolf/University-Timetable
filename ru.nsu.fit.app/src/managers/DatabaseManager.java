@@ -153,11 +153,11 @@ public class DatabaseManager {
             statement.setObject(7, amountOfGroups);
             statement.execute();
 
-            PreparedStatement statement1 = this.connection.prepareStatement(
+            /*PreparedStatement statement1 = this.connection.prepareStatement(
                     "UPDATE Teachers SET Subject = ? WHERE Name = ?");
             statement1.setObject(1, subject);
             statement1.setObject(2, teacher);
-            statement1.execute();
+            statement1.execute();*/
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Exception in update");
@@ -463,17 +463,27 @@ public class DatabaseManager {
 
     public void deleteTeacher(Teacher teacher) {
         try (PreparedStatement statement = this.connection.prepareStatement(
-                "DELETE FROM Teachers WHERE Subject = ? AND Name = ? AND DaysCanWork = ? AND DaysWantWork = ? AND Weight = ?")) {
-            statement.setObject(1, teacher.subject);
-            statement.setObject(2, teacher.name);
-            statement.setObject(3, teacher.daysTeacherCanWork);
-            statement.setObject(4, teacher.daysTeacherWantWork);
-            statement.setObject(5, teacher.weight);
+                "DELETE FROM Teachers WHERE Name = ? AND DaysCanWork = ? AND DaysWantWork = ? AND Weight = ?")) {
+            statement.setObject(1, teacher.name);
+            statement.setObject(2, teacher.daysTeacherCanWork);
+            statement.setObject(3, teacher.daysTeacherWantWork);
+            statement.setObject(4, teacher.weight);
             statement.execute();
 
-            PreparedStatement statement1 = this.connection.prepareStatement(
+            PreparedStatement selectStatement = this.connection.prepareStatement(
+                    "SELECT * FROM Subjects WHERE Teacher = ?");
+            selectStatement.setObject(1, teacher.name);
+            ResultSet resultSet = selectStatement.executeQuery();
+            PreparedStatement deleteStatement = this.connection.prepareStatement(
                     "DELETE FROM Subjects WHERE Teacher = ?");
-            statement1.setObject(1, teacher.subject);
+            deleteStatement.setObject(1, teacher.name);
+            deleteStatement.execute();
+            while (resultSet.next()) {
+                addSubject(new Subject(resultSet.getString("EducationalProgram"),
+                        resultSet.getString("Name"), resultSet.getString("Semesters"),
+                        resultSet.getString("TypeOfClass"), resultSet.getString("Frequency"),
+                        "Undefined", resultSet.getString("AmountOfGroups")));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -491,9 +501,9 @@ public class DatabaseManager {
             statement.setObject(7, subject.amountOfGroups);
             statement.execute();
 
-            PreparedStatement statement1 = this.connection.prepareStatement(
+            /*PreparedStatement statement1 = this.connection.prepareStatement(
                     "DELETE FROM Teachers WHERE Subject = ?");
-            statement1.setObject(1, subject.subjectName);
+            statement1.setObject(1, subject.subjectName);*/
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -534,6 +544,27 @@ public class DatabaseManager {
 
             //TODO удалить всех учителей из удаленных предметов
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearAll() {
+        try {
+            this.connection.prepareStatement(
+                    "DELETE FROM Auditories").execute();
+            this.connection.prepareStatement(
+                    "DELETE FROM Constraints").execute();
+            this.connection.prepareStatement(
+                    "DELETE FROM EducationalPrograms").execute();
+            this.connection.prepareStatement(
+                    "DELETE FROM Faculties").execute();
+            this.connection.prepareStatement(
+                    "DELETE FROM Groups").execute();
+            this.connection.prepareStatement(
+                    "DELETE FROM Subjects").execute();
+            this.connection.prepareStatement(
+                    "DELETE FROM Teachers").execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }

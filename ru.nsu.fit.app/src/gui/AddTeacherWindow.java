@@ -16,7 +16,6 @@ public class AddTeacherWindow {
     JFrame frame;
     JLabel label;
     JList<String> teachers;
-    String subject;
     JTextField enterNewTeacherName;
     JTextField enterDaysTeacherCanWork;
     JTextField enterDaysTeacherWantWork;
@@ -24,8 +23,7 @@ public class AddTeacherWindow {
     JButton addButton;
     JButton deleteButton;
 
-    public AddTeacherWindow(String subject) {
-        this.subject = subject;
+    public AddTeacherWindow() {
 
         this.frame = new JFrame("Add Teacher");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -37,7 +35,7 @@ public class AddTeacherWindow {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         try {
             DatabaseManager manager = DatabaseManager.getInstance();
-            List<Teacher> teacherList = manager.getTeachers(subject);
+            List<Teacher> teacherList = manager.getAllTeachers();
             for (Teacher teacher: teacherList) {
                 listModel.addElement("Teacher: \t" + teacher.name + "\t Can work: \t" + teacher.daysTeacherCanWork +
                         "\t Want work: \t" + teacher.daysTeacherWantWork + "\t Weight: \t" + teacher.weight);
@@ -90,7 +88,7 @@ public class AddTeacherWindow {
                 String weight = enterWeight.getText();
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
-                    manager.addTeacher(new Teacher(subject, teacher, canWork, wantWork, weight));
+                    manager.addTeacher(new Teacher("null", teacher, canWork, wantWork, weight));
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -110,7 +108,7 @@ public class AddTeacherWindow {
             public void actionPerformed(ActionEvent e) {
                 String selected = listModel.remove(teachers.getSelectedIndex());
                 String[] words = selected.split("\t");
-                Teacher teacher = new Teacher(subject, words[1],words[4],words[7], words[9]);
+                Teacher teacher = new Teacher("null", words[1],words[3],words[5], words[7]);
                 try {
                     DatabaseManager manager = DatabaseManager.getInstance();
                     manager.deleteTeacher(teacher);

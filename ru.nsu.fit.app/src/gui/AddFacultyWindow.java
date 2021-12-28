@@ -153,7 +153,7 @@ public class AddFacultyWindow {
         addTeacher.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AddTeacherWindow("Undefined");
+                new AddTeacherWindow();
             }
         });
 
