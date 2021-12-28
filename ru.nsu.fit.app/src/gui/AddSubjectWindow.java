@@ -28,7 +28,7 @@ public class AddSubjectWindow {
     public AddSubjectWindow(String specialization) {
         this.specialization = specialization;
 
-        this.frame = new JFrame("Add Subject");
+        this.frame = new JFrame("Edit Subject");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
@@ -86,7 +86,7 @@ public class AddSubjectWindow {
         addNewSubjectPanel.add(enterTeacherName);
         addNewSubjectPanel.add(new JLabel("[e.g \"Denis Miginskii\"]"));
 
-        this.addButton = new JButton("add");
+        this.addButton = new JButton("edit");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -2,13 +2,16 @@ package gui;
 
 import entities.EducationalProgram;
 import entities.Faculty;
+import entities.GeneratedEntity;
 import managers.DatabaseManager;
+import managers.TimtableGenerator;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class AddFacultyWindow {
     JButton addEducationalProgram;
 
     public AddFacultyWindow() {
-        this.frame = new JFrame("Add Restrictions");
+        this.frame = new JFrame("Edit Restrictions");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
@@ -63,7 +66,7 @@ public class AddFacultyWindow {
         addNewFacultyPanel.add(new JLabel(""));
         addNewFacultyPanel.add(new JLabel(""));
 
-        this.addButton = new JButton("add");
+        this.addButton = new JButton("edit");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,7 +100,7 @@ public class AddFacultyWindow {
 
         JPanel addNewEntitiesPanel = new JPanel();
         addNewEntitiesPanel.setLayout(new GridLayout(5, 1, 20, 50));
-        this.addEducationalProgram = new JButton("add EducationalProgram");
+        this.addEducationalProgram = new JButton("edit EducationalProgram");
         addEducationalProgram.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,6 +145,19 @@ public class AddFacultyWindow {
         JMenu constraints = new JMenu("Constraints");
 
         JMenuItem generate = new JMenuItem("Generate!");
+        generate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    List<GeneratedEntity> entities = TimtableGenerator.generate();
+                    DatabaseManager manager = DatabaseManager.getInstance();
+                    manager.addTimetable(entities);
+
+                } catch (IOException | SQLException | InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         JMenuItem addAuditory = new JMenuItem("Add");
         addAuditory.addActionListener(new ActionListener() {
             @Override

@@ -30,7 +30,7 @@ public class AddConstraintsWindow {
     JTextField enterClassroomFillness;
 
     public AddConstraintsWindow() {
-        this.frame = new JFrame("Add Constraints");
+        this.frame = new JFrame("Edit Constraints");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 

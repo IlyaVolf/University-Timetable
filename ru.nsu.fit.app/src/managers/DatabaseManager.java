@@ -289,7 +289,7 @@ public class DatabaseManager {
     }
 
     public String getTeacherName(String specialization, String subject) {
-        System.out.println("In method: spec = " + specialization + " subject = " + subject);
+        //System.out.println("In method: spec = " + specialization + " subject = " + subject);
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT Teacher FROM Subjects WHERE EducationalProgram = ? AND Name = ?")) {
             statement.setObject(1, specialization);
@@ -355,7 +355,7 @@ public class DatabaseManager {
                     "SELECT TypeOfClass FROM Auditories WHERE Number = ?");
             statement.setObject(1, auditoryNumber);
             String result = statement.executeQuery().getString("TypeOfClass");
-            String[] types = result.split(" ,");
+            String[] types = result.replaceAll("\\s+", "").split(",");
             return Arrays.stream(types).collect(Collectors.toList());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -381,10 +381,6 @@ public class DatabaseManager {
             }
             for (Integer i : groups.keySet()) {
                 List<String> v = groups.get(i);
-                System.out.println("Course: " + i);
-                for (String s : v) {
-                    System.out.println(s);
-                }
             }
             return groups;
         } catch (SQLException e) {
@@ -567,6 +563,76 @@ public class DatabaseManager {
                     "DELETE FROM Teachers").execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void addTimetable(List<GeneratedEntity> entities) {
+        try {
+            for (GeneratedEntity entity : entities) {
+                PreparedStatement statement = this.connection.prepareStatement("" +
+                        "INSERT INTO GeneratedEntities(`Specialization`, `Day`, `Subject`, `Teacher`, `Auditory`, `Groups`, `NumberOfClass`, `TypeOfClass`) " +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+                statement.setObject(1, entity.specialization);
+                statement.setObject(2, entity.day);
+                statement.setObject(3, entity.subjectName);
+                statement.setObject(4, entity.teacherName);
+                statement.setObject(5, entity.auditory);
+                statement.setObject(6, entity.groups);
+                statement.setObject(7, entity.numberOfClass);
+                statement.setObject(8, entity.typeOfClass);
+                statement.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getTimetableSpecializations() {
+        try {
+
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "SELECT DISTINCT Specialization FROM GeneratedEntities");
+            ResultSet resultSet = statement.executeQuery();
+            List<String> specializations = new ArrayList<>();
+            while (resultSet.next()) {
+                specializations.add(resultSet.getString("Specialization"));
+            }
+            return specializations;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<String> getEvents(String specialization) {
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(
+                    "SELECT Day, Subject, Teacher, Auditory, Groups , NumberOfClass, TypeOfClass FROM GeneratedEntities WHERE Specialization = ?");
+            statement.setObject(1, specialization);
+            ResultSet resultSet = statement.executeQuery();
+            List<String> events = new ArrayList<>();
+            while (resultSet.next()) {
+                String day = resultSet.getString("Day");
+                String subject = resultSet.getString("Subject");
+                String teacher = resultSet.getString("Teacher");
+                String auditory = resultSet.getString("Auditory");
+                String groups = resultSet.getString("Groups");
+                String numberOfClass = resultSet.getString("NumberOfClass");
+                String typeOfClass = resultSet.getString("TypeOfClass");
+                String[] splitted = groups.split("\\(");
+                groups = "";
+                for (String gr: splitted) {
+                    groups = groups.concat(gr);
+                }
+                events.add(day.concat("   ").concat(subject).concat("   ")
+                        .concat(teacher).concat("   ").concat(auditory)
+                        .concat("   ").concat(groups).concat("   ").concat(numberOfClass).concat("   ")
+                        .concat(typeOfClass));
+            }
+            return events;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

@@ -27,7 +27,7 @@ public class AddEducationalProgramWindow {
     public AddEducationalProgramWindow(String faculty) {
         this.faculty = faculty;
 
-        this.frame = new JFrame("Add Educational Program");
+        this.frame = new JFrame("Edit Educational Program");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
@@ -73,7 +73,7 @@ public class AddEducationalProgramWindow {
         addNewEdProgPanel.add(new JLabel(""));
         addNewEdProgPanel.add(new JLabel(""));
 
-        this.addButton = new JButton("add");
+        this.addButton = new JButton("edit");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -102,8 +102,8 @@ public class AddEducationalProgramWindow {
 
         JPanel addNewEntitiesPanel = new JPanel();
         addNewEntitiesPanel.setLayout(new GridLayout(5, 1, 20, 50));
-        this.addGroup = new JButton("add Group");
-        this.addSubject = new JButton("add Subject");
+        this.addGroup = new JButton("edit Group");
+        this.addSubject = new JButton("edit Subject");
         addGroup.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

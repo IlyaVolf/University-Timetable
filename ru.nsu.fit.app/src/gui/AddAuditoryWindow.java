@@ -22,7 +22,7 @@ public class AddAuditoryWindow {
     JButton deleteButton;
 
     public AddAuditoryWindow() {
-        this.frame = new JFrame("Add Auditory");
+        this.frame = new JFrame("Edit Auditory");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
@@ -79,7 +79,7 @@ public class AddAuditoryWindow {
         addNewAuditoryPanel.add(new JLabel(""));
         addNewAuditoryPanel.add(new JLabel(""));
 
-        this.addButton = new JButton("add");
+        this.addButton = new JButton("edit");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

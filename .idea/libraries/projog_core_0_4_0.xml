@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="projog-core-0.4.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/projog-core-0.4.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/projog-0.4.0/lib/projog-core-0.4.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

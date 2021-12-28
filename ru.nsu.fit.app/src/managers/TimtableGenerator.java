@@ -1,5 +1,6 @@
+package managers;
+
 import entities.*;
-import managers.DatabaseManager;
 import org.projog.api.Projog;
 import org.projog.api.QueryResult;
 import org.projog.core.term.Term;
@@ -9,9 +10,7 @@ import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.*;
 
-//import static org.graalvm.compiler.debug.DebugOptions.PrintGraphTarget.File;
-
-public class Main {
+public class TimtableGenerator {
     public static void copyFile(File sourceFile, File destFile) throws IOException {
         if (!destFile.exists()) {
             destFile.createNewFile();
@@ -310,7 +309,94 @@ public class Main {
         return res;
     }
 
-    public static void main(String[] args) throws IOException, SQLException {
+    private static boolean isEq(String a, String b) {
+        return Objects.equals(a, b);
+    }
+
+    private static boolean isMatch(String sym, String str) {
+        return str.contains(sym);
+    }
+
+    public static List<GeneratedEntity> getGeneratedEntities(String timetableTerm) {
+        List<GeneratedEntity> entities = new ArrayList<>();
+        String[] term = timetableTerm.split("");
+        for (int i = 0; i < term.length; i++) {
+            if (i + 3 < term.length && isEq(term[i], ".") && isEq(term[i + 1], "(") && isEq(term[i + 2], "e")) {
+                // Читаем ивент
+                while(isMatch(term[i], ".(event(class(")) {
+                    i++;
+                }
+                String specialization = "";
+                while(!isEq(term[i], ",")) {
+                    specialization = specialization.concat(term[i]);
+                    i++;
+                }
+                i+=2;
+                String subject = "";
+                while (!isEq(term[i], ",")) {
+                    subject = subject.concat(term[i]);
+                    i++;
+                }
+                i++;
+                while (!isEq(term[i], ",")) {
+                    i++;
+                }
+                i+=2;
+                while(isMatch(term[i], "type_of_class")) {
+                    i++;
+                }
+                i++;
+                String typeOfClass = "";
+                while (!isEq(term[i], ")")) {
+                    typeOfClass = typeOfClass.concat(term[i]);
+                    i++;
+                }
+                while(isMatch(term[i], "), teacher")) {
+                    i++;
+                }
+                i++;
+                String teacher = "";
+                while (!isEq(term[i], ")")) {
+                    teacher = teacher.concat(term[i]);
+                    i++;
+                }
+                i++;
+                while(!isMatch(term[i], ")")) {
+                    i++;
+                }
+                i+=2;
+                String auditory = "";
+                while (!isEq(term[i], ",")) {
+                    auditory = auditory.concat(term[i]);
+                    i++;
+                }
+                i+= 2;
+                String day = term[i];
+                i++;
+                while(isMatch(term[i], ", .(")) {
+                    i++;
+                }
+                String groups = "";
+                while (!isEq(term[i], "[")) {
+                    groups = groups.concat(term[i]);
+                    i++;
+                }
+                i++;
+                while(isMatch(term[i], "]), ")) {
+                    i++;
+                }
+                String numberOfClass = term[i];
+
+                GeneratedEntity entity = new GeneratedEntity(specialization, day, subject,
+                        teacher, auditory, groups, numberOfClass, typeOfClass);
+                entities.add(entity);
+            }
+            i++;
+        }
+        return entities;
+    }
+
+    public static List<GeneratedEntity> generate() throws IOException, SQLException, InterruptedException {
         Projog projog = new Projog();
 
         File main = new File("main_empty.pl");
@@ -321,15 +407,37 @@ public class Main {
 
         projog.consultFile(main_temp);
 
+        Term timetable = null;
+
         QueryResult result = projog.executeQuery("main(1, Res, Fine).");
         while (result.next()) {
             Term res = result.getTerm("Res");
             if(Objects.equals(res.toString(), "[]")) {
-                System.out.println("error");
+                //System.out.println("error");
             } else {
-                System.out.println(res.toString());
+                //System.out.println(res.toString());
             }
+            timetable = res;
         }
-
+        main_temp.delete();
+        assert timetable != null;
+        String t = timetable.toString();
+        System.out.println(t);
+        projog = null;
+        timetable = null;
+        //List<GeneratedEntity> entities = null;
+        List<GeneratedEntity> entities = TimtableGenerator.getGeneratedEntities(t);
+        for (GeneratedEntity entity: entities) {
+            System.out.println("---------------------");
+            System.out.println(entity.specialization);
+            System.out.println(entity.subjectName);
+            System.out.println(entity.typeOfClass);
+            System.out.println(entity.teacherName);
+            System.out.println(entity.auditory);
+            System.out.println(entity.day);
+            System.out.println(entity.groups);
+            System.out.println(entity.numberOfClass);
+        }
+        return entities;
     }
 }

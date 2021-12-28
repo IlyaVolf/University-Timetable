@@ -9,8 +9,14 @@ public class Gui {
         startWindow.generateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddFacultyWindow generateWindow = new AddFacultyWindow();
+                new AddFacultyWindow();
 
+            }
+        });
+        startWindow.viewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new SelectSpecializationWindow();
             }
         });
     }

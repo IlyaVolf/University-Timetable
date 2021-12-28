@@ -25,7 +25,7 @@ public class AddTeacherWindow {
 
     public AddTeacherWindow() {
 
-        this.frame = new JFrame("Add Teacher");
+        this.frame = new JFrame("Edit Teacher");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
@@ -78,7 +78,7 @@ public class AddTeacherWindow {
         addNewTeacherPanel.add(new JLabel(""));
         addNewTeacherPanel.add(new JLabel(""));
 
-        this.addButton = new JButton("add");
+        this.addButton = new JButton("edit");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

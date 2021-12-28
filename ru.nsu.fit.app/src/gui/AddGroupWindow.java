@@ -24,7 +24,7 @@ public class AddGroupWindow {
     public AddGroupWindow(String specialization) {
         this.specialization = specialization;
 
-        this.frame = new JFrame("Add Group");
+        this.frame = new JFrame("Edit Group");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
 
@@ -80,7 +80,7 @@ public class AddGroupWindow {
         addNewGroupPanel.add(new JLabel(""));
         addNewGroupPanel.add(new JLabel(""));
 
-        this.addButton = new JButton("add");
+        this.addButton = new JButton("edit");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
