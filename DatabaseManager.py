@@ -3,7 +3,6 @@ import sqlite3
 from entities.Auditory import Auditory
 from entities.Constraints import Constraints
 from entities.EducationalProgram import EducationalProgram
-from entities.Faculty import Faculty
 from entities.Group import Group
 from entities.Subject import Subject
 from entities.Teacher import Teacher
@@ -67,6 +66,23 @@ class DatabaseManager:
             lst.append(EducationalProgram(facultyName, row[0], row[1]))
         return lst
 
+    def getEducationalProgramsIlya(self, facultyName):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT EducationalProgram FROM EducationalPrograms WHERE Faculty=?'
+        cursor.execute(sqliteQuery, (facultyName,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        return tupleToList(rows)
+
+    def getSpecializations(self, faculty, educationalProgram):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT Specialization FROM EducationalPrograms WHERE Faculty=? AND EducationalProgram=?'
+        cursor.execute(sqliteQuery, (faculty, educationalProgram))
+        rows = cursor.fetchall()
+        cursor.close()
+        return tupleToList(rows)
+
     def deleteEducationalProgram(self, educationalProgram):
         cursor = self.sqlite_connection.cursor()
 
@@ -76,16 +92,17 @@ class DatabaseManager:
                                      educationalProgram.specialization,))
         sqliteQuery = 'DELETE FROM Faculties WHERE EducationalProgram = ?'
         cursor.execute(sqliteQuery, (educationalProgram.name,))
-        sqliteQuery = 'DELETE FROM Groups WHERE EducationalProgram = ?'
+        sqliteQuery = 'DELETE FROM Groups WHERE Specialization = ?'
         cursor.execute(sqliteQuery, (educationalProgram.name,))
-        sqliteQuery = 'DELETE FROM Subjects WHERE EducationalProgram = ?'
+        sqliteQuery = 'DELETE FROM Subjects WHERE Specialization = ?'
         cursor.execute(sqliteQuery, (educationalProgram.name,))
         self.sqlite_connection.commit()
         cursor.close()
 
     def addGroup(self, group):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Groups(`EducationalProgram`, `Number`, `AmountOfStudents`, `YearOfStudy`) VALUES(?, ?, ?, ?)'
+        sqliteQuery = 'INSERT INTO Groups(`Specialization`, `Number`, `AmountOfStudents`, `YearOfStudy`) VALUES(' \
+                      '?, ?, ?, ?) '
         cursor.execute(sqliteQuery, (group.specialization, group.numberOfGroup,
                                      group.amountOfStudents, group.yearOfStudy,))
         self.sqlite_connection.commit()
@@ -93,7 +110,7 @@ class DatabaseManager:
 
     def getGroups(self, specialization):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Number, AmountOfStudents, YearOfStudy FROM Groups WHERE EducationalProgram=?'
+        sqliteQuery = 'SELECT Number, AmountOfStudents, YearOfStudy FROM Groups WHERE Specialization=?'
         cursor.execute(sqliteQuery, (specialization,))
         rows = cursor.fetchall()
         cursor.close()
@@ -103,9 +120,22 @@ class DatabaseManager:
             lst.append(Group(specialization, row[0], row[1], row[2]))
         return lst
 
+    def getAllGroups(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT Specialization, Number, AmountOfStudents, YearOfStudy FROM Groups'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(Group(row[0], row[1], row[2], row[3]))
+        return lst
+
     def addSubject(self, subject):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Subjects(`EducationalProgram`, `Name`, `Semesters`, `TypeOfClass`, `Frequency`, `teacher`, `AmountOfGroups`) VALUES(?, ?, ?, ?, ?, ?, ?)'
+        sqliteQuery = 'INSERT INTO Subjects(`Specialization`, `Name`, `Semesters`, `TypeOfClass`, `Frequency`, ' \
+                      '`teacher`, `AmountOfGroups`) VALUES(?, ?, ?, ?, ?, ?, ?) '
         cursor.execute(sqliteQuery, (subject.educationalProgram, subject.subjectName,
                                      subject.semesters, subject.typeOfClass,
                                      subject.frequency, subject.teacher,
@@ -116,7 +146,8 @@ class DatabaseManager:
     def updateSubject(self, specialization, subject, teacher,
                       semesters, types, frequency, amountOfGroups):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'UPDATE Subjects SET Teacher = ? WHERE EducationalProgram = ? AND Name = ? AND Semesters = ? AND TypeOfClass = ? AND Frequency = ? AND AmountOfGroups = ?'
+        sqliteQuery = 'UPDATE Subjects SET Teacher = ? WHERE Specialization = ? AND Name = ? AND Semesters = ? ' \
+                      'AND TypeOfClass = ? AND Frequency = ? AND AmountOfGroups = ? '
         cursor.execute(sqliteQuery, (teacher, specialization,
                                      subject, semesters,
                                      types, frequency,
@@ -124,9 +155,47 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    def getAllSubjects(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT Specialization, Name, Semesters FROM Subjects'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append([row[0], row[1], row[2]])
+        return lst
+
+    def getAllSubjectTypesOfClass(self, specialization, name, semesters):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT TypeOfClass, Frequency FROM Subjects WHERE Specialization=? AND Name=? AND Semesters=?'
+        cursor.execute(sqliteQuery, (specialization, name, semesters,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append([row[0], row[1]])
+        return lst
+
+    def getAllSubjectTeachers(self, specialization, name, semesters, typeOfClass, Frequency):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT Teacher, AmountOfGroups FROM Subjects WHERE Specialization=? AND Name=? AND Semesters=?' \
+                      'AND TypeOfClass=? AND Frequency=?'
+        cursor.execute(sqliteQuery, (specialization, name, semesters, typeOfClass, Frequency,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append([row[0], row[1]])
+        return lst
+
     def getSubjects(self, specialization):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Name, Semesters, TypeOfClass, Frequency, Teacher, AmountOfGroups FROM Subjects WHERE EducationalProgram=?'
+        sqliteQuery = 'SELECT Name, Semesters, TypeOfClass, Frequency, Teacher, AmountOfGroups FROM Subjects WHERE ' \
+                      'Specialization=? '
         cursor.execute(sqliteQuery, (specialization,))
         rows = cursor.fetchall()
         cursor.close()
@@ -138,7 +207,7 @@ class DatabaseManager:
 
     def getSubjectNames(self, specialization):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT Name FROM Subjects WHERE EducationalProgram=?'
+        sqliteQuery = 'SELECT DISTINCT Name FROM Subjects WHERE Specialization=?'
         cursor.execute(sqliteQuery, (specialization,))
         rows = cursor.fetchall()
         cursor.close()
@@ -150,8 +219,20 @@ class DatabaseManager:
 
     def getSemestersOfSubject(self, specialization, subjectName):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT Semesters FROM Subjects WHERE EducationalProgram=? AND Name=?'
+        sqliteQuery = 'SELECT DISTINCT Semesters FROM Subjects WHERE Specialization=? AND Name=?'
         cursor.execute(sqliteQuery, (specialization, subjectName))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(row[0])
+        return lst
+
+    def getAllTypesOfClasses(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT TypeOfClass FROM Subjects'
+        cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
 
@@ -162,7 +243,7 @@ class DatabaseManager:
 
     def getTypesOfClasses(self, specialization, subjectName, semesters):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT TypeOfClass FROM Subjects WHERE EducationalProgram=? AND Name=? AND Semesters=?'
+        sqliteQuery = 'SELECT DISTINCT TypeOfClass FROM Subjects WHERE Specialization=? AND Name=? AND Semesters=?'
         cursor.execute(sqliteQuery, (specialization, subjectName, semesters))
         rows = cursor.fetchall()
         cursor.close()
@@ -174,7 +255,8 @@ class DatabaseManager:
 
     def getSubjectsDuplicates(self, specialization, subjectName, semesters, typesOfClass):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Frequency, Teacher, AmountOfGroups FROM Subjects WHERE EducationalProgram=? AND Name=? AND Semesters=? AND TypeOfClass=?'
+        sqliteQuery = 'SELECT Frequency, Teacher, AmountOfGroups FROM Subjects WHERE Specialization=? AND Name=? ' \
+                      'AND Semesters=? AND TypeOfClass=? '
         cursor.execute(sqliteQuery, (specialization, subjectName, semesters, typesOfClass,))
         rows = cursor.fetchall()
         cursor.close()
@@ -186,7 +268,8 @@ class DatabaseManager:
 
     def addTeacher(self, teacher):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Teachers(`Subject`, `Name`, `DaysCanWork`, `DaysWantWork`, `Weight`) VALUES(?, ?, ?, ?, ?)'
+        sqliteQuery = 'INSERT INTO Teachers(`Subject`, `Name`, `DaysCanWork`, `DaysWantWork`, `Weight`) VALUES(?, ?, ' \
+                      '?, ?, ?) '
         cursor.execute(sqliteQuery, (teacher.subject, teacher.name, teacher.daysTeacherCanWork,
                                      teacher.daysTeacherWantWork, teacher.weight,))
         self.sqlite_connection.commit()
@@ -235,19 +318,39 @@ class DatabaseManager:
             lst.append(row[0])
         return lst
 
-    def getAllSpecializationGroups(self, specialization):
+    def getAllSpecializationGroups(self, specialization, yearOfStudy):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Number, YearOfStudy FROM Groups WHERE EducationalProgram=? ORDER BY YearOfStudy'
+        sqliteQuery = 'SELECT Number FROM Groups WHERE Specialization=? AND YearOfStudy=? ORDER BY YearOfStudy'
+        cursor.execute(sqliteQuery, (specialization, yearOfStudy,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(row[0])
+
+        return lst
+
+    def getAllSpecializationUniqueYears(self, specialization):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT Distinct YearOfStudy FROM Groups WHERE Specialization=? ORDER BY YearOfStudy'
         cursor.execute(sqliteQuery, (specialization,))
         rows = cursor.fetchall()
         cursor.close()
 
-        # TODO maybe now it is not needed
-        return []
+        lst = []
+        for row in rows:
+            lst.append(row[0])
+
+        return lst
 
     def addConstraints(self, constraints):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Constraints(`FirstClassStarts`, `ClassDuration`, `ShortBrakeDuration`, `LargeBrakeDuration`, `StudyDaysInWeek`, `StudyDaysInWeekForStudents`, `StudyDaysInWeekForTeachers`, `ClassesPerDay`, `ClassesPerDayStudents`, `ClassesPerDayTeachers`, `LunchBrake`, `Gaps`, `ClassroomFillness`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        sqliteQuery = 'INSERT INTO Constraints(`FirstClassStarts`, `ClassDuration`, `ShortBrakeDuration`, ' \
+                      '`LargeBrakeDuration`, `StudyDaysInWeek`, `StudyDaysInWeekForStudents`, ' \
+                      '`StudyDaysInWeekForTeachers`, `ClassesPerDay`, `ClassesPerDayStudents`, ' \
+                      '`ClassesPerDayTeachers`, `LunchBrake`, `Gaps`, `ClassroomFillness`) VALUES(?, ?, ?, ?, ?, ?, ' \
+                      '?, ?, ?, ?, ?, ?, ?) '
         cursor.execute(sqliteQuery, (constraints.firstClassStarts, constraints.classDuration,
                                      constraints.shortBrakeDuration, constraints.largeBrakeDuration,
                                      constraints.studyDaysInWeek, constraints.studyDaysInWeekForStudents,
@@ -259,7 +362,10 @@ class DatabaseManager:
 
     def getConstraints(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT FirstClassStarts, ClassDuration, ShortBrakeDuration, LargeBrakeDuration, StudyDaysInWeek, StudyDaysInWeekForStudents, StudyDaysInWeekForTeachers, ClassesPerDay, ClassesPerDayStudents, ClassesPerDayTeachers, LunchBrake, Gaps, ClassroomFillness FROM Constraints'
+        sqliteQuery = 'SELECT FirstClassStarts, ClassDuration, ShortBrakeDuration, LargeBrakeDuration, ' \
+                      'StudyDaysInWeek, StudyDaysInWeekForStudents, StudyDaysInWeekForTeachers, ClassesPerDay, ' \
+                      'ClassesPerDayStudents, ClassesPerDayTeachers, LunchBrake, Gaps, ClassroomFillness FROM ' \
+                      'Constraints '
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
@@ -299,7 +405,8 @@ class DatabaseManager:
     def deleteSubject(self, subject):
         cursor = self.sqlite_connection.cursor()
 
-        sqliteQuery = 'DELETE FROM Subjects WHERE EducationalProgram = ? AND Name = ? AND Semesters = ? AND TypeOfClass = ? AND Frequency = ? AND Teacher = ? AND AmountOfGroups = ?'
+        sqliteQuery = 'DELETE FROM Subjects WHERE Specialization = ? AND Name = ? AND Semesters = ? AND ' \
+                      'TypeOfClass = ? AND Frequency = ? AND Teacher = ? AND AmountOfGroups = ? '
         cursor.execute(sqliteQuery, (subject.educationalProgram, subject.subjectName,
                                      subject.semesters, subject.typeOfClass,
                                      subject.frequency, subject.teacher, subject.amountOfGroups,))
@@ -310,13 +417,15 @@ class DatabaseManager:
     def deleteGroup(self, group):
         cursor = self.sqlite_connection.cursor()
 
-        sqliteQuery = 'DELETE FROM Groups WHERE EducationalProgram = ? AND Number = ? AND AmountOfStudents = ? AND YearOfStudy = ?'
+        sqliteQuery = 'DELETE FROM Groups WHERE Specialization = ? AND Number = ? AND AmountOfStudents = ? AND ' \
+                      'YearOfStudy = ? '
         cursor.execute(sqliteQuery, (group.specialization, group.numberOfGroup,
                                      group.amountOfStudents, group.yearOfStudy,))
 
         self.sqlite_connection.commit()
         cursor.close()
-# TODO functions working with generated timetable will be written later because of new solver
+
+    # TODO functions working with generated timetable will be written later because of new solver
     def clearAll(self):
         cursor = self.sqlite_connection.cursor()
         cursor.execute('DELETE FROM Auditories')
