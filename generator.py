@@ -6,7 +6,9 @@ from DatabaseManager import DatabaseManager
 
 # NB:
 # пока штраф будет храниться как 0-й!
-from entities.GeneratedClass import GeneratedClass
+from entities.Subject import Subject
+
+attempts = 1
 
 
 def buildPrologList(elements, brackets, prefix, postfix):
@@ -32,7 +34,7 @@ def buildPrologList(elements, brackets, prefix, postfix):
 # 3 - add one subject
 
 
-def create_pl(mode):
+def create_pl(mode, classToAdd=None):
     with open("fit_new_department_db.pl", "w") as file:
         file.write(":- module(fit_new_department_db, [ \n\
 	      teacher/1, \n\
@@ -157,9 +159,11 @@ def create_pl(mode):
                 file.write("]). \n")
 
         if mode == 2:
-            file.write("teacher(\"Derzho Marina Anatolievna\"). \n")
-            file.write("days_teacher_can_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6]). \n")
-            file.write("days_teacher_want_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6], 0). \n")
+            # Это для теста надо! Вообще это не надо будет.
+            #file.write("teacher(\"Derzho Marina Anatolievna\"). \n")
+            #file.write("days_teacher_can_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6]). \n")
+            #file.write("days_teacher_want_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6], 0). \n")
+
             file.write("subject(\"Computer Science and Systems Engineering\", \"Interface design\", [5], "
                        "[[type_of_class(\"lec\"), 1, [[teacher(\"Derzho Marina Anatolievna\"), 2]]]]). \n")
 
@@ -184,6 +188,18 @@ def create_pl(mode):
                     if i < len(allSubjectsTypesOfClass) - 1:
                         file.write(", ")
                 file.write("]). \n")
+
+        if mode == 3:
+            # Это для теста надо! Вообще это не надо будет.
+            #file.write("teacher(\"Derzho Marina Anatolievna\"). \n")
+            #file.write("days_teacher_can_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6]). \n")
+            #file.write("days_teacher_want_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6], 0). \n")
+            ###################################################################################################
+
+            file.write("subject(\"" + classToAdd.specialization + "\", \"" + classToAdd.subjectName + "\", " +
+                       buildPrologList(classToAdd.getSemesters(), False, "", "") + ", [[type_of_class(\""
+                       + classToAdd.typeOfClass + "\"), " + str(classToAdd.frequency) + ", [[teacher(\"" +
+                       classToAdd.teacher + "\"), " + str(classToAdd.amountOfGroups) + "]]]]). \n")
 
         file.write("\n")
 
@@ -321,7 +337,7 @@ def calculateTimeEnd(classNumber):
     shortBrake = int(constraints[0].shortBrakeDuration)
     longBrake = int(constraints[0].largeBrakeDuration)
 
-    inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake) + classDuration
+    inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake) + classDuration + shortBrake
 
     if classNumber > classesPerDay:
         return -1, -1
@@ -371,11 +387,26 @@ def generate():
     prolog = Prolog()
     prolog.consult("fit_new_department_db.pl")
     prolog.consult("main.pl")
-    print(list(prolog.query("main(1).")))
+    print(list(prolog.query("main(" + str(attempts) + ").")))
     save()
 
 
-# удаление одного предмета из текущего расписания
+# Добавление одного предмета с неполным указанием характеристик - система к текущему расписанию сама добавит
+# новое занятие самым оптимальным образом, если это возможно.
+# Требуется подать на вход элемент таблицы Subjects (класс Subject).
+# TODO Нужно как-то заполучить занятие - объект класса Subject
+def add(classToAdd):
+    schedule = fromClassesToSchedule(True)
+    create_pl(3, classToAdd)
+    prolog = Prolog()
+    prolog.consult("fit_new_department_db.pl")
+    prolog.consult("main.pl")
+    print(list(prolog.query("add(" + schedule + ", " + str(attempts) + ").")))
+    save()
+
+
+# удаление одного предмета из текущего расписания. Требуется подать на вход элемент таблицы GeneratedSchedule
+# (класс GeneratedClass).
 # TODO Нужно как-то заполучить занятие - объект класса GeneratedClass (написать метод извлечения по id из dbManager,
 # TODO например)
 def remove_man(classToDelete):
@@ -383,41 +414,63 @@ def remove_man(classToDelete):
     schedule = fromClassesToSchedule(False)
     create_pl(1)
     prolog = Prolog()
-    print(schedule)
     prolog.consult("fit_new_department_db.pl")
     prolog.consult("main.pl")
     print(list(prolog.query("remove(" + schedule + ", " + event + ")")))
     save()
 
 
-# добавление одного предмета из текущего расписания
+# добавление одного предмета с полным указанием параметров вручную. Если противоречий нет с текущим расписанием, то
+# предмет добавится. Требуется подать на вход элемент таблицы GeneratedSchedule (класс GeneratedClass).
 # TODO Нужно как-то заполучить занятие - объект класса GeneratedClass (написать метод извлечения по id из dbManager,
 # TODO например)
-def add_man(classToDelete):
-    event = fromClassToEvent(classToDelete)
+def add_man(classToAdd):
+    event = fromClassToEvent(classToAdd)
     schedule = fromClassesToSchedule(False)
     create_pl(2)
     prolog = Prolog()
-    print(schedule)
     prolog.consult("fit_new_department_db.pl")
     prolog.consult("main.pl")
     print(list(prolog.query("addManually(" + schedule + ", " + event + ")")))
     save()
 
 
+# Проверка простой генерации
+def test0():
+    generate()
+
+
+# Проверка авто добавления предмета
+def test1():
+    generate()
+    add(Subject(
+        "Computer Science and Systems Engineering",
+        "Interface design",
+        "5",
+        "lec",
+        1,
+        "Derzho Marina Anatolievna",
+        2
+    ))
+
+
 # Тут я провожу тест: генерирую расписание с 0, затем удаляю пердмет вручную и возвращаю его обратно вручную,
 # удаляю интерфейсы Держо на всякий и добавляю вновь. Предметов после генерации с 0 - 23, в конце - 23 или 24 в
-# зависимости от того, заняты ли 19213 и 19214 группы 4-й парой в субботу или нет
-dbManager = DatabaseManager()
-generate()
-a = dbManager.getAllGeneratedClasses()[0]
-remove_man(a)
-add_man(a)
-remove_man(addManTests.test4(a))
-add_man(addManTests.test4(a))
+# зависимости от того, заняты ли 19213 и 19214 группы 4-й парой в субботу или нет.
+def test2():
+    generate()
+    a = dbManager.getAllGeneratedClasses()[0]
+    remove_man(a)
+    add_man(a)
+    remove_man(addManTests.test4(a))
+    add_man(addManTests.test4(a))
 
-# print(calculateTimeStart(3))
-# print(calculateTimeEnd(3))
-# print(fromClassesToSchedule(False))
+
+dbManager = DatabaseManager()
+
+test0()
+
+print(calculateTimeStart(3))
+print(calculateTimeEnd(3))
 
 dbManager.close()

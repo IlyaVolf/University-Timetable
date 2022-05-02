@@ -271,6 +271,13 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'INSERT INTO Teachers(`Subject`, `Name`, `DaysCanWork`, `DaysWantWork`, `Weight`) VALUES(?, ?, ' \
                       '?, ?, ?) '
+
+        wantTokens = teacher.daysTeacherWantWork[1:-1].split(",")
+        canTokens = teacher.daysTeacherCanWork[1:-1].split(",")
+        for want in wantTokens:
+            if not (want in canTokens):
+                raise Exception('Хочет работать в тот день, в который не может работать!')
+
         cursor.execute(sqliteQuery, (teacher.subject, teacher.name, teacher.daysTeacherCanWork,
                                      teacher.daysTeacherWantWork, teacher.weight,))
         self.sqlite_connection.commit()

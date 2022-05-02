@@ -49,6 +49,7 @@ teacher("Avdeev Roman Ruslanovich").
 teacher("Gorchakov Konstantin Mikhailovich"). 
 teacher("Puzarenko Vadim Grigorievich"). 
 teacher("Vaskevich Vladimir Leontievich"). 
+teacher("Derzho Marina Anatolievna"). 
 
 type_of_class("lec"). 
 type_of_class("pr"). 
@@ -86,10 +87,6 @@ getSpecialization(Specialization, EdProgram, Faculty) :-
 % PART THREE - SUBJECTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%% 
 
-teacher("Derzho Marina Anatolievna"). 
-days_teacher_can_work(teacher("Derzho Marina Anatolievna"), [1,2,3,4,5,6]). 
-days_teacher_want_work(teacher("Derzho Marina Anatolievna"), [1,2,3,4,5,6], 0). 
-subject("Computer Science and Systems Engineering", "Interface design", [5], [[type_of_class("lec"), 1, [[teacher("Derzho Marina Anatolievna"), 2]]]]). 
 subject("Computer Science and Systems Engineering", "Models of Computation", [3,4], [[type_of_class("lec"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 3]]], [type_of_class("pr"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 2], [teacher("Avdeev Roman Ruslanovich"), 1]]]]). 
 subject("Computer Science and Systems Engineering", "Machine learning methods", [5], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2]]], [type_of_class("pr"), 1, [[teacher("Antonets Denis Viktorovich"), 2]]]]). 
 subject("Computer Science and Systems Engineering", "Probability theory and mathematical statistics", [3], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 3]]], [type_of_class("pr"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2], [teacher("Antonets Denis Viktorovich"), 1]]]]). 
@@ -175,6 +172,7 @@ days_teacher_can_work(teacher("Avdeev Roman Ruslanovich"), [1]).
 days_teacher_can_work(teacher("Gorchakov Konstantin Mikhailovich"), [1,2,3,4,5,6]). 
 days_teacher_can_work(teacher("Puzarenko Vadim Grigorievich"), [4,5,6]). 
 days_teacher_can_work(teacher("Vaskevich Vladimir Leontievich"), [3,4,5,6]). 
+days_teacher_can_work(teacher("Derzho Marina Anatolievna"), [1,2,3,4,5,6]). 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -211,4 +209,5 @@ days_teacher_want_work(teacher("Avdeev Roman Ruslanovich"), [1], 10).
 days_teacher_want_work(teacher("Gorchakov Konstantin Mikhailovich"), [1,2,3,4,5,6], 0). 
 days_teacher_want_work(teacher("Puzarenko Vadim Grigorievich"), [4,5,6], 10). 
 days_teacher_want_work(teacher("Vaskevich Vladimir Leontievich"), [3,4,5,6], 10). 
+days_teacher_want_work(teacher("Derzho Marina Anatolievna"), [1,2,3], 5). 
 

@@ -79,9 +79,7 @@ addManually(CurrentState, event(NewClass, NewClassroom, NewDay, NewGroupsOfStude
 	count_amount_of_students(NewGroupsOfStudents, 0, AmountOfStudents),
 	AmountOfStudents =< NewCapacityOfClassroom,
 	dateIsOk(CurrentState, event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)),
-		writeln("LOOOOL2"),
 	teacher_can_work_this_day(NewClass, NewDay),
-		writeln("LOOOOL"),
 	limit_of_classes(NewClass, NewGroupsOfStudents, NewDay),
 	append(CurrentState, [event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)], NewState),
 	sort(5, @=<, NewState, SortedState),
@@ -621,8 +619,10 @@ cost_last(Events, Cost) :-
 	check_classrooms(LastEvent, Fine1),
 	check_gaps(LastEvent, Fine2),
 	teacher_want_work_this_day(LastEvent, Fine3),
-	teacher_priority_can(LastEvent, Fine4),
-	teacher_priority_want(LastEvent, Fine5),
+	Fine4 is 0,
+	Fine5 is 0,
+	% teacher_priority_can(LastEvent, Fine4),
+	% teacher_priority_want(LastEvent, Fine5),
 	class_in_morning(LastEvent, Fine6),
 	Cost is Fine1 + Fine2 + Fine3 + Fine4 + Fine5 + Fine6.
 
