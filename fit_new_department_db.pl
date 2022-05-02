@@ -86,6 +86,10 @@ getSpecialization(Specialization, EdProgram, Faculty) :-
 % PART THREE - SUBJECTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%% 
 
+teacher("Derzho Marina Anatolievna"). 
+days_teacher_can_work(teacher("Derzho Marina Anatolievna"), [1,2,3,4,5,6]). 
+days_teacher_want_work(teacher("Derzho Marina Anatolievna"), [1,2,3,4,5,6], 0). 
+subject("Computer Science and Systems Engineering", "Interface design", [5], [[type_of_class("lec"), 1, [[teacher("Derzho Marina Anatolievna"), 2]]]]). 
 subject("Computer Science and Systems Engineering", "Models of Computation", [3,4], [[type_of_class("lec"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 3]]], [type_of_class("pr"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 2], [teacher("Avdeev Roman Ruslanovich"), 1]]]]). 
 subject("Computer Science and Systems Engineering", "Machine learning methods", [5], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2]]], [type_of_class("pr"), 1, [[teacher("Antonets Denis Viktorovich"), 2]]]]). 
 subject("Computer Science and Systems Engineering", "Probability theory and mathematical statistics", [3], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 3]]], [type_of_class("pr"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2], [teacher("Antonets Denis Viktorovich"), 1]]]]). 
@@ -153,7 +157,7 @@ study_days_in_week(6).
 study_days_in_week_students(6). 
 study_days_in_week_teachers(5). 
 classes_in_day(7). 
-classes_in_day_students(2). 
+classes_in_day_students(3). 
 classes_in_day_teachers(3). 
 
 days_teacher_can_work(teacher("Permyakov Ruslan Anatolievich"), [1,2,3,4,5,6]). 

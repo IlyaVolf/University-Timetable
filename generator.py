@@ -1,11 +1,12 @@
 from pyswip import Prolog
 import datetime
 
+import addManTests
 from DatabaseManager import DatabaseManager
-
 
 # NB:
 # пока штраф будет храниться как 0-й!
+from entities.GeneratedClass import GeneratedClass
 
 
 def buildPrologList(elements, brackets, prefix, postfix):
@@ -155,6 +156,35 @@ def create_pl(mode):
                         file.write(", ")
                 file.write("]). \n")
 
+        if mode == 2:
+            file.write("teacher(\"Derzho Marina Anatolievna\"). \n")
+            file.write("days_teacher_can_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6]). \n")
+            file.write("days_teacher_want_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6], 0). \n")
+            file.write("subject(\"Computer Science and Systems Engineering\", \"Interface design\", [5], "
+                       "[[type_of_class(\"lec\"), 1, [[teacher(\"Derzho Marina Anatolievna\"), 2]]]]). \n")
+
+            allSubjects = dbManager.getAllSubjects()
+            for subject in allSubjects:
+                file.write("subject(\"" + subject[0] + "\", \"" + subject[1] + "\", [" + subject[2] + "], [")
+                allSubjectsTypesOfClass = dbManager.getAllSubjectTypesOfClass(subject[0], subject[1], subject[2])
+                for i in range(0, len(allSubjectsTypesOfClass), 1):
+                    file.write(
+                        "[type_of_class(\"" + allSubjectsTypesOfClass[i][0] + "\"), " + allSubjectsTypesOfClass[i][1]
+                        + ", [")
+                    allSubjectTeachers = dbManager.getAllSubjectTeachers(subject[0], subject[1], subject[2],
+                                                                         allSubjectsTypesOfClass[i][0],
+                                                                         allSubjectsTypesOfClass[i][1])
+                    for j in range(0, len(allSubjectTeachers), 1):
+                        file.write(
+                            "[teacher(\"" + allSubjectTeachers[j][0] + "\"), " + allSubjectTeachers[j][1] + "]")
+                        if j < len(allSubjectTeachers) - 1:
+                            file.write(", ")
+
+                    file.write("]]")
+                    if i < len(allSubjectsTypesOfClass) - 1:
+                        file.write(", ")
+                file.write("]). \n")
+
         file.write("\n")
 
         file.write("\n")
@@ -281,6 +311,7 @@ def calculateTimeStart(classNumber):
 
     return time.hour, time.minute
 
+
 # Функция рассчитывает время конца пары
 def calculateTimeEnd(classNumber):
     constraints = dbManager.getConstraints()
@@ -312,6 +343,7 @@ def fromClassToEvent(classToTransform):
 
     return res
 
+
 def fromClassesToSchedule(wrapper):
     res = ""
 
@@ -333,10 +365,11 @@ def fromClassesToSchedule(wrapper):
     return res
 
 
-# генерация расписания с 0. Предыдущее
+# генерация расписания с 0. Предыдущее расписание, если было, удаляется
 def generate():
     create_pl(0)
     prolog = Prolog()
+    prolog.consult("fit_new_department_db.pl")
     prolog.consult("main.pl")
     print(list(prolog.query("main(1).")))
     save()
@@ -351,17 +384,40 @@ def remove_man(classToDelete):
     create_pl(1)
     prolog = Prolog()
     print(schedule)
+    prolog.consult("fit_new_department_db.pl")
     prolog.consult("main.pl")
     print(list(prolog.query("remove(" + schedule + ", " + event + ")")))
     save()
 
 
+# добавление одного предмета из текущего расписания
+# TODO Нужно как-то заполучить занятие - объект класса GeneratedClass (написать метод извлечения по id из dbManager,
+# TODO например)
+def add_man(classToDelete):
+    event = fromClassToEvent(classToDelete)
+    schedule = fromClassesToSchedule(False)
+    create_pl(2)
+    prolog = Prolog()
+    print(schedule)
+    prolog.consult("fit_new_department_db.pl")
+    prolog.consult("main.pl")
+    print(list(prolog.query("addManually(" + schedule + ", " + event + ")")))
+    save()
+
+
+# Тут я провожу тест: генерирую расписание с 0, затем удаляю пердмет вручную и возвращаю его обратно вручную,
+# удаляю интерфейсы Держо на всякий и добавляю вновь. Предметов после генерации с 0 - 23, в конце - 23 или 24 в
+# зависимости от того, заняты ли 19213 и 19214 группы 4-й парой в субботу или нет
 dbManager = DatabaseManager()
 generate()
-remove_man(dbManager.getAllGeneratedClasses()[0])
+a = dbManager.getAllGeneratedClasses()[0]
+remove_man(a)
+add_man(a)
+remove_man(addManTests.test4(a))
+add_man(addManTests.test4(a))
 
-#print(calculateTimeStart(3))
-#print(calculateTimeEnd(3))
-#print(fromClassesToSchedule(False))
+# print(calculateTimeStart(3))
+# print(calculateTimeEnd(3))
+# print(fromClassesToSchedule(False))
 
 dbManager.close()

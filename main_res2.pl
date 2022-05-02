@@ -1,5 +1,7 @@
 % class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, Teacher, Amount_of_groups, Order_in_week, Id)
 
+:- use_module(fit_new_department_db).
+
 /*
  * Get a list of all activities. When moving to a new
  * top, the class structure of the added activity will be removed from the list.

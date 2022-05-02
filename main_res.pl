@@ -1,5 +1,7 @@
 % class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, Teacher, Amount_of_groups, Order_in_week, Id)
 
+:- use_module(fit_new_department_db).
+
 /*
  * Get a list of all activities. When moving to a new
  * top, the class structure of the added activity will be removed from the list.
@@ -79,9 +81,7 @@ addManually(CurrentState, event(NewClass, NewClassroom, NewDay, NewGroupsOfStude
 	count_amount_of_students(NewGroupsOfStudents, 0, AmountOfStudents),
 	AmountOfStudents =< NewCapacityOfClassroom,
 	dateIsOk(CurrentState, event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)),
-		writeln("LOOOOL2"),
 	teacher_can_work_this_day(NewClass, NewDay),
-		writeln("LOOOOL"),
 	limit_of_classes(NewClass, NewGroupsOfStudents, NewDay),
 	append(CurrentState, [event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)], NewState),
 	sort(5, @=<, NewState, SortedState),
@@ -195,11 +195,11 @@ findNeighbors(State, VacantClasses, NewState) :-
 	classes_in_day(ClassesInDay),
 	between(1, StudyDaysInAWeek, NewDay),
 	between(1, ClassesInDay, NewClassTime),
-	classroom(NewClassroom, NewTypesOfClass, NewCapacityOfClassroom),
+	classroom(NewClassroom, NewTypesOfClass, NewCapacityOfClassrom),
 	check_types_of_class_match(NewClass, NewTypesOfClass),
 	class_to_group(NewClass, NewGroupsOfStudents),
 	count_amount_of_students(NewGroupsOfStudents, 0, AmountOfStudents),
-	AmountOfStudents =< NewCapacityOfClassroom,
+	AmountOfStudents =< NewCapacityOfClassrom,
 	dateIsOk(State, event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)),
 	teacher_can_work_this_day(NewClass, NewDay),
 	limit_of_classes(NewClass, NewGroupsOfStudents, NewDay),
