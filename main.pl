@@ -58,7 +58,9 @@ remove(currentSchedule(CurrentState, _), Class) :-
 	cost_all(NewState, NewFine),
 	writeln("New schedule: "),
 	printResult(NewState),
-	% exportResult(NewState, NewFine),
+	lengthList(TwiceSortedState, Len),
+	createQuery(TwiceSortedState, Len),
+	exportResult(NewState, NewFine),
 	writeln("Total fines: "),
 	writeln(NewFine), !.
 
@@ -86,7 +88,9 @@ addManually(currentSchedule(CurrentState, _), event(NewClass, NewClassroom, NewD
 	cost_all(TwiceSortedState, NewFine),
 	writeln("New schedule: "),
 	printResult(TwiceSortedState),
-	% exportResult(TwiceSortedState, NewFine),
+	lengthList(TwiceSortedState, Len),
+	createQuery(TwiceSortedState, Len),
+	exportResult(TwiceSortedState, NewFine),
 	writeln("Total Fine: "),
 	writeln(NewFine), !.
 
@@ -109,7 +113,9 @@ initiateDijkstraSearch(0, Attempts, Min, BestState, _, _) :-
 	sort(3, @=<, SortedState, TwiceSortedState),
 	writeln("Best schedule: "),
 	printResult(TwiceSortedState),
-	% exportResult(TwiceSortedState, Min),
+	lengthList(TwiceSortedState, Len),
+	createQuery(TwiceSortedState, Len),
+	exportResult(TwiceSortedState, Min),
 	write("Attempts were made: "), writeln(Attempts),
 	writeln("Total fine: "),
 	writeln(Min), !)).
@@ -303,8 +309,31 @@ printResult([event(class(_, Name_of_subject, _, type_of_class(Type_of_class), te
 	write("Day "), write(Day),write(" "),write(Type_of_class),write(" "),write(Name_of_subject),write(", Teacher "),write(Teacher),write(", class "),write(Classroom),write(", groups: "),write(Group),write(", order "), writeln(ClassTime),
 	printResult(Other).
 
+createQuery(Events, Len) :-
+	open('query.txt', write, Out),
+	write(Out, Len), write(Out, "\n"),
+	createQuery1(Events, Out).
+
+createQuery1([], Out) :-
+	close(Out).
+
+createQuery1([event(class(Specialization, Name_of_subject, Semester, type_of_class(Type_of_class), teacher(Teacher), _, _, _), Classroom, Day, Group, ClassTime) | Other], Out) :-
+	getSpecialization(Specialization, EdProgram, Faculty),
+	write(Out, Faculty), write(Out, ";"),
+	write(Out, EdProgram), write(Out, ";"),
+	write(Out, Specialization), write(Out, ";"),
+	write(Out, Name_of_subject), write(Out, ";"),
+	write(Out, Semester), write(Out, ";"),
+	write(Out, Teacher), write(Out, ";"),
+	write(Out, Type_of_class), write(Out, ";"),
+	write(Out, Classroom), write(Out, ";"),
+	write(Out, Group), write(Out, ";"),
+	write(Out, Day), write(Out, ";"),
+	write(Out, ClassTime), write(Out, "\n"),
+	createQuery1(Other, Out).
+
 exportResult(Events, Fine) :-
-	open('C:/Users/Ilya Volf/Pictures/University/Software Design/Prolog 2/output.txt', write, Out),
+	open('output.txt', write, Out),
 	write(Out, "currentSchedule("),
 	write(Out, "["),
 	exportResult1(Events, Fine, Out).

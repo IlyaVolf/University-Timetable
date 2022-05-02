@@ -3,6 +3,7 @@ import sqlite3
 from entities.Auditory import Auditory
 from entities.Constraints import Constraints
 from entities.EducationalProgram import EducationalProgram
+from entities.GeneratedClass import GeneratedClass
 from entities.Group import Group
 from entities.Subject import Subject
 from entities.Teacher import Teacher
@@ -441,6 +442,40 @@ class DatabaseManager:
     def close(self):
         if self.sqlite_connection:
             self.sqlite_connection.close()
+
+    def clearGeneratedScheduleTable(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DROP TABLE IF EXISTS GeneratedSchedule;'
+        cursor.execute(sqliteQuery)
+        sqliteQuery = 'create table GeneratedSchedule (id integer primary key autoincrement, `Faculty`, ' \
+                      '`EducationalProgram`, `Specialization`, `Subject`, `Semester`, `Teacher`, `TypeOfClass`, ' \
+                      '`Auditory`, `Groups`, `Day`, `ClassNumber`)'
+        cursor.execute(sqliteQuery)
+
+    def addGeneratedClass(self, faculty, edProgram, specialization, subject, semester, teacher, typeOfClass, auditory,
+                          groups, day, classNumber):
+
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'INSERT INTO GeneratedSchedule(`Faculty`, `EducationalProgram`, `Specialization`, `Subject`,' \
+                      '`Semester`, `Teacher`, `TypeOfClass`, `Auditory`, `Groups`, `Day`, `ClassNumber`) VALUES(?, ?,' \
+                      ' ?, ?, ?, ?, ?, ?, ?, ?, ?) '
+        cursor.execute(sqliteQuery, (faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
+                                     auditory, groups, day, classNumber,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def getAllGeneratedClasses(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM GeneratedSchedule'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(GeneratedClass(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10],
+                                      row[11]))
+        return lst
 
 
 dbManager = DatabaseManager()

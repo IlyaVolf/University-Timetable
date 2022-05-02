@@ -5,6 +5,7 @@
 		  faculty/1, 
 		  ed_program/2, 
 		  specialization/2, 
+          getSpecialization/3, 
 		  subject/4, 
 		  group_of_students/4, 
 		  first_class_starts/2, 
@@ -75,6 +76,10 @@ ed_program("Faculty of Information Technologies", "BACH, 09.03.01, Computer Scie
 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Computer Science and Systems Engineering"). 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Software Engineering and Computer Science"). 
+
+getSpecialization(Specialization, EdProgram, Faculty) :- 
+	specialization(EdProgram, Specialization), 
+	ed_program(Faculty, EdProgram). 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%% 

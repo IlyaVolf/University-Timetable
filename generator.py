@@ -1,8 +1,11 @@
-import pandas as pd
 from pyswip import Prolog
+import datetime
 
 from DatabaseManager import DatabaseManager
+from entities.GeneratedClass import GeneratedClass
 
+# NB:
+# пока штраф будет храниться как 0-й!
 
 def buildPrologList(elements, brackets, prefix, postfix):
     res = "["
@@ -21,10 +24,7 @@ def buildPrologList(elements, brackets, prefix, postfix):
     return res
 
 
-# TODO функция для рассчёта начала и конца занятий
-
-
-def create():
+def create_pl():
     dbManager = DatabaseManager()
 
     with open("fit_new_department_db.pl", "w") as file:
@@ -35,6 +35,7 @@ def create():
 		  faculty/1, \n\
 		  ed_program/2, \n\
 		  specialization/2, \n\
+          getSpecialization/3, \n\
 		  subject/4, \n\
 		  group_of_students/4, \n\
 		  first_class_starts/2, \n\
@@ -109,6 +110,12 @@ def create():
             allEdPrograms = dbManager.getEducationalPrograms(faculty)
             for edProgram in allEdPrograms:
                 file.write("specialization(\"" + edProgram.name + "\", \"" + edProgram.specialization + "\"). \n")
+
+        file.write("\n")
+
+        file.write("getSpecialization(Specialization, EdProgram, Faculty) :- \n\
+	specialization(EdProgram, Specialization), \n\
+	ed_program(Faculty, EdProgram). \n")
 
         file.write("\n")
 
@@ -234,7 +241,90 @@ def create():
     dbManager.close()
 
 
-create()
-prolog = Prolog()
-prolog.consult("main.pl")
-print(list(prolog.query("main(1).")))
+def save():
+    dbManager = DatabaseManager()
+
+    dbManager.clearGeneratedScheduleTable()
+
+    with open("query.txt", "r") as file:
+        data = file.read()
+
+    strings = data.split("\n")
+
+    for i in range(1, len(strings) - 1, 1):
+        elements = strings[i].split(";")
+        dbManager.addGeneratedClass(elements[0], elements[1].replace(',', ':'), elements[2], elements[3], elements[4],
+                                    elements[5], elements[6], elements[7], elements[8], elements[9], elements[10])
+
+    dbManager.close()
+
+
+def calculateTime(classNumber):
+    dbManager = DatabaseManager()
+
+    constraints = dbManager.getConstraints()
+    classesPerDay = int(constraints[0].classesPerDay)
+    startTime = constraints[0].firstClassStarts
+    classDuration = int(constraints[0].classDuration)
+    shortBrake = int(constraints[0].shortBrakeDuration)
+    longBrake = int(constraints[0].largeBrakeDuration)
+
+    inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake)
+
+    if classNumber > classesPerDay:
+        return -1, -1
+
+    time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
+           datetime.timedelta(minutes=inMinutes)
+
+    return time.hour, time.minute
+
+
+def fromClassToEvent(classToTransform):
+    res = "event(class(\"" + classToTransform.specialization + "\", \"" + classToTransform.subject + "\", " + \
+          classToTransform.semester + ", type_of_class(\"" + classToTransform.typeOfClass + "\"), teacher(" + \
+          classToTransform.teacher + "\"), " + str(classToTransform.getAmountOfGroups()) + ", 1, 0), " + \
+          buildPrologList(classToTransform.getGroups(), True, "", "") + \
+          ", " + classToTransform.day + ", " + classToTransform.classNumber + ")"
+
+    return res
+
+
+def fromClassesToSchedule():
+    dbManager = DatabaseManager()
+
+    res = "currentSchedule(["
+
+    classes = dbManager.getAllGeneratedClasses()
+
+    for i in range(0, len(classes), 1):
+        res += fromClassToEvent(classes[i])
+        if i < len(classes) - 1:
+            res += ", "
+
+    res += "], 0)"
+    dbManager.close()
+
+    return res
+
+
+# генерация расписания с 0. Предыдущее удаляется
+def generate():
+    create_pl()
+    prolog = Prolog()
+    prolog.consult("main.pl")
+    print(list(prolog.query("main(1).")))
+    save()
+
+# удаление одного предмета из текущего расписания
+# TODO Нужно как-то заполучить занятие - объект класса GeneratedClass (написать метод извлечения по id из dbManager,
+# TODO например)
+def remove_man(classToDelete):
+    # classToDelete = GeneratedClass(...) # временно
+    event = fromClassToEvent(classToDelete)
+    schedule = fromClassesToSchedule()
+
+
+generate()
+print(calculateTime(3))
+print(fromClassesToSchedule())
