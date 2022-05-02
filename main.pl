@@ -53,13 +53,14 @@ add(currentSchedule(CurrentState, CurrentFine), Attempts) :-
  * Full event required.
  */
 
-remove(currentSchedule(CurrentState, _), Class) :-
+remove(CurrentState, Class) :-
+	clear_all(),
 	delete_element(Class, CurrentState, NewState),
 	cost_all(NewState, NewFine),
 	writeln("New schedule: "),
 	printResult(NewState),
-	lengthList(TwiceSortedState, Len),
-	createQuery(TwiceSortedState, Len),
+	lengthList(NewState, Len),
+	createQuery(NewState, Len),
 	exportResult(NewState, NewFine),
 	writeln("Total fines: "),
 	writeln(NewFine), !.

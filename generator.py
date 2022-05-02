@@ -2,10 +2,11 @@ from pyswip import Prolog
 import datetime
 
 from DatabaseManager import DatabaseManager
-from entities.GeneratedClass import GeneratedClass
+
 
 # NB:
 # пока штраф будет храниться как 0-й!
+
 
 def buildPrologList(elements, brackets, prefix, postfix):
     res = "["
@@ -24,9 +25,13 @@ def buildPrologList(elements, brackets, prefix, postfix):
     return res
 
 
-def create_pl():
-    dbManager = DatabaseManager()
+# 0 - generate
+# 1 - remove manually one subject
+# 2 - add manually one subject
+# 3 - add one subject
 
+
+def create_pl(mode):
     with open("fit_new_department_db.pl", "w") as file:
         file.write(":- module(fit_new_department_db, [ \n\
 	      teacher/1, \n\
@@ -125,26 +130,30 @@ def create_pl():
 %%%%%%%%%%%%%%%%%%%%%%%%% \n")
         file.write("\n")
 
-        allSubjects = dbManager.getAllSubjects()
-        for subject in allSubjects:
-            file.write("subject(\"" + subject[0] + "\", \"" + subject[1] + "\", [" + subject[2] + "], [")
-            allSubjectsTypesOfClass = dbManager.getAllSubjectTypesOfClass(subject[0], subject[1], subject[2])
-            for i in range(0, len(allSubjectsTypesOfClass), 1):
-                file.write("[type_of_class(\"" + allSubjectsTypesOfClass[i][0] + "\"), " + allSubjectsTypesOfClass[i][1]
-                           + ", [")
-                allSubjectTeachers = dbManager.getAllSubjectTeachers(subject[0], subject[1], subject[2],
-                                                                     allSubjectsTypesOfClass[i][0],
-                                                                     allSubjectsTypesOfClass[i][1])
-                for j in range(0, len(allSubjectTeachers), 1):
-                    file.write(
-                        "[teacher(\"" + allSubjectTeachers[j][0] + "\"), " + allSubjectTeachers[j][1] + "]")
-                    if j < len(allSubjectTeachers) - 1:
-                        file.write(", ")
+        # create
+        if mode == 0 or mode == 1:
 
-                file.write("]]")
-                if i < len(allSubjectsTypesOfClass) - 1:
-                    file.write(", ")
-            file.write("]). \n")
+            allSubjects = dbManager.getAllSubjects()
+            for subject in allSubjects:
+                file.write("subject(\"" + subject[0] + "\", \"" + subject[1] + "\", [" + subject[2] + "], [")
+                allSubjectsTypesOfClass = dbManager.getAllSubjectTypesOfClass(subject[0], subject[1], subject[2])
+                for i in range(0, len(allSubjectsTypesOfClass), 1):
+                    file.write(
+                        "[type_of_class(\"" + allSubjectsTypesOfClass[i][0] + "\"), " + allSubjectsTypesOfClass[i][1]
+                        + ", [")
+                    allSubjectTeachers = dbManager.getAllSubjectTeachers(subject[0], subject[1], subject[2],
+                                                                         allSubjectsTypesOfClass[i][0],
+                                                                         allSubjectsTypesOfClass[i][1])
+                    for j in range(0, len(allSubjectTeachers), 1):
+                        file.write(
+                            "[teacher(\"" + allSubjectTeachers[j][0] + "\"), " + allSubjectTeachers[j][1] + "]")
+                        if j < len(allSubjectTeachers) - 1:
+                            file.write(", ")
+
+                    file.write("]]")
+                    if i < len(allSubjectsTypesOfClass) - 1:
+                        file.write(", ")
+                file.write("]). \n")
 
         file.write("\n")
 
@@ -238,12 +247,8 @@ def create_pl():
 
         file.write("\n")
 
-    dbManager.close()
-
 
 def save():
-    dbManager = DatabaseManager()
-
     dbManager.clearGeneratedScheduleTable()
 
     with open("query.txt", "r") as file:
@@ -256,12 +261,9 @@ def save():
         dbManager.addGeneratedClass(elements[0], elements[1].replace(',', ':'), elements[2], elements[3], elements[4],
                                     elements[5], elements[6], elements[7], elements[8], elements[9], elements[10])
 
-    dbManager.close()
 
-
-def calculateTime(classNumber):
-    dbManager = DatabaseManager()
-
+# Функция рассчитывает время начала пары
+def calculateTimeStart(classNumber):
     constraints = dbManager.getConstraints()
     classesPerDay = int(constraints[0].classesPerDay)
     startTime = constraints[0].firstClassStarts
@@ -279,52 +281,87 @@ def calculateTime(classNumber):
 
     return time.hour, time.minute
 
+# Функция рассчитывает время конца пары
+def calculateTimeEnd(classNumber):
+    constraints = dbManager.getConstraints()
+    classesPerDay = int(constraints[0].classesPerDay)
+    startTime = constraints[0].firstClassStarts
+    classDuration = int(constraints[0].classDuration)
+    shortBrake = int(constraints[0].shortBrakeDuration)
+    longBrake = int(constraints[0].largeBrakeDuration)
+
+    inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake) + classDuration
+
+    if classNumber > classesPerDay:
+        return -1, -1
+
+    time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
+           datetime.timedelta(minutes=inMinutes)
+
+    return time.hour, time.minute
+
 
 def fromClassToEvent(classToTransform):
     res = "event(class(\"" + classToTransform.specialization + "\", \"" + classToTransform.subject + "\", " + \
-          classToTransform.semester + ", type_of_class(\"" + classToTransform.typeOfClass + "\"), teacher(" + \
-          classToTransform.teacher + "\"), " + str(classToTransform.getAmountOfGroups()) + ", 1, 0), " + \
+          str(classToTransform.semester) + ", type_of_class(\"" + classToTransform.typeOfClass + "\"), teacher(\"" + \
+          classToTransform.teacher + "\"), " + str(classToTransform.getAmountOfGroups()) + ", 1, 0), \"" + \
+          classToTransform.auditory + "\", " + \
+          str(classToTransform.day) + ", " + \
           buildPrologList(classToTransform.getGroups(), True, "", "") + \
-          ", " + classToTransform.day + ", " + classToTransform.classNumber + ")"
+          ", " + str(classToTransform.classNumber) + ")"
 
     return res
 
+def fromClassesToSchedule(wrapper):
+    res = ""
 
-def fromClassesToSchedule():
-    dbManager = DatabaseManager()
-
-    res = "currentSchedule(["
+    if wrapper:
+        res += "currentSchedule("
 
     classes = dbManager.getAllGeneratedClasses()
-
+    res += "["
     for i in range(0, len(classes), 1):
         res += fromClassToEvent(classes[i])
         if i < len(classes) - 1:
             res += ", "
 
-    res += "], 0)"
-    dbManager.close()
+    res += "]"
+
+    if wrapper:
+        res += ", 0)"
 
     return res
 
 
-# генерация расписания с 0. Предыдущее удаляется
+# генерация расписания с 0. Предыдущее
 def generate():
-    create_pl()
+    create_pl(0)
     prolog = Prolog()
     prolog.consult("main.pl")
     print(list(prolog.query("main(1).")))
     save()
 
+
 # удаление одного предмета из текущего расписания
 # TODO Нужно как-то заполучить занятие - объект класса GeneratedClass (написать метод извлечения по id из dbManager,
 # TODO например)
 def remove_man(classToDelete):
-    # classToDelete = GeneratedClass(...) # временно
     event = fromClassToEvent(classToDelete)
-    schedule = fromClassesToSchedule()
+    schedule = fromClassesToSchedule(False)
+    create_pl(1)
+    prolog = Prolog()
+    print(schedule)
+    prolog.consult("main.pl")
+    print(list(prolog.query("remove(" + schedule + ", " + event + ")")))
+    save()
 
 
+dbManager = DatabaseManager()
 generate()
-print(calculateTime(3))
-print(fromClassesToSchedule())
+remove_man(dbManager.getAllGeneratedClasses()[0])
+
+#print(calculateTimeStart(3))
+#print(calculateTimeEnd(3))
+#print(fromClassesToSchedule(False))
+
+dbManager.close()
