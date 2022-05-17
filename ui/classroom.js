@@ -1,0 +1,1 @@
+const classroom={template:`<h1>This is Classrooms page</h1>`}
