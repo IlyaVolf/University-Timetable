@@ -1,12 +1,12 @@
 from dataclasses import fields
 import imp
 from rest_framework import serializers
-from TimetableApp.models import Auditories, Constraints,  EducationalPrograms, Faculties, GeneratedEntities, Groups, Subjects, Teachers, entries
+from TimetableApp.models import Auditories, Constraints,  EducationalPrograms, Faculties, GeneratedEntities, GeneratedSchedule, Groups, Subjects, Teachers, entries
 
 class AuditorySerializer(serializers.ModelSerializer):
     class Meta:
         model=Auditories
-        fields=('AuditoryId','TypeOfClass', 'Capacity', 'Number')
+        fields=('TypeOfClass', 'Capacity', 'Number')
 
 
 class ConstraintsSerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class GeneratedEntitiesSerializer(serializers.ModelSerializer):
 
 class GeneratedScheduleSerializer(serializers.ModelSerializer):
     class Meta:
-        model=GeneratedEntities
+        model=GeneratedSchedule
         fields=('id', 'Faculty', 'EducationalProgram', 'Specialization', 'Subject', 'Semester', 'Teacher', 
         'TypeOfClass', 'Auditory', 'Groups', 'Day', 'ClassNumber')
 

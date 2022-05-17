@@ -66,7 +66,7 @@ def epApi(request, idd=0):
     if request.method=='GET':
         ep = EducationalPrograms.objects.all()
         ep_serializer=EducationalProgramsSerializer(ep, many=True)
-        return JsonResponse(ep.data, safe=False)
+        return JsonResponse(ep_serializer.data, safe=False)
     elif request.method=='POST':
         ep_data=JSONParser().parse(request)
         ep_serializer=EducationalProgramsSerializer(data=ep_data)
@@ -76,7 +76,7 @@ def epApi(request, idd=0):
         return JsonResponse("Failed to Add", safe=False)
     elif request.method=='PUT':
         ep_data=JSONParser().parse(request)
-        ep=Constraints.objects.get(id=ep_data['id'])
+        ep=EducationalPrograms.objects.get(id=ep_data['id'])
         ep_serializer=EducationalProgramsSerializer(ep,data=ep_data)
         if ep_serializer.is_valid():
             ep_serializer.save()
@@ -91,7 +91,7 @@ def facultiesApi(request, idd=0):
     if request.method=='GET':
         faculties = Faculties.objects.all()
         faculties_serializer=FacultiesSerializer(faculties, many=True)
-        return JsonResponse(faculties.data, safe=False)
+        return JsonResponse(faculties_serializer.data, safe=False)
     elif request.method=='POST':
         faculties_data=JSONParser().parse(request)
         faculties_serializer=FacultiesSerializer(data=faculties_data)
@@ -116,7 +116,7 @@ def geApi(request, idd=0):
     if request.method=='GET':
         ge = GeneratedEntities.objects.all()
         ge_serializer=GeneratedEntitiesSerializer(ge, many=True)
-        return JsonResponse(ep.data, safe=False)
+        return JsonResponse(ge_serializer.data, safe=False)
     elif request.method=='POST':
         ge_data=JSONParser().parse(request)
         ge_serializer=GeneratedEntitiesSerializer(data=ge_data)
@@ -141,7 +141,7 @@ def gschApi(request, idd=0):
     if request.method=='GET':
         gsch = GeneratedSchedule.objects.all()
         gsch_serializer=GeneratedScheduleSerializer(gsch, many=True)
-        return JsonResponse(gsch.data, safe=False)
+        return JsonResponse(gsch_serializer.data, safe=False)
     elif request.method=='POST':
         gsch_data=JSONParser().parse(request)
         gsch_serializer=GeneratedScheduleSerializer(data=gsch_data)
@@ -228,7 +228,7 @@ def tchApi(request, idd=0):
         return JsonResponse("Failed to Add", safe=False)
     elif request.method=='PUT':
         group_data=JSONParser().parse(request)
-        group=Groups.objects.get(id=group_data['id'])
+        group=Teachers.objects.get(id=group_data['id'])
         groups_serializer=TeachersSerializer(group,data=group_data)
         if groups_serializer.is_valid():
             groups_serializer.save()

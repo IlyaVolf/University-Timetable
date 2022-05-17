@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Auditories(models.Model):  # Faculty - name, only Name field
-    AuditoryId = models.AutoField(primary_key=True)
+    #AuditoryId = models.AutoField(primary_key=True)
     TypeOfClass = models.CharField(max_length=500)
     Capacity = models.CharField(max_length=500)
     Number = models.CharField(max_length=500)

@@ -42,7 +42,7 @@ data-bs-target="#exampleModal"
                     <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                 </svg>
             </button>
-            <button type="button" @click="deleteClick(aud.AuditoryId)"
+            <button type="button" @click="deleteClick(aud.id)"
             class="btn btn-light mr-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
@@ -68,9 +68,6 @@ data-bs-target="#exampleModal"
 
             <div class="modal-body">
             
-            <div class="d-flex flex-row bd-highlight mb-3">
-                <div class="p-2 w-50 bd-highlight">
-
                     <div class="input-group mb-3">
                         <span class="input-group-text">Type of Class</span>
                         <input type="text" class="form-control" v-model="TypeOfClass">
@@ -86,17 +83,16 @@ data-bs-target="#exampleModal"
                         <input type="text" class="form-control" v-model="Numberr">
                     </div>
 
-                </div>
-            </div>
-                <button type="button" @click="createClick()"
-                v-if="AuditoryId==0" class="btn btn-primary">
-                Create
-                </button>
-                <button type="button" @click="updateClick()"
-                v-if="AuditoryId!=0" class="btn btn-primary">
-                Update
-                </button>
+                    <button type="button" @click="createClick()"
+                    v-if="AuditoryId==0" class="btn btn-primary">
+                    Create
+                    </button>
+                    <button type="button" @click="updateClick()"
+                    v-if="AuditoryId!=0" class="btn btn-primary">
+                    Update
+                    </button>
 
+             </div>
             </div>
         </div>
     </div>
@@ -132,7 +128,7 @@ methods:{
     },
     editClick(aud){
         this.modalTitle="Edit Auditory";
-        this.AuditoryId=aud.AuditoryId;
+        this.AuditoryId=aud.id;
         this.TypeOfClass=aud.TypeOfClass;
         this.Capacity=aud.Capacity;
         this.Numberr=aud.Number;
@@ -150,7 +146,7 @@ methods:{
     },
     updateClick(){
         axios.put(variables.API_URL+"auditory",{
-            AuditoryId:this.AuditoryId,
+            id:this.AuditoryId,
             TypeOfClass:this.TypeOfClass,
             Capacity:this.Capacity,
             Number:this.Numberr
