@@ -5,11 +5,12 @@ const routes=[
     {path:'/auditory',component:auditory},
     {path:'/constraints',component:constraints},
     {path:'/ep',component:ep},
-    {path:'/faculty',component:faculty},
+    //{path:'/faculty',component:faculty},
     {path:'/group',component:group},
     {path:'/subject',component:subject},
     {path:'/teacher',component:teacher},
     {path:'/schedule',component:schedule},
+    {path:'/department',component:department},
     
 ]
 

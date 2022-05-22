@@ -101,7 +101,7 @@ class entries(models.Model):
     Day = models.CharField(max_length=500)
     ClassNumber = models.CharField(max_length=500)
 
-'''
+
 class Department(models.Model): #Faculty - name, only Name field
     DepartmentId = models.AutoField(primary_key=True)
     DepartmentName = models.CharField(max_length=500)
@@ -111,7 +111,7 @@ class Teacher(models.Model):
     TeacherName = models.CharField(max_length=500)
     Department = models.CharField(max_length=500)
     Preferencies = models.CharField(max_length=500)
-
+'''
 class Group(models.Model):
     GroupId = models.AutoField(primary_key=True)
     GroupNumber = models.CharField(max_length=500)

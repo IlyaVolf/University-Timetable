@@ -6,17 +6,14 @@ class="btn btn-primary m-2 fload-end"
 data-bs-toggle="modal"
 data-bs-target="#exampleModal"
 @click="addClick()">
- Add Department
+ Add Faculty
 </button>
 
 <table class="table table-striped">
 <thead>
     <tr>
         <th>
-            DepartmentId
-        </th>
-        <th>
-            DepartmentName
+            FacultyName
         </th>
         <th>
             Options
@@ -25,7 +22,6 @@ data-bs-target="#exampleModal"
 </thead>
 <tbody>
     <tr v-for="dep in departments">
-        <td>{{dep.DepartmentId}}</td>
         <td>{{dep.DepartmentName}}</td>
         <td>
             <button type="button"
@@ -65,7 +61,7 @@ data-bs-target="#exampleModal"
             <div class="modal-body">
 
                 <div class="input-group mb-3">
-                    <span class="input-group-text">Department Name</span>
+                    <span class="input-group-text">Faculty Name</span>
                     <input type="text" class="form-control" v-model="DepartmentName">
                 </div>
 
@@ -103,12 +99,12 @@ methods:{
         });
     },
     addClick(){
-        this.modalTitle="Add Department";
+        this.modalTitle="Add Faculty";
         this.DepartmentId=0;
         this.DepartmentName="";  
     },
     editClick(dep){
-        this.modalTitle="Edit Department";
+        this.modalTitle="Edit Faculty";
         this.DepartmentId=dep.DepartmentId;
         this.DepartmentName=dep.DepartmentName;
     },

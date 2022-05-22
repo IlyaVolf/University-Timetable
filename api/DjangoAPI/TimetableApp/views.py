@@ -3,8 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 
-from TimetableApp.models import Auditories, Constraints, EducationalPrograms, Faculties, GeneratedEntities, GeneratedSchedule,  Groups, Subjects, Teachers, entries
-from TimetableApp.serializers import AuditorySerializer, ConstraintsSerializer, EducationalProgramsSerializer, EntriesSerializer, FacultiesSerializer, GeneratedEntitiesSerializer, GeneratedScheduleSerializer, GroupsSerializer, SubjectsSerializer, TeachersSerializer
+from TimetableApp.models import Auditories, Department, Constraints, EducationalPrograms, Faculties, GeneratedEntities, GeneratedSchedule,  Groups, Subjects, Teachers, Teacher, entries
+from TimetableApp.serializers import AuditorySerializer, DepartmentSerializer, ConstraintsSerializer, EducationalProgramsSerializer, EntriesSerializer, FacultiesSerializer, GeneratedEntitiesSerializer, GeneratedScheduleSerializer, GroupsSerializer, SubjectsSerializer, TeachersSerializer, TeacherSerializer
 
 # Create your views here.
 
@@ -37,6 +37,7 @@ def auditoryApi(request, idd=0):
         auditory.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
+@csrf_exempt
 def constraintsApi(request, idd=0):
     if request.method=='GET':
         constraints = Constraints.objects.all()
@@ -62,6 +63,7 @@ def constraintsApi(request, idd=0):
         constraints.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
+@csrf_exempt
 def epApi(request, idd=0):
     if request.method=='GET':
         ep = EducationalPrograms.objects.all()
@@ -87,6 +89,7 @@ def epApi(request, idd=0):
         ep.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
+@csrf_exempt
 def facultiesApi(request, idd=0):
     if request.method=='GET':
         faculties = Faculties.objects.all()
@@ -112,6 +115,7 @@ def facultiesApi(request, idd=0):
         faculties.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
+@csrf_exempt
 def geApi(request, idd=0):
     if request.method=='GET':
         ge = GeneratedEntities.objects.all()
@@ -137,6 +141,7 @@ def geApi(request, idd=0):
         ge.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
+@csrf_exempt
 def gschApi(request, idd=0):
     if request.method=='GET':
         gsch = GeneratedSchedule.objects.all()
@@ -162,6 +167,7 @@ def gschApi(request, idd=0):
         gsch.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
+@csrf_exempt
 def groupsApi(request, idd=0):
     if request.method=='GET':
         groups = Groups.objects.all()
@@ -188,6 +194,7 @@ def groupsApi(request, idd=0):
         return JsonResponse("Deleted Successfully", safe=False)
 
 
+@csrf_exempt
 def subjApi(request, idd=0):
     if request.method=='GET':
         gsch = Subjects.objects.all()
@@ -213,7 +220,7 @@ def subjApi(request, idd=0):
         gsch.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
-
+@csrf_exempt
 def tchApi(request, idd=0):
     if request.method=='GET':
         groups = Teachers.objects.all()
@@ -239,7 +246,7 @@ def tchApi(request, idd=0):
         group.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
-
+@csrf_exempt
 def entriesApi(request, idd=0):
     if request.method=='GET':
         groups = entries.objects.all()
@@ -292,31 +299,7 @@ def groupApi(request, id=0):
         group.delete()
         return JsonResponse("Deleted Successfully", safe=False)
 
-@csrf_exempt
-def teacherApi(request, id=0):
-    if request.method=='GET':
-        teachers = Teacher.objects.all()
-        teachers_serializer=TeacherSerializer(teachers, many=True)
-        return JsonResponse(teachers_serializer.data, safe=False)
-    elif request.method=='POST':
-        teacher_data=JSONParser().parse(request)
-        teachers_serializer=TeacherSerializer(data=teacher_data)
-        if teachers_serializer.is_valid():
-            teachers_serializer.save()
-            return JsonResponse("Added Successfully", safe=False)
-        return JsonResponse("Failed to Add", safe=False)
-    elif request.method=='PUT':
-        teacher_data=JSONParser().parse(request)
-        teacher=Teacher.objects.get(TeacherId=teacher_data['TeacherId'])
-        teachers_serializer=TeacherSerializer(teacher,data=teacher_data)
-        if teachers_serializer.is_valid():
-            teachers_serializer.save()
-            return JsonResponse("Updated Successfully", safe=False)
-        return JsonResponse("Failed to Update", safe=False)
-    elif request.method=='DELETE':
-        teacher=Teacher.objects.get(TeacherId=id)
-        teacher.delete()
-        return JsonResponse("Deleted Successfully", safe=False)
+
 
 
 @csrf_exempt
@@ -344,6 +327,34 @@ def classroomApi(request, id=0):
         classroom=Classroom.objects.get(ClassroomId=id)
         classroom.delete()
         return JsonResponse("Deleted Successfully", safe=False)
+'''
+
+
+@csrf_exempt
+def teacherApi(request, id=0):
+    if request.method=='GET':
+        teachers = Teacher.objects.all()
+        teachers_serializer=TeacherSerializer(teachers, many=True)
+        return JsonResponse(teachers_serializer.data, safe=False)
+    elif request.method=='POST':
+        teacher_data=JSONParser().parse(request)
+        teachers_serializer=TeacherSerializer(data=teacher_data)
+        if teachers_serializer.is_valid():
+            teachers_serializer.save()
+            return JsonResponse("Added Successfully", safe=False)
+        return JsonResponse("Failed to Add", safe=False)
+    elif request.method=='PUT':
+        teacher_data=JSONParser().parse(request)
+        teacher=Teacher.objects.get(TeacherId=teacher_data['TeacherId'])
+        teachers_serializer=TeacherSerializer(teacher,data=teacher_data)
+        if teachers_serializer.is_valid():
+            teachers_serializer.save()
+            return JsonResponse("Updated Successfully", safe=False)
+        return JsonResponse("Failed to Update", safe=False)
+    elif request.method=='DELETE':
+        teacher=Teacher.objects.get(TeacherId=id)
+        teacher.delete()
+        return JsonResponse("Deleted Successfully", safe=False)
 
 @csrf_exempt
 def departmentApi(request, idd=0):
@@ -370,4 +381,3 @@ def departmentApi(request, idd=0):
         department=Department.objects.get(DepartmentId=idd)
         department.delete()
         return JsonResponse("Deleted Successfully", safe=False)
-'''

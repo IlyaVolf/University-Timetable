@@ -16,7 +16,7 @@ data-bs-target="#exampleModal"
             TeacherName
         </th>
         <th>
-            Department
+            Faculty
         </th>
         <th>
             Preferencies
@@ -77,7 +77,7 @@ data-bs-target="#exampleModal"
                     </div>
 
                     <div class="input-group mb-3">
-                        <span class="input-group-text">Department</span>
+                        <span class="input-group-text">Faculty</span>
                         <select class="form-select" v-model="Department">
                             <option v-for="dep in departments">
                             {{dep.DepartmentName}}

@@ -13,32 +13,37 @@ data-bs-target="#exampleModal"
 <thead>
     <tr>
         <th>
-            GroupNumber
+            Specialization
         </th>
         <th>
-            Department
+            Number
         </th>
         <th>
-            Options
+            Amount of students
+        </th>
+        <th>
+            Year of study
         </th>
     </tr>
 </thead>
 <tbody>
     <tr v-for="grp in groups">
-        <td>{{dep.DepartmentId}}</td>
-        <td>{{dep.DepartmentName}}</td>
+        <td>{{grp.Specialization}}</td>
+        <td>{{grp.Number}}</td>
+        <td>{{grp.AmountOfStudents}}</td>
+        <td>{{grp.YearOfStudy}}</td>
         <td>
             <button type="button"
             class="btn btn-light mr-1"
             data-bs-toggle="modal"
             data-bs-target="#exampleModal"
-            @click="editClick(dep)">
+            @click="editClick(grp)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                     <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                 </svg>
             </button>
-            <button type="button" @click="deleteClick(dep.DepartmentId)"
+            <button type="button" @click="deleteClick(grp.id)"
             class="btn btn-light mr-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
@@ -65,16 +70,31 @@ data-bs-target="#exampleModal"
             <div class="modal-body">
 
                 <div class="input-group mb-3">
-                    <span class="input-group-text">Department Name</span>
-                    <input type="text" class="form-control" v-model="DepartmentName">
+                    <span class="input-group-text">Sepacialization</span>
+                    <input type="text" class="form-control" v-model="Specialization">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Number</span>
+                    <input type="text" class="form-control" v-model="Numberr">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Amount of students</span>
+                    <input type="text" class="form-control" v-model="AmountOfStudents">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">YearOfStudy</span>
+                    <input type="text" class="form-control" v-model="YearOfStudy">
                 </div>
 
                 <button type="button" @click="createClick()"
-                v-if="DepartmentId==0" class="btn btn-primary">
+                v-if="Id==0" class="btn btn-primary">
                 Create
                 </button>
                 <button type="button" @click="updateClick()"
-                v-if="DepartmentId!=0" class="btn btn-primary">
+                v-if="Id!=0" class="btn btn-primary">
                 Update
                 </button>
 
@@ -89,32 +109,44 @@ data-bs-target="#exampleModal"
 
 data(){
     return{
-        departments:[],
+        groups:[],
         modalTitle:"",
-        DepartmentName:"",
-        DepartmentId:0
+        Specialization:"",
+        Numberr:"",
+        AmountOfStudents:"",
+        YearOfStudy:"",
+        Id:0
     }
 },
 methods:{
     refreshData(){
-        axios.get(variables.API_URL+"department")
+        axios.get(variables.API_URL+"groups")
         .then((response)=>{
-            this.departments=response.data;
+            this.groups=response.data;
         });
     },
     addClick(){
-        this.modalTitle="Add Department";
-        this.DepartmentId=0;
-        this.DepartmentName="";  
+        this.modalTitle="Add Group";
+        this.Id=0;
+        this.Specialization="";  
+        this.Numberr="";
+        this.AmountOfStudents="";
+        this.YearOfStudy="";
     },
-    editClick(dep){
-        this.modalTitle="Edit Department";
-        this.DepartmentId=dep.DepartmentId;
-        this.DepartmentName=dep.DepartmentName;
+    editClick(grp){
+        this.modalTitle="Edit Group";
+        this.Id=dep.id;
+        this.Specialization=grp.Specialization;
+        this.Numberr=grp.Number;
+        this.AmountOfStudents=grp.AmountOfStudents;
+        this.YearOfStudy=grp.YearOfStudy;
     },
     createClick(){
-        axios.post(variables.API_URL+"department",{
-            DepartmentName:this.DepartmentName
+        axios.post(variables.API_URL+"groups",{
+            Specialization:this.Specialization,
+            Number:this.Numberr,
+            AmountOfStudents:this.AmountOfStudents,
+            YearOfStudy:this.YearOfStudy
         })
         .then((response)=>{
             this.refreshData();
@@ -122,9 +154,12 @@ methods:{
         });
     },
     updateClick(){
-        axios.put(variables.API_URL+"department",{
-            DepartmentId:this.DepartmentId,
-            DepartmentName:this.DepartmentName
+        axios.put(variables.API_URL+"groups",{
+            id:this.Id,
+            Specialization:this.Specialization,
+            Number:this.Numberr,
+            AmountOfStudents:this.AmountOfStudents,
+            YearOfStudy:this.YearOfStudy
         })
         .then((response)=>{
             this.refreshData();
@@ -135,7 +170,7 @@ methods:{
         if(!confirm("Are you sure?")){
             return;
         }
-        axios.delete(variables.API_URL+"department/"+id)
+        axios.delete(variables.API_URL+"groups/"+id)
         .then((response)=>{
             this.refreshData();
             alert(response.data)

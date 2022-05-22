@@ -33,15 +33,19 @@ urlpatterns=[
 
     
     url(r'^entries$', views.entriesApi),
-    url(r'^entries/([0-9]+)$', views.entriesApi)
+    url(r'^entries/([0-9]+)$', views.entriesApi),
 
-]
-
-''' url(r'^department$', views.departmentApi),
+    url(r'^department$', views.departmentApi),
     url(r'^department/([0-9]+)$', views.departmentApi),
 
     url(r'^teacher$', views.teacherApi),
     url(r'^teacher/([0-9]+)$', views.teacherApi),
+
+]
+
+''' 
+
+    
 
     url(r'^group$', views.groupApi),
     url(r'^group/([0-9]+)$', views.groupApi),

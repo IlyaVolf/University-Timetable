@@ -1,1 +1,0 @@
-const faculty={template:`<h1>This is Faculty page</h1>`}
