@@ -459,18 +459,35 @@ class DatabaseManager:
                       '`Auditory`, `Groups`, `Day`, `ClassNumber`)'
         cursor.execute(sqliteQuery)
 
-    def addGeneratedClass(self, faculty, edProgram, specialization, subject, semester, teacher, typeOfClass, auditory,
-                          groups, day, classNumber):
+    def clearClassToGroupTable(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE From ClassToGroups'
+        cursor.execute(sqliteQuery, ())
+        self.sqlite_connection.commit()
+
+    def addGeneratedClass(self, classId, faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
+                          auditory, groupsList, day, classNumber):
+
+        groups = disassemblePrologList(groupsList)
 
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'INSERT INTO GeneratedSchedule(`Faculty`, `EducationalProgram`, `Specialization`, `Subject`,' \
                       '`Semester`, `Teacher`, `TypeOfClass`, `Auditory`, `Groups`, `Day`, `ClassNumber`) VALUES(?, ?,' \
                       ' ?, ?, ?, ?, ?, ?, ?, ?, ?) '
         cursor.execute(sqliteQuery, (faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
-                                     auditory, groups, day, classNumber,))
+                                     auditory, groupsList, day, classNumber,))
+        self.sqlite_connection.commit()
+
+        ############################ GROUPS SEPARATE ADDED #######################
+
+        for group in groups:
+            sqliteQuery = 'INSERT INTO ClassToGroups(`ClassId`, `GroupNumber`) VALUES(?, ?) '
+            cursor.execute(sqliteQuery, (classId, group,))
+
         self.sqlite_connection.commit()
         cursor.close()
 
+    # Возвращаем все сгенерированные занятия
     def getAllGeneratedClasses(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM GeneratedSchedule'
@@ -479,10 +496,18 @@ class DatabaseManager:
         cursor.close()
 
         lst = []
-        for row in rows:
-            lst.append(GeneratedClass(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10],
-                                      row[11]))
+        for i in range(len(rows)):
+            lst.append(
+                GeneratedClass(i, rows[i][1], rows[i][2], rows[i][3], rows[i][4], rows[i][5], rows[i][6], rows[i][7],
+                               rows[i][8], rows[i][9], rows[i][10], rows[i][11]))
         return lst
+
+
+def disassemblePrologList(groupsList):
+    prologList2 = groupsList[1:len(groupsList) - 1]
+    groups = prologList2.split(",")
+
+    return groups
 
 
 dbManager = DatabaseManager()

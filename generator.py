@@ -302,9 +302,10 @@ def save():
 
     strings = data.split("\n")
 
+    dbManager.clearClassToGroupTable()
     for i in range(1, len(strings) - 1, 1):
         elements = strings[i].split(";")
-        dbManager.addGeneratedClass(elements[0], elements[1].replace(',', ':'), elements[2], elements[3], elements[4],
+        dbManager.addGeneratedClass(i, elements[0], elements[1].replace(',', ':'), elements[2], elements[3], elements[4],
                                     elements[5], elements[6], elements[7], elements[8], elements[9], elements[10])
 
 
@@ -468,9 +469,11 @@ def test2():
 
 dbManager = DatabaseManager()
 
-test0()
+test1()
 
 print(calculateTimeStart(3))
 print(calculateTimeEnd(3))
 
 dbManager.close()
+
+# вам надо: generate, remove_man, add, add_man, calculateTimeEnd, calculateTimeStart
