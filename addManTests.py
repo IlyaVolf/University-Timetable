@@ -9,6 +9,7 @@ def test0(a):
 # это мб породить штраф из-за ценелесообразности выбора аудитории, ибо аудитория лекционная
 def test1(a):
     return GeneratedClass(
+        a.classId,
         a.faculty,
         a.edProgram,
         a.specialization,
@@ -26,6 +27,7 @@ def test1(a):
 # такой аудитории нет => ничего не добавится
 def test2(a):
     return GeneratedClass(
+        a.classId,
         a.faculty,
         a.edProgram,
         a.specialization,
@@ -43,6 +45,7 @@ def test2(a):
 # такой специализации нет => ничего не добавится
 def test3(a):
     return GeneratedClass(
+        a.classId,
         a.faculty,
         a.edProgram,
         "bloggeromania",
@@ -60,6 +63,7 @@ def test3(a):
 # такой специализации нет => ничего не добавится
 def test4(a):
     return GeneratedClass(
+        a.classId,
         a.faculty,
         a.edProgram,
         "Computer Science and Systems Engineering",

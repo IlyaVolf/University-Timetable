@@ -8,8 +8,8 @@ from DatabaseManager import DatabaseManager
 # пока штраф будет храниться как 0-й!
 from entities.Subject import Subject
 
+# число попыток, если это значение не задано явно
 attempts = 1
-
 
 def buildPrologList(elements, brackets, prefix, postfix):
     res = "["
@@ -436,12 +436,14 @@ def add_man(classToAdd):
     save()
 
 
+# ВНУТРЕННИЕ ТЕСТЫ
+
 # Проверка простой генерации
 def test0():
     generate()
 
 
-# Проверка авто добавления предмета
+# Проверка инкрементального добавления: авто добавления предмета
 def test1():
     generate()
     add(Subject(
@@ -455,7 +457,7 @@ def test1():
     ))
 
 
-# Тут я провожу тест: генерирую расписание с 0, затем удаляю пердмет вручную и возвращаю его обратно вручную,
+# Тут я провожу тест: генерирую расписание с нуля, затем удаляю пердмет вручную и возвращаю его обратно вручную,
 # удаляю интерфейсы Держо на всякий и добавляю вновь. Предметов после генерации с 0 - 23, в конце - 23 или 24 в
 # зависимости от того, заняты ли 19213 и 19214 группы 4-й парой в субботу или нет.
 def test2():
@@ -469,7 +471,8 @@ def test2():
 
 dbManager = DatabaseManager()
 
-test1()
+# test0, test1, test2
+test2()
 
 print(calculateTimeStart(3))
 print(calculateTimeEnd(3))
