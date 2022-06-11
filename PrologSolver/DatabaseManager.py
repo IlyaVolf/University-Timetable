@@ -9,6 +9,7 @@ from entities.GeneratedClass import GeneratedClass
 from entities.Group import Group
 from entities.Subject import Subject
 from entities.Teacher import Teacher
+from entities.Classroom import Classroom
 
 
 def tupleToList(t):
@@ -635,7 +636,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-    # Очистить таблицу специализаций
+    # Очистить таблицу учителей
     def clearTeacher(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'DELETE FROM TeachersNEW'
@@ -730,37 +731,90 @@ class DatabaseManager:
 
 ########################################################################################################################
 
-    def addAuditory(self, auditory):
+    # Создать таблицу аудиторий
+    def initClassroom(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Auditories(`TypeOfClass`, `Capacity`, `Number`) VALUES(?, ?, ?)'
-        cursor.execute(sqliteQuery, (auditory.typesOfClass, auditory.capacity, auditory.number,))
+        sqliteQuery = 'CREATE TABLE ClassroomsNEW(id INTEGER PRIMARY KEY, Number TEXT, TypesOfClass TEXT,' \
+                      'Capacity INTEGER) '
+        cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
 
-    def getAuditories(self):
+    # Очистить таблицу аудиторий
+    def clearClassroom(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM Auditories'
+        sqliteQuery = 'DELETE FROM ClassroomsNEW'
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def addClassroom(self, number, typesOfClass, capacity):
+        if not (type(capacity) is int):
+            raise ValueError("capacity field must be a number")
+
+        # Проверка на то, что такая аудитория уже не существует в таблице
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM ClassroomsNEW WHERE Number= ?);'
+        cursor.execute(sqliteQuery, (number,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('This Classroom already exists!')
+
+        sqliteQuery = 'INSERT INTO ClassroomsNEW(`Number`, `TypesOfClass`, `Capacity`) VALUES(?, ?, ?)'
+        cursor.execute(sqliteQuery, (number, typesOfClass, capacity,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def updateClassroom(self, id, number, typesOfClass, capacity):
+        if not (type(capacity) is int):
+            raise ValueError("capacity field must be a number")
+
+        # Проверка на то, что такая аудитория уже не существует в таблице
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM ClassroomsNEW WHERE Number= ?);'
+        cursor.execute(sqliteQuery, (number,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('This Classroom already exists!')
+
+        sqliteQuery = 'UPDATE ClassroomsNEW SET Number = ?, TypesOfClass = ?, Capacity = ? WHERE id = ?'
+        cursor.execute(sqliteQuery, (number, typesOfClass, capacity, id))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def removeClassroom(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM ClassroomsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def getAllClassroom(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM ClassroomsNEW'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(Auditory(row[0], row[1], row[2]))
+            lst.append(Classroom(row[0], row[1], row[2], row[3]))
         return lst
 
-    def getAuditoryTypes(self, auditoryNumber):
+    def getClassroom(self, id):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT TypeOfClass FROM Auditories WHERE Number=?'
-        cursor.execute(sqliteQuery, (auditoryNumber,))
-        rows = cursor.fetchall()
+        sqliteQuery = 'SELECT * FROM ClassroomsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
         cursor.close()
 
-        lst = []
-        for row in rows:
-            lst.append(row[0])
-        return lst
+        return Classroom(row[0], row[1], row[2], row[3])
 
+########################################################################################################################
+
+    """
     def getAllSpecializationGroups(self, specialization, yearOfStudy):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT Number FROM Groups WHERE Specialization=? AND YearOfStudy=? ORDER BY YearOfStudy'
@@ -802,6 +856,7 @@ class DatabaseManager:
                                      constraints.lunchBrake, constraints.classroomFillness,))
         self.sqlite_connection.commit()
         cursor.close()
+    """
 
     def getConstraints(self):
         cursor = self.sqlite_connection.cursor()
@@ -819,6 +874,7 @@ class DatabaseManager:
                                    row[10], row[11], row[12]))
         return lst
 
+    """
     def deleteAuditory(self, auditory):
         cursor = self.sqlite_connection.cursor()
 
@@ -880,6 +936,7 @@ class DatabaseManager:
         cursor.execute('DELETE FROM Teachers')
         self.sqlite_connection.commit()
         cursor.close()
+    """
 
     def close(self):
         if self.sqlite_connection:
@@ -936,7 +993,6 @@ class DatabaseManager:
                 GeneratedClass(i, rows[i][1], rows[i][2], rows[i][3], rows[i][4], rows[i][5], rows[i][6], rows[i][7],
                                rows[i][8], rows[i][9], rows[i][10], rows[i][11]))
         return lst
-
 
 def disassemblePrologList(groupsList):
     prologList2 = groupsList[1:len(groupsList) - 1]
