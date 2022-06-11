@@ -312,11 +312,11 @@ def save():
 # Функция рассчитывает время начала пары
 def calculateTimeStart(classNumber):
     constraints = dbManager.getConstraints()
-    classesPerDay = int(constraints[0].classesPerDay)
-    startTime = constraints[0].firstClassStarts
-    classDuration = int(constraints[0].classDuration)
-    shortBrake = int(constraints[0].shortBrakeDuration)
-    longBrake = int(constraints[0].largeBrakeDuration)
+    classesPerDay = int(constraints.classesPerDay)
+    startTime = constraints.firstClassStarts
+    classDuration = int(constraints.classDuration)
+    shortBrake = int(constraints.shortBrakeDuration)
+    longBrake = int(constraints.largeBrakeDuration)
 
     inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake)
 
@@ -332,11 +332,11 @@ def calculateTimeStart(classNumber):
 # Функция рассчитывает время конца пары
 def calculateTimeEnd(classNumber):
     constraints = dbManager.getConstraints()
-    classesPerDay = int(constraints[0].classesPerDay)
-    startTime = constraints[0].firstClassStarts
-    classDuration = int(constraints[0].classDuration)
-    shortBrake = int(constraints[0].shortBrakeDuration)
-    longBrake = int(constraints[0].largeBrakeDuration)
+    classesPerDay = int(constraints.classesPerDay)
+    startTime = constraints.firstClassStarts
+    classDuration = int(constraints.classDuration)
+    shortBrake = int(constraints.shortBrakeDuration)
+    longBrake = int(constraints.largeBrakeDuration)
 
     inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake) + classDuration + shortBrake
 
@@ -487,7 +487,8 @@ dbManager = DatabaseManager()
 #print(dbManager.getGroup(1).name)
 #dbManager.addTeacher("Derzho Marina Anatolievna","[1,2,3,4,5,6]","[1,2,3]",5)
 #dbManager.addClassroom("t2221", "lab, pr", 20)
-dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
+#dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
+dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
 print(calculateTimeStart(3))
 print(calculateTimeEnd(3))
