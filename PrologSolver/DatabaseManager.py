@@ -201,8 +201,8 @@ class DatabaseManager:
             if row[0] == 1:
                 raise ValueError('This Educational program already exists!')
 
-        sqliteQuery = 'UPDATE EducationalProgramsNEW SET EducationalProgram = ? WHERE id = ? AND FacultyId = ?'
-        cursor.execute(sqliteQuery, (educationalProgram, id, facultyId,))
+        sqliteQuery = 'UPDATE EducationalProgramsNEW SET EducationalProgram = ?, FacultyId = ? WHERE id = ?'
+        cursor.execute(sqliteQuery, (educationalProgram, facultyId, id,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -320,8 +320,8 @@ class DatabaseManager:
             if row[0] == 1:
                 raise ValueError('This Specialization already exists!')
 
-        sqliteQuery = 'UPDATE SpecializationsNEW SET Specialization = ? WHERE id = ? AND EducationalProgramId = ?'
-        cursor.execute(sqliteQuery, (specialization, id, educationalProgramId,))
+        sqliteQuery = 'UPDATE SpecializationsNEW SET Specialization = ?, EducationalProgramId = ? WHERE id = ?'
+        cursor.execute(sqliteQuery, (specialization, educationalProgramId, id,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -331,13 +331,20 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
 
         # Идём сконца: находим те id групп, которые будут удалены следом. И удаляем. Вереница:
-        # удаляем Groups, Specializations
+        # удаляем Groups, Subjects, Specializations
         sqliteQuery = 'SELECT id FROM GroupsNEW WHERE SpecializationId = ?'
         cursor.execute(sqliteQuery, (id,))
         rows = cursor.fetchall()
         dbManager = DatabaseManager()
         for row in rows:
             dbManager.removeGroup(row[0])
+
+        sqliteQuery = 'SELECT id FROM SubjectsNEW WHERE SpecializationId = ?'
+        cursor.execute(sqliteQuery, (id,))
+        rows = cursor.fetchall()
+        dbManager = DatabaseManager()
+        for row in rows:
+            dbManager.removeSubject(row[0])
 
         sqliteQuery = 'DELETE FROM SpecializationsNEW WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
@@ -367,18 +374,18 @@ class DatabaseManager:
 
         return Specialization(row[0], row[1], row[2])
 
-    ########################################################################################################################
+########################################################################################################################
 
-    # Создать таблицу специализаций
+    # Создать таблицу групп
     def initGroup(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'CREATE TABLE GroupsNEW(id INTEGER PRIMARY KEY, SpecializationId TEXT,' \
+        sqliteQuery = 'CREATE TABLE GroupsNEW(id INTEGER PRIMARY KEY, SpecializationId INTEGER,' \
                       'Name TEXT, AmountOfStudents INTEGER, YearOfStudy INTEGER) '
         cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
 
-    # Очистить таблицу специализаций
+    # Очистить таблицу групп
     def clearGroup(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'DELETE FROM GroupsNEW'
@@ -454,13 +461,13 @@ class DatabaseManager:
             if row[0] == 1:
                 raise ValueError('This group already exists!')
 
-        sqliteQuery = 'UPDATE GroupsNEW SET Name = ?, AmountOfStudents = ?, YearOfStudy = ? WHERE id = ' \
-                      '? AND SpecializationId = ? '
-        cursor.execute(sqliteQuery, (name, amountOfStudents, yearOfStudy, id, specializationId))
+        sqliteQuery = 'UPDATE GroupsNEW SET Name = ?, AmountOfStudents = ?, YearOfStudy = ?, SpecializationId = ?' \
+                      ' WHERE id = ?'
+        cursor.execute(sqliteQuery, (name, amountOfStudents, yearOfStudy, specializationId, id))
         self.sqlite_connection.commit()
         cursor.close()
 
-    # Удалить группы
+    # Удалить группу
     # id - id группы
     def removeGroup(self, id):
         cursor = self.sqlite_connection.cursor()
@@ -492,139 +499,95 @@ class DatabaseManager:
 
 ########################################################################################################################
 
-    def addSubject(self, subject):
+    # Создать таблицу предметов
+    def initSubject(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Subjects(`Specialization`, `Name`, `Semesters`, `TypeOfClass`, `Frequency`, ' \
-                      '`teacher`, `AmountOfGroups`) VALUES(?, ?, ?, ?, ?, ?, ?) '
-        cursor.execute(sqliteQuery, (subject.educationalProgram, subject.subjectName,
-                                     subject.semesters, subject.typeOfClass,
-                                     subject.frequency, subject.teacher,
-                                     subject.amountOfGroups,))
+        sqliteQuery = 'CREATE TABLE SubjectsNEW(id INTEGER PRIMARY KEY, SpecializationId INTEGER,' \
+                      'Name TEXT, Semesters TEXT, TypeOfClass TEXT, Frequency INTEGER, TeacherId INTEGER,' \
+                      'AmountOfGroups INTEGER) '
+        cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
 
-    def updateSubject(self, specialization, subject, teacher,
-                      semesters, types, frequency, amountOfGroups):
+    # Очистить таблицу предметов
+    def clearSubject(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'UPDATE Subjects SET Teacher = ? WHERE Specialization = ? AND Name = ? AND Semesters = ? ' \
-                      'AND TypeOfClass = ? AND Frequency = ? AND AmountOfGroups = ? '
-        cursor.execute(sqliteQuery, (teacher, specialization,
-                                     subject, semesters,
-                                     types, frequency,
-                                     amountOfGroups,))
+        sqliteQuery = 'DELETE FROM SubjectsNEW'
+        cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
 
-    def getAllSubjects(self):
+    def addSubject(self, specializationId, name, semesters, typeOfClass, frequency, teacherId, amountOfGroups):
+        if not (type(amountOfGroups) is int):
+            raise ValueError("amount of groups field must be a number")
+
+        if not (1 <= amountOfGroups <= 100):
+            raise ValueError("amount of groups field must be within 1..100")
+
+        if not (type(frequency) is int):
+            raise ValueError("frequency field must be a number")
+
+        if not (1 <= frequency <= 100):
+            raise ValueError("frequency field must be within 1..100")
+
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT Specialization, Name, Semesters FROM Subjects'
+        sqliteQuery = 'INSERT INTO SubjectsNEW(`SpecializationId`, `Name`, `Semesters`, `TypeOfClass`, `Frequency`, ' \
+                      '`TeacherId`, `AmountOfGroups`) VALUES(?, ?, ?, ?, ?, ?, ?) '
+        cursor.execute(sqliteQuery, (specializationId, name, semesters, typeOfClass,
+                                     frequency, teacherId, amountOfGroups))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def updateSubject(self, id, specializationId, name, semesters, typeOfClass, frequency, teacherId, amountOfGroups):
+        if not (type(amountOfGroups) is int):
+            raise ValueError("amount of groups field must be a number")
+
+        if not (1 <= amountOfGroups <= 100):
+            raise ValueError("amount of groups field must be within 1..100")
+
+        if not (type(frequency) is int):
+            raise ValueError("frequency field must be a number")
+
+        if not (1 <= frequency <= 100):
+            raise ValueError("frequency field must be within 1..100")
+
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'UPDATE SubjectsNEW SET SpecializationId = ?, Name = ?, Semesters = ?, TypeOfClass = ?,' \
+                      'Frequency = ?, TeacherId = ?, AmountOfGroups = ? WHERE id = ?'
+        cursor.execute(sqliteQuery, (specializationId, name, semesters, typeOfClass,
+                                     frequency, teacherId, amountOfGroups, id))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Удалить занятие
+    # id - id занятия
+    def removeSubject(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM SubjectsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def getAllSubject(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM SubjectsNEW'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
 
         lst = []
         for row in rows:
-            lst.append([row[0], row[1], row[2]])
+            lst.append(Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
         return lst
 
-    def getAllSubjectTypesOfClass(self, specialization, name, semesters):
+    def getSubject(self, id):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT TypeOfClass, Frequency FROM Subjects WHERE Specialization=? AND Name=? AND Semesters=?'
-        cursor.execute(sqliteQuery, (specialization, name, semesters,))
-        rows = cursor.fetchall()
+        sqliteQuery = 'SELECT * FROM SubjectsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
         cursor.close()
 
-        lst = []
-        for row in rows:
-            lst.append([row[0], row[1]])
-        return lst
-
-    def getAllSubjectTeachers(self, specialization, name, semesters, typeOfClass, Frequency):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Teacher, AmountOfGroups FROM Subjects WHERE Specialization=? AND Name=? AND Semesters=?' \
-                      'AND TypeOfClass=? AND Frequency=?'
-        cursor.execute(sqliteQuery, (specialization, name, semesters, typeOfClass, Frequency,))
-        rows = cursor.fetchall()
-        cursor.close()
-
-        lst = []
-        for row in rows:
-            lst.append([row[0], row[1]])
-        return lst
-
-    def getSubjects(self, specialization):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Name, Semesters, TypeOfClass, Frequency, Teacher, AmountOfGroups FROM Subjects WHERE ' \
-                      'Specialization=? '
-        cursor.execute(sqliteQuery, (specialization,))
-        rows = cursor.fetchall()
-        cursor.close()
-
-        lst = []
-        for row in rows:
-            lst.append(Subject(specialization, row[0], row[1], row[2], row[3], row[4], row[5]))
-        return lst
-
-    def getSubjectNames(self, specialization):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT Name FROM Subjects WHERE Specialization=?'
-        cursor.execute(sqliteQuery, (specialization,))
-        rows = cursor.fetchall()
-        cursor.close()
-
-        lst = []
-        for row in rows:
-            lst.append(row[0])
-        return lst
-
-    def getSemestersOfSubject(self, specialization, subjectName):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT Semesters FROM Subjects WHERE Specialization=? AND Name=?'
-        cursor.execute(sqliteQuery, (specialization, subjectName))
-        rows = cursor.fetchall()
-        cursor.close()
-
-        lst = []
-        for row in rows:
-            lst.append(row[0])
-        return lst
-
-    def getAllTypesOfClasses(self):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT TypeOfClass FROM Subjects'
-        cursor.execute(sqliteQuery)
-        rows = cursor.fetchall()
-        cursor.close()
-
-        lst = []
-        for row in rows:
-            lst.append(row[0])
-        return lst
-
-    def getTypesOfClasses(self, specialization, subjectName, semesters):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT TypeOfClass FROM Subjects WHERE Specialization=? AND Name=? AND Semesters=?'
-        cursor.execute(sqliteQuery, (specialization, subjectName, semesters))
-        rows = cursor.fetchall()
-        cursor.close()
-
-        lst = []
-        for row in rows:
-            lst.append(row[0])
-        return lst
-
-    def getSubjectsDuplicates(self, specialization, subjectName, semesters, typesOfClass):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Frequency, Teacher, AmountOfGroups FROM Subjects WHERE Specialization=? AND Name=? ' \
-                      'AND Semesters=? AND TypeOfClass=? '
-        cursor.execute(sqliteQuery, (specialization, subjectName, semesters, typesOfClass,))
-        rows = cursor.fetchall()
-        cursor.close()
-
-        lst = []
-        for row in rows:
-            lst.append(Subject(specialization, subjectName, semesters, typesOfClass, row[0], row[1], row[2]))
-        return lst
+        return Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
 
 ########################################################################################################################
 
