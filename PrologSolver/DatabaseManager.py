@@ -20,6 +20,8 @@ def tupleToList(t):
 
 class DatabaseManager:
 
+    studyDaysInWeek = 6
+
     def __init__(self, dbFileName='timetable.sqlite'):
         try:
             self.sqlite_connection = sqlite3.connect(dbFileName)
@@ -453,7 +455,6 @@ class DatabaseManager:
 
         sqliteQuery = 'UPDATE GroupsNEW SET Name = ?, AmountOfStudents = ?, YearOfStudy = ? WHERE id = ' \
                       '? AND SpecializationId = ? '
-        print(name, amountOfStudents, yearOfStudy, id, specializationId)
         cursor.execute(sqliteQuery, (name, amountOfStudents, yearOfStudy, id, specializationId))
         self.sqlite_connection.commit()
         cursor.close()
@@ -488,7 +489,7 @@ class DatabaseManager:
 
         return Group(row[0], row[1], row[2], row[3], row[4])
 
-    ########################################################################################################################
+########################################################################################################################
 
     def addSubject(self, subject):
         cursor = self.sqlite_connection.cursor()
@@ -624,25 +625,91 @@ class DatabaseManager:
             lst.append(Subject(specialization, subjectName, semesters, typesOfClass, row[0], row[1], row[2]))
         return lst
 
-    def addTeacher(self, teacher):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Teachers(`Subject`, `Name`, `DaysCanWork`, `DaysWantWork`, `Weight`) VALUES(?, ?, ' \
-                      '?, ?, ?) '
+########################################################################################################################
 
-        wantTokens = teacher.daysTeacherWantWork[1:-1].split(",")
-        canTokens = teacher.daysTeacherCanWork[1:-1].split(",")
+    # Создать таблицу учителей
+    def initTeacher(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'CREATE TABLE TeachersNEW(id INTEGER PRIMARY KEY, Name TEXT, DaysCanWork, DaysWantWork, Weight)'
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Очистить таблицу специализаций
+    def clearTeacher(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM TeachersNEW'
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Матвей!!! Этот метод вызывается только диспетчером. daysCanWork и daysWantWork ОБЯЗАНЫ быть равны [1,2,3,4,5,6],
+    # weight = 0.
+    # Уже потом препод сам через updateTeacher может убрать те дни, когда не может или не хочет работать
+    def addTeacher(self, name, daysCanWork, daysWantWork, weight):
+        if not (type(weight) is int):
+            raise ValueError("weight field must be a number")
+
+        if not (0 <= weight <= 10):
+            raise ValueError("weight field must be within 0..10")
+
+        # Проверка на то, что учитель хочет работать в тот день, когда он не может
+        canTokens = daysCanWork[1:-1].split(",")
+        wantTokens = daysWantWork[1:-1].split(",")
         for want in wantTokens:
             if not (want in canTokens):
                 raise Exception('Хочет работать в тот день, в который не может работать!')
 
-        cursor.execute(sqliteQuery, (teacher.subject, teacher.name, teacher.daysTeacherCanWork,
-                                     teacher.daysTeacherWantWork, teacher.weight,))
+        # если может и хочет работать в любой день, то вес равен 0
+        if len(wantTokens) == studyDaysInWeek:
+            weight = 0
+
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'INSERT INTO TeachersNEW(`Name`, `DaysCanWork`, `DaysWantWork`, `Weight`) VALUES(?, ' \
+                      '?, ?, ?) '
+
+        cursor.execute(sqliteQuery, (name, daysCanWork, daysWantWork, weight,))
         self.sqlite_connection.commit()
         cursor.close()
 
-    def getAllTeachers(self):
+    # Матвей!!! Этот метод вызывается диспетчером и самим преподом.
+    # Препод сам может убрать те дни, когда не может или не хочет работать
+    def updateTeacher(self, id, name, daysCanWork, daysWantWork, weight):
+        if not (type(weight) is int):
+            raise ValueError("weight field must be a number")
+
+        if not (0 <= weight <= 10):
+            raise ValueError("weight field must be within 0..10")
+
+        # Проверка на то, что учитель хочет работать в тот день, когда он не может
+        canTokens = daysCanWork[1:-1].split(",")
+        wantTokens = daysWantWork[1:-1].split(",")
+        for want in wantTokens:
+            if not (want in canTokens):
+                raise Exception('Хочет работать в тот день, в который не может работать!')
+
+        # если может и хочет работать в любой день, то вес равен 0
+        if len(wantTokens) == studyDaysInWeek:
+            weight = 0
+
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM Teachers'
+        sqliteQuery = 'UPDATE TeachersNEW SET Name = ?, DaysCanWork = ?, DaysWantWork = ?, Weight = ? WHERE id = ?'
+        cursor.execute(sqliteQuery, (name, daysCanWork, daysWantWork, weight, id))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Удалить преподавателя
+    # id - id преподавателя
+    def removeTeacher(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM TeachersNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def getAllTeacher(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM TeachersNEW'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
@@ -651,6 +718,17 @@ class DatabaseManager:
         for row in rows:
             lst.append(Teacher(row[0], row[1], row[2], row[3], row[4]))
         return lst
+
+    def getTeacher(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM TeachersNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return Teacher(row[0], row[1], row[2], row[3], row[4])
+
+########################################################################################################################
 
     def addAuditory(self, auditory):
         cursor = self.sqlite_connection.cursor()
