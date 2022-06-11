@@ -37,8 +37,36 @@ class DatabaseManager:
     # faculty - имя факультета
     def addFaculty(self, faculty):
         cursor = self.sqlite_connection.cursor()
+
+        # Проверка на то, что такой факультет уже не существует в таблице
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM FacultiesNEW WHERE Faculty= ?);'
+        cursor.execute(sqliteQuery, (faculty,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('This faculty already exists!')
+
         sqliteQuery = 'INSERT INTO FacultiesNEW(`Faculty`) VALUES(?)'
         cursor.execute(sqliteQuery, (faculty,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Редактировать факультет
+    # id - id факультета
+    # faculty - имя факультета
+    def updateFaculty(self, id, faculty):
+        cursor = self.sqlite_connection.cursor()
+
+        # Проверка на то, что такой факультет уже не существует в таблице
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM FacultiesNEW WHERE Faculty= ?);'
+        cursor.execute(sqliteQuery, (faculty,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('This faculty already exists!')
+
+        sqliteQuery = 'UPDATE FacultiesNEW SET Faculty = ? WHERE id = ?'
+        cursor.execute(sqliteQuery, (faculty, id,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -51,20 +79,19 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # Получить все факультеты
     def getAllFaculties(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Faculty FROM Faculties'
+        sqliteQuery = 'SELECT * FROM FacultiesNEW'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
-        return tupleToList(rows)
 
-    def deleteFaculty(self, facultyName):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'DELETE FROM Faculties WHERE Faculty = ?'
-        cursor.execute(sqliteQuery, (facultyName,))
-        self.sqlite_connection.commit()
-        cursor.close()
+        lst = []
+        for row in rows:
+            lst.append(Faculty(row[0], row[1]))
+        return lst
+
 
     def addEducationalProgram(self, educationalProgram):
         cursor = self.sqlite_connection.cursor()
