@@ -1,5 +1,5 @@
 class EducationalProgram:
-    def __init__(self, faculty, name, specialization):
-        self.faculty = faculty
-        self.name = name
-        self.specialization = specialization
+    def __init__(self, id, facultyId, educationalProgram):
+        self.id = id
+        self.facultyId = facultyId
+        self.educationalProgram = educationalProgram

@@ -473,8 +473,11 @@ dbManager = DatabaseManager()
 
 # test0, test1, test2
 #test2()
+#dbManager.initFaculty()
 #dbManager.addFaculty("Department of Natural Sciences")
-dbManager.removeFaculty(3)
+#dbManager.removeFaculty(3)
+#dbManager.addEducationalProgram(1, "BACH, 09.03.01, Computer Science and Engineering2")
+#dbManager.removeEducationalProgram(2)
 
 print(calculateTimeStart(3))
 print(calculateTimeEnd(3))

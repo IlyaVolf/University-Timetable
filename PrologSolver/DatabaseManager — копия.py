@@ -80,9 +80,9 @@ class DatabaseManager:
         cursor.close()
 
     # Получить все факультеты
-    def getAllFaculty(self):
+    def getAllFaculties(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM FacultiesNEW'
+        sqliteQuery = 'SELECT * FROM TEXT'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
@@ -145,29 +145,26 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-    # Удалить образовательную программу
-    # id - id образовательной программы
-    def removeEducationalProgram(self, id):
+    def getEducationalPrograms(self, facultyName):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'DELETE FROM EducationalProgramsNEW WHERE id = ?'
-        cursor.execute(sqliteQuery, (id,))
-        self.sqlite_connection.commit()
-        cursor.close()
-
-    # Получить все образовательные программы
-    def getAllFaculty(self):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM EducationalProgramsNEW'
-        cursor.execute(sqliteQuery)
+        sqliteQuery = 'SELECT EducationalProgram, Specialization FROM EducationalPrograms WHERE Faculty=?'
+        cursor.execute(sqliteQuery, (facultyName,))
         rows = cursor.fetchall()
         cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(EducationalProgram(row[0], row[1], row[2]))
+            lst.append(EducationalProgram(facultyName, row[0], row[1]))
         return lst
 
-########################################################################################################################
+    def getEducationalProgramsIlya(self, facultyName):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT EducationalProgram FROM EducationalPrograms WHERE Faculty=?'
+        cursor.execute(sqliteQuery, (facultyName,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        return tupleToList(rows)
 
     def getSpecializations(self, faculty, educationalProgram):
         cursor = self.sqlite_connection.cursor()
