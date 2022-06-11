@@ -71,8 +71,8 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
 
         # Проверка на то, что такой факультет уже не существует в таблице
-        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM FacultiesNEW WHERE Faculty= ?);'
-        cursor.execute(sqliteQuery, (faculty,))
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM FacultiesNEW WHERE Faculty= ? AND id <> ?);'
+        cursor.execute(sqliteQuery, (faculty, id,))
         rows = cursor.fetchall()
         for row in rows:
             if row[0] == 1:
@@ -89,7 +89,7 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
 
         # Идём сконца: находим те id образ програм, которые будут удалены следом. И удаляем. Вереница:
-        # удаляем Subjects, Specializations, EducationalPrograms и, окончательно, Faculties.
+        # удаляем Subjects, Groups, Specializations, EducationalPrograms и, окончательно, Faculties.
         sqliteQuery = 'SELECT id FROM EducationalProgramsNEW WHERE FacultyId = ?'
         cursor.execute(sqliteQuery, (id,))
         rows = cursor.fetchall()
@@ -99,10 +99,6 @@ class DatabaseManager:
 
         sqliteQuery = 'DELETE FROM FacultiesNEW WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
-        #sqliteQuery = 'DELETE FROM EducationalProgramsNEW WHERE FacultyId = ?'
-        #cursor.execute(sqliteQuery, (id,))
-        #sqliteQuery = 'DELETE FROM SpecializationsNEW WHERE FacultyId = ?'
-        #cursor.execute(sqliteQuery, (id,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -184,8 +180,8 @@ class DatabaseManager:
 
         # Проверка на то, что такая образовательная программа уже не существует в таблице
         sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM EducationalProgramsNEW WHERE FacultyId = ? AND EducationalProgram ' \
-                      '= ?); '
-        cursor.execute(sqliteQuery, (facultyId, educationalProgram,))
+                      '= ? AND id <> ?); '
+        cursor.execute(sqliteQuery, (facultyId, educationalProgram, id,))
         rows = cursor.fetchall()
         for row in rows:
             if row[0] == 1:
@@ -202,7 +198,7 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
 
         # Идём сконца: находим те id специализаций, которые будут удалены следом. И удаляем. Вереница:
-        # удаляем Subjects, Specializations, EducationalPrograms.
+        # удаляем Subjects, Groups, Specializations, EducationalPrograms
         sqliteQuery = 'SELECT id FROM SpecializationsNEW WHERE EducationalProgramId = ?'
         cursor.execute(sqliteQuery, (id,))
         rows = cursor.fetchall()
@@ -212,8 +208,6 @@ class DatabaseManager:
 
         sqliteQuery = 'DELETE FROM EducationalProgramsNEW WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
-        #sqliteQuery = 'DELETE FROM SpecializationsNEW WHERE EducationalProgramId = ?'
-        #cursor.execute(sqliteQuery, (id,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -295,8 +289,8 @@ class DatabaseManager:
 
         # Проверка на то, что такая специализация уже не существует в таблице
         sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM SpecializationsNEW WHERE EducationalProgramId = ? AND' \
-                      'Specialization = ?); '
-        cursor.execute(sqliteQuery, (educationalProgramId, specialization,))
+                      'Specialization = ? AND id <> ?); '
+        cursor.execute(sqliteQuery, (educationalProgramId, specialization, id,))
         rows = cursor.fetchall()
         for row in rows:
             if row[0] == 1:
@@ -311,6 +305,15 @@ class DatabaseManager:
     # id - id специализации
     def removeSpecialization(self, id):
         cursor = self.sqlite_connection.cursor()
+
+        # Идём сконца: находим те id групп, которые будут удалены следом. И удаляем. Вереница:
+        # удаляем Groups, Specializations
+        sqliteQuery = 'SELECT id FROM GroupsNEW WHERE SpecializationId = ?'
+        cursor.execute(sqliteQuery, (id,))
+        rows = cursor.fetchall()
+        dbManager = DatabaseManager()
+        for row in rows:
+            dbManager.removeGroup(row[0])
 
         sqliteQuery = 'DELETE FROM SpecializationsNEW WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
@@ -332,38 +335,120 @@ class DatabaseManager:
 
 ########################################################################################################################
 
-    def addGroup(self, group):
+    # Создать таблицу специализаций
+    def initGroup(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Groups(`Specialization`, `Number`, `AmountOfStudents`, `YearOfStudy`) VALUES(' \
-                      '?, ?, ?, ?) '
-        cursor.execute(sqliteQuery, (group.specialization, group.numberOfGroup,
-                                     group.amountOfStudents, group.yearOfStudy,))
+        sqliteQuery = 'CREATE TABLE GroupsNEW(id INTEGER PRIMARY KEY, SpecializationId TEXT,' \
+                      'Name TEXT, AmountOfStudents INTEGER, YearOfStudy INTEGER) '
+        cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
 
-    def getGroups(self, specialization):
+    # Очистить таблицу специализаций
+    def clearGroup(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Number, AmountOfStudents, YearOfStudy FROM Groups WHERE Specialization=?'
-        cursor.execute(sqliteQuery, (specialization,))
-        rows = cursor.fetchall()
+        sqliteQuery = 'DELETE FROM GroupsNEW'
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
         cursor.close()
 
-        lst = []
-        for row in rows:
-            lst.append(Group(specialization, row[0], row[1], row[2]))
-        return lst
+    # Добавить группу
+    # specializationId - id специализации
+    # name - имя группы
+    # amountOfStudents - число студентов
+    # yearOfStudy - од обучения
+    def addGroup(self, specializationId, name, amountOfStudents, yearOfStudy):
+        if not(type(amountOfStudents) is int):
+            raise ValueError("amount of students field must be a number")
 
-    def getAllGroups(self):
+        if not (type(yearOfStudy) is int):
+            raise ValueError("year of study field must be a number")
+
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Specialization, Number, AmountOfStudents, YearOfStudy FROM Groups'
+
+        # Проверка на то, что указанный SpecializationId существует
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM SpecializationsNEW WHERE id = ?); '
+        cursor.execute(sqliteQuery, (specializationId,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 0:
+                raise ValueError('This SpecializationId does not exist!')
+
+        # Проверка на то, что такая группа уже не существует в таблице
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM GroupsNEW WHERE SpecializationId = ? AND ' \
+                      'name = ?);'
+        cursor.execute(sqliteQuery, (specializationId, name,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('This group already exists!')
+
+        sqliteQuery = 'INSERT INTO GroupsNEW(`SpecializationId`, `Name`, `AmountOfStudents`, `YearOfStudy`) VALUES(' \
+                      '?, ?, ?, ?) '
+        cursor.execute(sqliteQuery, (specializationId, name, amountOfStudents, yearOfStudy,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Изменить группу
+    # specializationId - id специализации
+    # name - имя группы
+    # amountOfStudents - число студентов
+    # yearOfStudy - од обучения
+    def updateGroup(self, id, specializationId, name, amountOfStudents, yearOfStudy):
+        if not(type(amountOfStudents) is int):
+            raise ValueError("amount of students field must be a number")
+
+        if not (type(yearOfStudy) is int):
+            raise ValueError("year of study field must be a number")
+
+        cursor = self.sqlite_connection.cursor()
+
+        # Проверка на то, что указанный SpecializationId существует
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM SpecializationsNEW WHERE id = ?); '
+        cursor.execute(sqliteQuery, (specializationId,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 0:
+                raise ValueError('This SpecializationId does not exist!')
+
+        # Проверка на то, что такая группа уже не существует в таблице
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM GroupsNEW WHERE SpecializationId = ? AND ' \
+                      'name = ? AND id <> ?);'
+        cursor.execute(sqliteQuery, (specializationId, name, id))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('This group already exists!')
+
+        sqliteQuery = 'UPDATE GroupsNEW SET Name = ?, AmountOfStudents = ?, YearOfStudy = ? WHERE id = ' \
+                      '? AND SpecializationId = ? '
+        print(name, amountOfStudents, yearOfStudy, id, specializationId)
+        cursor.execute(sqliteQuery, (name, amountOfStudents, yearOfStudy, id, specializationId))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Удалить группы
+    # id - id группы
+    def removeGroup(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM GroupsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def getAllGroup(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM Groups'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(Group(row[0], row[1], row[2], row[3]))
+            lst.append(Group(row[0], row[1], row[2], row[3], row[4]))
         return lst
+
+########################################################################################################################
 
     def addSubject(self, subject):
         cursor = self.sqlite_connection.cursor()
