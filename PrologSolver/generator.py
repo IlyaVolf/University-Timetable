@@ -472,7 +472,9 @@ def test2():
 dbManager = DatabaseManager()
 
 # test0, test1, test2
-test2()
+#test2()
+dbManager.addFaculty("Department of Natural Sciences")
+# dbManager.removeFaculty(1)
 
 print(calculateTimeStart(3))
 print(calculateTimeEnd(3))

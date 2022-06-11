@@ -24,10 +24,30 @@ class DatabaseManager:
         except sqlite3.Error as error:
             print("Ошибка при подключении к sqlite", error)
 
+
+    # Создать таблицу факультетов
+    def initFaculty(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'CREATE TABLE FacultiesNEW(id INTEGER PRIMARY KEY, Faculty INTEGER)'
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Добавить факультет
+    # faculty - имя факультета
     def addFaculty(self, faculty):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO Faculties(`Faculty`) VALUES(?)'
-        cursor.execute(sqliteQuery, (faculty.name,))
+        sqliteQuery = 'INSERT INTO FacultiesNEW(`Faculty`) VALUES(?)'
+        cursor.execute(sqliteQuery, (faculty,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Удалить факультет
+    # id - id факультета
+    def removeFaculty(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM FacultiesNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
         self.sqlite_connection.commit()
         cursor.close()
 
