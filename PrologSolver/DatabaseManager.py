@@ -24,11 +24,24 @@ class DatabaseManager:
         except sqlite3.Error as error:
             print("Ошибка при подключении к sqlite", error)
 
+########################################################################################################################
+
+
+
+########################################################################################################################
 
     # Создать таблицу факультетов
     def initFaculty(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'CREATE TABLE FacultiesNEW(id INTEGER PRIMARY KEY, Faculty TEXT)'
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Очистить таблицу факультетов
+    def clearFaculty(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM FacultiesNEW'
         cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
@@ -74,8 +87,22 @@ class DatabaseManager:
     # id - id факультета
     def removeFaculty(self, id):
         cursor = self.sqlite_connection.cursor()
+
+        # Идём сконца: находим те id образ програм, которые будут удалены следом. И удаляем. Вереница:
+        # удаляем Subjects, Specializations, EducationalPrograms и, окончательно, Faculties.
+        sqliteQuery = 'SELECT id FROM EducationalProgramsNEW WHERE FacultyId = ?'
+        cursor.execute(sqliteQuery, (id,))
+        rows = cursor.fetchall()
+        dbManager = DatabaseManager()
+        for row in rows:
+            dbManager.removeEducationalProgram(row[0])
+
         sqliteQuery = 'DELETE FROM FacultiesNEW WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
+        #sqliteQuery = 'DELETE FROM EducationalProgramsNEW WHERE FacultyId = ?'
+        #cursor.execute(sqliteQuery, (id,))
+        #sqliteQuery = 'DELETE FROM SpecializationsNEW WHERE FacultyId = ?'
+        #cursor.execute(sqliteQuery, (id,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -94,11 +121,19 @@ class DatabaseManager:
 
 ########################################################################################################################
 
-    # Создать таблицу факультетов
+    # Создать таблицу образовательных программ
     def initEducationalProgram(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'CREATE TABLE EducationalProgramsNEW(id INTEGER PRIMARY KEY, FacultyId INTEGER, ' \
                       'EducationalProgram TEXT) '
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Очистить таблицу образовательных программ
+    def clearEducationalProgram(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM EducationalProgramsNEW'
         cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
@@ -108,6 +143,14 @@ class DatabaseManager:
     # EducationalProgram - образовательная программа
     def addEducationalProgram(self, facultyId, educationalProgram):
         cursor = self.sqlite_connection.cursor()
+
+        # Проверка на то, что указанный facultyId существует
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM FacultiesNEW WHERE id = ?); '
+        cursor.execute(sqliteQuery, (facultyId,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 0:
+                raise ValueError('This FacultyID does not exist!')
 
         # Проверка на то, что такая образовательная программа уже не существует в таблице
         sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM EducationalProgramsNEW WHERE FacultyId = ? AND EducationalProgram ' \
@@ -131,6 +174,14 @@ class DatabaseManager:
     def updateEducationalProgram(self, id, facultyId, educationalProgram):
         cursor = self.sqlite_connection.cursor()
 
+        # Проверка на то, что указанный facultyId существует
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM FacultiesNEW WHERE id = ?); '
+        cursor.execute(sqliteQuery, (facultyId,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 0:
+                raise ValueError('This FacultyID does not exist!')
+
         # Проверка на то, что такая образовательная программа уже не существует в таблице
         sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM EducationalProgramsNEW WHERE FacultyId = ? AND EducationalProgram ' \
                       '= ?); '
@@ -149,13 +200,25 @@ class DatabaseManager:
     # id - id образовательной программы
     def removeEducationalProgram(self, id):
         cursor = self.sqlite_connection.cursor()
+
+        # Идём сконца: находим те id специализаций, которые будут удалены следом. И удаляем. Вереница:
+        # удаляем Subjects, Specializations, EducationalPrograms.
+        sqliteQuery = 'SELECT id FROM SpecializationsNEW WHERE EducationalProgramId = ?'
+        cursor.execute(sqliteQuery, (id,))
+        rows = cursor.fetchall()
+        dbManager = DatabaseManager()
+        for row in rows:
+            dbManager.removeSpecialization(row[0])
+
         sqliteQuery = 'DELETE FROM EducationalProgramsNEW WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
+        #sqliteQuery = 'DELETE FROM SpecializationsNEW WHERE EducationalProgramId = ?'
+        #cursor.execute(sqliteQuery, (id,))
         self.sqlite_connection.commit()
         cursor.close()
 
     # Получить все образовательные программы
-    def getAllFaculty(self):
+    def getAllEducationalProgram(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM EducationalProgramsNEW'
         cursor.execute(sqliteQuery)
@@ -169,29 +232,105 @@ class DatabaseManager:
 
 ########################################################################################################################
 
-    def getSpecializations(self, faculty, educationalProgram):
+    # Создать таблицу специализаций
+    def initSpecialization(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT Specialization FROM EducationalPrograms WHERE Faculty=? AND EducationalProgram=?'
-        cursor.execute(sqliteQuery, (faculty, educationalProgram))
-        rows = cursor.fetchall()
-        cursor.close()
-        return tupleToList(rows)
-
-    def deleteEducationalProgram(self, educationalProgram):
-        cursor = self.sqlite_connection.cursor()
-
-        sqliteQuery = 'DELETE FROM EducationalPrograms WHERE Faculty = ? AND EducationalProgram = ? AND' \
-                      'Specialization = ?'
-        cursor.execute(sqliteQuery, (educationalProgram.faculty, educationalProgram.name,
-                                     educationalProgram.specialization,))
-        sqliteQuery = 'DELETE FROM Faculties WHERE EducationalProgram = ?'
-        cursor.execute(sqliteQuery, (educationalProgram.name,))
-        sqliteQuery = 'DELETE FROM Groups WHERE Specialization = ?'
-        cursor.execute(sqliteQuery, (educationalProgram.name,))
-        sqliteQuery = 'DELETE FROM Subjects WHERE Specialization = ?'
-        cursor.execute(sqliteQuery, (educationalProgram.name,))
+        sqliteQuery = 'CREATE TABLE SpecializationsNEW(id INTEGER PRIMARY KEY, ' \
+                      'EducationalProgramId INTEGER, Specialization TEXT) '
+        cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
+
+    # Очистить таблицу специализаций
+    def clearSpecialization(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM SpecializationsNEW'
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Добавить специализацию
+    # educationalProgramId - id образовательной программы
+    # Specialization - специализация
+    def addSpecialization(self, educationalProgramId, specialization):
+        cursor = self.sqlite_connection.cursor()
+
+        # Проверка на то, что указанный educationalProgramId существует
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM EducationalProgramsNEW WHERE id = ?); '
+        cursor.execute(sqliteQuery, (educationalProgramId,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 0:
+                raise ValueError('This EducationalProgramId does not exist!')
+
+        # Проверка на то, что такая специализация уже не существует в таблице
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM SpecializationsNEW WHERE EducationalProgramId = ? AND ' \
+                      'Specialization = ?);'
+        cursor.execute(sqliteQuery, (educationalProgramId, specialization,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('This Specialization already exists!')
+
+        sqliteQuery = 'INSERT INTO SpecializationsNEW(`EducationalProgramId`, `Specialization`) ' \
+                      'VALUES(?, ?)'
+        cursor.execute(sqliteQuery, (educationalProgramId, specialization,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Изменить специализацию
+    # id - id специализации
+    # educationalProgramId - id образовательной программы
+    # Specialization - специализация
+    def updateSpecialization(self, id, educationalProgramId, specialization):
+        cursor = self.sqlite_connection.cursor()
+
+        # Проверка на то, что указанный educationalProgramId существует
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM EducationalProgramsNEW WHERE id = ?); '
+        cursor.execute(sqliteQuery, (educationalProgramId,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 0:
+                raise ValueError('This EducationalProgramId does not exist!')
+
+        # Проверка на то, что такая специализация уже не существует в таблице
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM SpecializationsNEW WHERE EducationalProgramId = ? AND' \
+                      'Specialization = ?); '
+        cursor.execute(sqliteQuery, (educationalProgramId, specialization,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('This Specialization already exists!')
+
+        sqliteQuery = 'UPDATE SpecializationsNEW SET Specialization = ? WHERE id = ? AND EducationalProgramId = ?'
+        cursor.execute(sqliteQuery, (specialization, id, educationalProgramId, ))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Удалить специализацию
+    # id - id специализации
+    def removeSpecialization(self, id):
+        cursor = self.sqlite_connection.cursor()
+
+        sqliteQuery = 'DELETE FROM SpecializationsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Получить все специализации
+    def getAllEducationalProgram(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM SpecializationsNEW'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(Specialization(row[0], row[1], row[2]))
+        return lst
+
+########################################################################################################################
 
     def addGroup(self, group):
         cursor = self.sqlite_connection.cursor()
@@ -601,12 +740,3 @@ def disassemblePrologList(groupsList):
     groups = prologList2.split(",")
 
     return groups
-
-
-dbManager = DatabaseManager()
-ep = EducationalProgram('Test', 'test', 'test')
-#  dbManager.addEducationalProgram(ep)
-eps = dbManager.getEducationalPrograms('fit')
-for e in eps:
-    print('F - ' + e.faculty + ', Ep - ' + e.name + ', S - ' + e.specialization)
-dbManager.close()
