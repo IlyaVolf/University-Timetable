@@ -1,8 +1,10 @@
 import sqlite3
 
+from entities.Faculty import Faculty
 from entities.Auditory import Auditory
 from entities.Constraints import Constraints
 from entities.EducationalProgram import EducationalProgram
+from entities.Specialization import Specialization
 from entities.GeneratedClass import GeneratedClass
 from entities.Group import Group
 from entities.Subject import Subject
@@ -24,11 +26,9 @@ class DatabaseManager:
         except sqlite3.Error as error:
             print("Ошибка при подключении к sqlite", error)
 
-########################################################################################################################
+    ########################################################################################################################
 
-
-
-########################################################################################################################
+    ########################################################################################################################
 
     # Создать таблицу факультетов
     def initFaculty(self):
@@ -115,7 +115,18 @@ class DatabaseManager:
             lst.append(Faculty(row[0], row[1]))
         return lst
 
-########################################################################################################################
+    # Получить все факультеты
+    # id - id факультета
+    def getFaculty(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM FacultiesNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return Faculty(row[0], row[1])
+
+    ########################################################################################################################
 
     # Создать таблицу образовательных программ
     def initEducationalProgram(self):
@@ -188,7 +199,7 @@ class DatabaseManager:
                 raise ValueError('This Educational program already exists!')
 
         sqliteQuery = 'UPDATE EducationalProgramsNEW SET EducationalProgram = ? WHERE id = ? AND FacultyId = ?'
-        cursor.execute(sqliteQuery, (educationalProgram, id, facultyId, ))
+        cursor.execute(sqliteQuery, (educationalProgram, id, facultyId,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -224,7 +235,17 @@ class DatabaseManager:
             lst.append(EducationalProgram(row[0], row[1], row[2]))
         return lst
 
-########################################################################################################################
+    # Получить образовательную программу
+    def getEducationalProgram(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM EducationalProgramsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return EducationalProgram(row[0], row[1], row[2])
+
+    ########################################################################################################################
 
     # Создать таблицу специализаций
     def initSpecialization(self):
@@ -297,7 +318,7 @@ class DatabaseManager:
                 raise ValueError('This Specialization already exists!')
 
         sqliteQuery = 'UPDATE SpecializationsNEW SET Specialization = ? WHERE id = ? AND EducationalProgramId = ?'
-        cursor.execute(sqliteQuery, (specialization, id, educationalProgramId, ))
+        cursor.execute(sqliteQuery, (specialization, id, educationalProgramId,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -321,7 +342,7 @@ class DatabaseManager:
         cursor.close()
 
     # Получить все специализации
-    def getAllEducationalProgram(self):
+    def getAllSpecialization(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM SpecializationsNEW'
         cursor.execute(sqliteQuery)
@@ -333,7 +354,17 @@ class DatabaseManager:
             lst.append(Specialization(row[0], row[1], row[2]))
         return lst
 
-########################################################################################################################
+    # Получить специализацию
+    def getSpecialization(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM SpecializationsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return Specialization(row[0], row[1], row[2])
+
+    ########################################################################################################################
 
     # Создать таблицу специализаций
     def initGroup(self):
@@ -358,7 +389,7 @@ class DatabaseManager:
     # amountOfStudents - число студентов
     # yearOfStudy - од обучения
     def addGroup(self, specializationId, name, amountOfStudents, yearOfStudy):
-        if not(type(amountOfStudents) is int):
+        if not (type(amountOfStudents) is int):
             raise ValueError("amount of students field must be a number")
 
         if not (type(yearOfStudy) is int):
@@ -395,7 +426,7 @@ class DatabaseManager:
     # amountOfStudents - число студентов
     # yearOfStudy - од обучения
     def updateGroup(self, id, specializationId, name, amountOfStudents, yearOfStudy):
-        if not(type(amountOfStudents) is int):
+        if not (type(amountOfStudents) is int):
             raise ValueError("amount of students field must be a number")
 
         if not (type(yearOfStudy) is int):
@@ -438,7 +469,7 @@ class DatabaseManager:
 
     def getAllGroup(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM Groups'
+        sqliteQuery = 'SELECT * FROM GroupsNEW'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
@@ -448,7 +479,16 @@ class DatabaseManager:
             lst.append(Group(row[0], row[1], row[2], row[3], row[4]))
         return lst
 
-########################################################################################################################
+    def getGroup(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM GroupsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return Group(row[0], row[1], row[2], row[3], row[4])
+
+    ########################################################################################################################
 
     def addSubject(self, subject):
         cursor = self.sqlite_connection.cursor()
