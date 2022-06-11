@@ -87,7 +87,6 @@ getSpecialization(Specialization, EdProgram, Faculty) :-
 % PART THREE - SUBJECTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%% 
 
-subject("Computer Science and Systems Engineering", "Interface design", [5], [[type_of_class("lec"), 1, [[teacher("Derzho Marina Anatolievna"), 2]]]]). 
 subject("Computer Science and Systems Engineering", "Models of Computation", [3,4], [[type_of_class("lec"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 3]]], [type_of_class("pr"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 2], [teacher("Avdeev Roman Ruslanovich"), 1]]]]). 
 subject("Computer Science and Systems Engineering", "Machine learning methods", [5], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2]]], [type_of_class("pr"), 1, [[teacher("Antonets Denis Viktorovich"), 2]]]]). 
 subject("Computer Science and Systems Engineering", "Probability theory and mathematical statistics", [3], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 3]]], [type_of_class("pr"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2], [teacher("Antonets Denis Viktorovich"), 1]]]]). 
