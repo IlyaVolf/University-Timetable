@@ -72,7 +72,6 @@ def create_pl(mode, classToAdd=None):
         file.write("\n")
 
         file.write("attempts(2). \n")
-        file.write("semester(1). \n")
 
         file.write("\n")
 
@@ -244,6 +243,7 @@ def create_pl(mode, classToAdd=None):
 
         constraints = dbManager.getConstraints()
 
+        file.write("semester(" + constraints[0].semester + "). \n")
         file.write("first_class_starts(" + constraints[0].firstClassStarts + "). \n")
         file.write("class_duration(" + constraints[0].classDuration + "). \n")
         file.write("short_brake_duration(" + constraints[0].shortBrakeDuration + "). \n")
