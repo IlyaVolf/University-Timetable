@@ -32,7 +32,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 attempts(2). 
-semester(1). 
 
 teacher("Permyakov Ruslan Anatolievich"). 
 teacher("Zlygostev Anton Igorevich"). 
@@ -54,16 +53,15 @@ teacher("Derzho Marina Anatolievna").
 type_of_class("lec"). 
 type_of_class("pr"). 
 
-classroom("t3213", [type_of_class("pr"), type_of_class("lab")], 20). 
+classroom("t3213", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("402 MB", [type_of_class("lec"), type_of_class("pr")], 200). 
 classroom("t2266", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("2128", [type_of_class("lec"), type_of_class("pr")], 80). 
-classroom("t3220", [type_of_class("lab"), type_of_class("pr")], 20). 
+classroom("t3320", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("1154", [type_of_class("lec"), type_of_class("pr")], 20). 
 classroom("406 MB", [type_of_class("lec"), type_of_class("pr")], 20). 
 classroom("1155", [type_of_class("lec"), type_of_class("pr")], 40). 
 classroom("t2213", [type_of_class("lab"), type_of_class("pr")], 20). 
-classroom("SB", [type_of_class("pe")], 500). 
 classroom("1156", [type_of_class("lec"), type_of_class("pr")], 200). 
 classroom("t2221", [type_of_class("lab"), type_of_class("pr")], 20). 
 
@@ -71,10 +69,10 @@ classroom("t2221", [type_of_class("lab"), type_of_class("pr")], 20).
 % PART TWO - FACS, ED PRS, SPECS % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-faculty("Faculty of Information Technologies"). 
+faculty("Department of Information Technologies"). 
+faculty("Department of Natural Science"). 
 
-ed_program("Faculty of Information Technologies", "BACH, 09.03.01, Computer Science and Engineering"). 
-
+ed_program("Department of Information Technologies", "BACH, 09.03.01, Computer Science and Engineering"). 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Computer Science and Systems Engineering"). 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Software Engineering and Computer Science"). 
 
@@ -87,7 +85,6 @@ getSpecialization(Specialization, EdProgram, Faculty) :-
 % PART THREE - SUBJECTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%% 
 
-subject("Computer Science and Systems Engineering", "Interface design", [5], [[type_of_class("lec"), 1, [[teacher("Derzho Marina Anatolievna"), 2]]]]). 
 subject("Computer Science and Systems Engineering", "Models of Computation", [3,4], [[type_of_class("lec"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 3]]], [type_of_class("pr"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 2], [teacher("Avdeev Roman Ruslanovich"), 1]]]]). 
 subject("Computer Science and Systems Engineering", "Machine learning methods", [5], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2]]], [type_of_class("pr"), 1, [[teacher("Antonets Denis Viktorovich"), 2]]]]). 
 subject("Computer Science and Systems Engineering", "Probability theory and mathematical statistics", [3], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 3]]], [type_of_class("pr"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2], [teacher("Antonets Denis Viktorovich"), 1]]]]). 
@@ -147,6 +144,7 @@ list_groups_of_students("Software Engineering and Computer Science", 3, ["19201"
 % PART FIVE - HARD CONSTRAINTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
+semester(1). 
 first_class_starts(9,0). 
 class_duration(90). 
 short_brake_duration(5). 

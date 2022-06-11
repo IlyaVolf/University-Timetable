@@ -4,9 +4,15 @@ import datetime
 import addManTests
 from DatabaseManager import DatabaseManager
 
-# NB:
-# пока штраф будет храниться как 0-й!
+from entities.Faculty import Faculty
+from entities.Constraints import Constraints
+from entities.EducationalProgram import EducationalProgram
+from entities.Specialization import Specialization
+from entities.GeneratedClass import GeneratedClass
+from entities.Group import Group
 from entities.Subject import Subject
+from entities.Teacher import Teacher
+from entities.Classroom import Classroom
 
 # число попыток, если это значение не задано явно
 attempts = 1
@@ -75,7 +81,7 @@ def create_pl(mode, classToAdd=None):
 
         file.write("\n")
 
-        allTeachers = dbManager.getAllTeachers()
+        allTeachers = dbManager.getAllTeacher()
         for teacher in allTeachers:
             file.write("teacher(\"" + teacher.name + "\"). \n")
 
@@ -87,12 +93,12 @@ def create_pl(mode, classToAdd=None):
 
         file.write("\n")
 
-        allAuditories = dbManager.getAuditories()
-        for auditory in allAuditories:
-            typeOfClass = auditory.typesOfClass.split(", ")
+        allClassrooms = dbManager.getAllClassroom()
+        for classroom in allClassrooms:
+            typeOfClass = classroom.typesOfClass.split(", ")
             file.write(
-                "classroom(\"" + auditory.number + "\", " + buildPrologList(typeOfClass, True, "type_of_class(", ")")
-                + ", " + auditory.capacity + "). \n")
+                "classroom(\"" + classroom.number + "\", " + buildPrologList(typeOfClass, True, "type_of_class(", ")")
+                + ", " + str(classroom.capacity) + "). \n")
 
         file.write("\n")
         file.write("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n\
@@ -100,25 +106,29 @@ def create_pl(mode, classToAdd=None):
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n")
         file.write("\n")
 
-        allFaculties = dbManager.getAllFaculties()
+        allFaculties = dbManager.getAllFaculty()
         for faculty in allFaculties:
-            file.write("faculty(\"" + faculty + "\"). \n")
+            file.write("faculty(\"" + faculty.faculty + "\"). \n")
 
         file.write("\n")
 
         for faculty in allFaculties:
-            allEdPrograms = dbManager.getEducationalProgramsIlya(faculty)
+            allEdPrograms = dbManager.getAllEducationalProgramByFaculty(faculty.id)
             for edProgram in allEdPrograms:
-                file.write("ed_program(\"" + faculty + "\", \"" + edProgram + "\"). \n")
+                file.write("ed_program(\"" + faculty.faculty + "\", \"" + edProgram.educationalProgram + "\"). \n")
+                allSpecializations = dbManager.getAllSpecializationByEdProgram(edProgram.id)
+                for specialization in allSpecializations:
+                    file.write("specialization(\"" + edProgram.educationalProgram + "\", \"" +
+                               specialization.specialization + "\"). \n")
 
         file.write("\n")
 
-        for faculty in allFaculties:
-            allEdPrograms = dbManager.getEducationalPrograms(faculty)
-            for edProgram in allEdPrograms:
-                file.write("specialization(\"" + edProgram.name + "\", \"" + edProgram.specialization + "\"). \n")
+        #for faculty in allFaculties:
+        #    allEdPrograms = dbManager.getEducationalPrograms(faculty)
+        #    for edProgram in allEdPrograms:
+        #        file.write("specialization(\"" + edProgram.name + "\", \"" + edProgram.specialization + "\"). \n")
 
-        file.write("\n")
+        #file.write("\n")
 
         file.write("getSpecialization(Specialization, EdProgram, Faculty) :- \n\
 	specialization(EdProgram, Specialization), \n\
@@ -135,20 +145,22 @@ def create_pl(mode, classToAdd=None):
         # create
         if mode == 0 or mode == 1:
 
-            allSubjects = dbManager.getAllSubjects()
+            allSubjects = dbManager.getAllSubjectsDistinct()
             for subject in allSubjects:
-                file.write("subject(\"" + subject[0] + "\", \"" + subject[1] + "\", [" + subject[2] + "], [")
+                spec = dbManager.getSpecialization(subject[0])
+                file.write("subject(\"" + spec.specialization + "\", \"" + subject[1] + "\", [" + subject[2] + "], [")
                 allSubjectsTypesOfClass = dbManager.getAllSubjectTypesOfClass(subject[0], subject[1], subject[2])
                 for i in range(0, len(allSubjectsTypesOfClass), 1):
                     file.write(
-                        "[type_of_class(\"" + allSubjectsTypesOfClass[i][0] + "\"), " + allSubjectsTypesOfClass[i][1]
-                        + ", [")
+                        "[type_of_class(\"" + allSubjectsTypesOfClass[i][0] + "\"), " +
+                        str(allSubjectsTypesOfClass[i][1]) + ", [")
                     allSubjectTeachers = dbManager.getAllSubjectTeachers(subject[0], subject[1], subject[2],
                                                                          allSubjectsTypesOfClass[i][0],
                                                                          allSubjectsTypesOfClass[i][1])
                     for j in range(0, len(allSubjectTeachers), 1):
+                        subjectTeacher = dbManager.getTeacher(allSubjectTeachers[j][0])
                         file.write(
-                            "[teacher(\"" + allSubjectTeachers[j][0] + "\"), " + allSubjectTeachers[j][1] + "]")
+                            "[teacher(\"" + subjectTeacher.name + "\"), " + str(allSubjectTeachers[j][1]) + "]")
                         if j < len(allSubjectTeachers) - 1:
                             file.write(", ")
 
@@ -208,23 +220,24 @@ def create_pl(mode, classToAdd=None):
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n")
         file.write("\n")
 
-        allGroups = dbManager.getAllGroups()
+        allGroups = dbManager.getAllGroup()
         for group in allGroups:
-            file.write("group_of_students(\"" + group.specialization + "\", \"" + group.numberOfGroup + "\", " +
-                       group.amountOfStudents + ", " + group.yearOfStudy + "). \n")
+            spec = dbManager.getSpecialization(group.specializationId)
+            file.write("group_of_students(\"" + spec.specialization + "\", \"" + group.name + "\", " +
+                       str(group.amountOfStudents) + ", " + str(group.yearOfStudy) + "). \n")
 
         file.write("\n")
 
         for faculty in allFaculties:
-            allEdPrograms = dbManager.getEducationalProgramsIlya(faculty)
+            allEdPrograms = dbManager.getAllEducationalProgramByFaculty(faculty.id)
             for edProgram in allEdPrograms:
-                allSpecializations = dbManager.getSpecializations(faculty, edProgram)
+                allSpecializations = dbManager.getAllSpecializationByEdProgram(edProgram.id)
                 for specialization in allSpecializations:
-                    allUniqueYears = dbManager.getAllSpecializationUniqueYears(specialization)
+                    allUniqueYears = dbManager.getAllSpecializationUniqueYears(specialization.id)
                     for year in allUniqueYears:
-                        allSpecializationGroups = dbManager.getAllSpecializationGroups(specialization, year)
+                        allSpecializationGroups = dbManager.getAllSpecializationGroups(specialization.id, year)
                         file.write(
-                            "list_groups_of_students(\"" + specialization + "\", " + str(year) + ", " +
+                            "list_groups_of_students(\"" + specialization.specialization + "\", " + str(year) + ", " +
                             buildPrologList(allSpecializationGroups, True, "", "") + "). \n")
 
         file.write("\n")
@@ -243,23 +256,23 @@ def create_pl(mode, classToAdd=None):
 
         constraints = dbManager.getConstraints()
 
-        file.write("semester(" + constraints[0].semester + "). \n")
-        file.write("first_class_starts(" + constraints[0].firstClassStarts + "). \n")
-        file.write("class_duration(" + constraints[0].classDuration + "). \n")
-        file.write("short_brake_duration(" + constraints[0].shortBrakeDuration + "). \n")
-        file.write("long_brake_duration(" + constraints[0].largeBrakeDuration + "). \n")
-        file.write("study_days_in_week(" + constraints[0].studyDaysInWeek + "). \n")
-        file.write("study_days_in_week_students(" + constraints[0].studyDaysInWeekForStudents + "). \n")
-        file.write("study_days_in_week_teachers(" + constraints[0].studyDaysInWeekForTeachers + "). \n")
-        file.write("classes_in_day(" + constraints[0].classesPerDay + "). \n")
-        file.write("classes_in_day_students(" + constraints[0].classesPerDayStudents + "). \n")
-        file.write("classes_in_day_teachers(" + constraints[0].classesPerDayTeachers + "). \n")
+        file.write("semester(" + str(constraints.semester) + "). \n")
+        file.write("first_class_starts(" + constraints.firstClassStarts + "). \n")
+        file.write("class_duration(" + str(constraints.classDuration) + "). \n")
+        file.write("short_brake_duration(" + str(constraints.shortBrakeDuration) + "). \n")
+        file.write("long_brake_duration(" + str(constraints.largeBrakeDuration) + "). \n")
+        file.write("study_days_in_week(" + str(constraints.studyDaysInWeek) + "). \n")
+        file.write("study_days_in_week_students(" + str(constraints.studyDaysInWeekForStudents) + "). \n")
+        file.write("study_days_in_week_teachers(" + str(constraints.studyDaysInWeekForTeachers) + "). \n")
+        file.write("classes_in_day(" + str(constraints.classesPerDay) + "). \n")
+        file.write("classes_in_day_students(" + str(constraints.classesPerDayStudents) + "). \n")
+        file.write("classes_in_day_teachers(" + str(constraints.classesPerDayTeachers) + "). \n")
 
         file.write("\n")
 
         for teacher in allTeachers:
             file.write(
-                "days_teacher_can_work(teacher(\"" + teacher.name + "\"), " + teacher.daysTeacherCanWork + "). \n")
+                "days_teacher_can_work(teacher(\"" + teacher.name + "\"), " + teacher.daysCanWork + "). \n")
 
         file.write("\n")
 
@@ -276,7 +289,7 @@ def create_pl(mode, classToAdd=None):
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n")
         file.write("\n")
 
-        file.write("c_lunch_break(" + constraints[0].lunchBrake + "). \n")
+        file.write("c_lunch_break(" + str(constraints.lunchBrake) + "). \n")
         file.write("c_gaps(0,0). \n")
         file.write("c_gaps(1,2). \n")
         file.write("c_gaps(2,6). \n")
@@ -288,8 +301,8 @@ def create_pl(mode, classToAdd=None):
 
         for teacher in allTeachers:
             file.write(
-                "days_teacher_want_work(teacher(\"" + teacher.name + "\"), " + teacher.daysTeacherWantWork + ", " +
-                teacher.weight + "). \n")
+                "days_teacher_want_work(teacher(\"" + teacher.name + "\"), " + str(teacher.daysWantWork) + ", " +
+                str(teacher.weight) + "). \n")
 
         file.write("\n")
 
@@ -472,7 +485,7 @@ def test2():
 dbManager = DatabaseManager()
 
 # test0, test1, test2
-#test2()
+test0()
 #dbManager.initFaculty()
 #dbManager.addFaculty("Department of Information Technologies")
 #dbManager.addFaculty("Department of Natural Science")
@@ -488,7 +501,7 @@ dbManager = DatabaseManager()
 #dbManager.addTeacher("Derzho Marina Anatolievna","[1,2,3,4,5,6]","[1,2,3]",5)
 #dbManager.addClassroom("t2221", "lab, pr", 20)
 #dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
-dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
+#dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
 print(calculateTimeStart(3))
 print(calculateTimeEnd(3))

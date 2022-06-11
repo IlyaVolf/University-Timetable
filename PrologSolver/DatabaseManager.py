@@ -1,7 +1,6 @@
 import sqlite3
 
 from entities.Faculty import Faculty
-from entities.Auditory import Auditory
 from entities.Constraints import Constraints
 from entities.EducationalProgram import EducationalProgram
 from entities.Specialization import Specialization
@@ -20,7 +19,6 @@ def tupleToList(t):
 
 
 class DatabaseManager:
-
     studyDaysInWeek = 6
 
     def __init__(self, dbFileName='timetable.sqlite'):
@@ -248,6 +246,19 @@ class DatabaseManager:
 
         return EducationalProgram(row[0], row[1], row[2])
 
+    # Получить образовательную программу
+    def getAllEducationalProgramByFaculty(self, facultyId):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM EducationalProgramsNEW WHERE id = ?'
+        cursor.execute(sqliteQuery, (facultyId,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(EducationalProgram(row[0], row[1], row[2]))
+        return lst
+
     ########################################################################################################################
 
     # Создать таблицу специализаций
@@ -304,12 +315,12 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
 
         # Проверка на то, что указанный educationalProgramId существует
-        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM EducationalProgramsNEW WHERE id = ?); '
-        cursor.execute(sqliteQuery, (educationalProgramId,))
-        rows = cursor.fetchall()
-        for row in rows:
-            if row[0] == 0:
-                raise ValueError('This EducationalProgramId does not exist!')
+        # sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM EducationalProgramsNEW WHERE id = ?); '
+        # cursor.execute(sqliteQuery, (educationalProgramId,))
+        # rows = cursor.fetchall()
+        # for row in rows:
+        #    if row[0] == 0:
+        #        raise ValueError('This EducationalProgramId does not exist!')
 
         # Проверка на то, что такая специализация уже не существует в таблице
         sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM SpecializationsNEW WHERE EducationalProgramId = ? AND' \
@@ -374,7 +385,34 @@ class DatabaseManager:
 
         return Specialization(row[0], row[1], row[2])
 
-########################################################################################################################
+    # Получить все специализации
+    def getAllSpecializationByEdProgram(self, educationalProgramId):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM SpecializationsNEW WHERE EducationalProgramId = ?'
+        cursor.execute(sqliteQuery, (educationalProgramId,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(Specialization(row[0], row[1], row[2]))
+        return lst
+
+    # for prolog
+    def getAllSpecializationUniqueYears(self, specializationId):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT Distinct YearOfStudy FROM GroupsNEW WHERE SpecializationId=? ORDER BY YearOfStudy'
+        cursor.execute(sqliteQuery, (specializationId,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(row[0])
+
+        return lst
+
+    ########################################################################################################################
 
     # Создать таблицу групп
     def initGroup(self):
@@ -408,17 +446,17 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
 
         # Проверка на то, что указанный SpecializationId существует
-        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM SpecializationsNEW WHERE id = ?); '
-        cursor.execute(sqliteQuery, (specializationId,))
-        rows = cursor.fetchall()
-        for row in rows:
-            if row[0] == 0:
-                raise ValueError('This SpecializationId does not exist!')
+        # sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM SpecializationsNEW WHERE id = ?); '
+        # cursor.execute(sqliteQuery, (specializationId,))
+        # rows = cursor.fetchall()
+        # for row in rows:
+        #    if row[0] == 0:
+        #        raise ValueError('This SpecializationId does not exist!')
 
         # Проверка на то, что такая группа уже не существует в таблице
         sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM GroupsNEW WHERE SpecializationId = ? AND ' \
-                      'name = ?);'
-        cursor.execute(sqliteQuery, (specializationId, name,))
+                      'name = ? AND id <> ?);'
+        cursor.execute(sqliteQuery, (specializationId, name, id))
         rows = cursor.fetchall()
         for row in rows:
             if row[0] == 1:
@@ -497,7 +535,21 @@ class DatabaseManager:
 
         return Group(row[0], row[1], row[2], row[3], row[4])
 
-########################################################################################################################
+    # for prolog
+    def getAllSpecializationGroups(self, specializationId, yearOfStudy):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT Name FROM GroupsNEW WHERE SpecializationId=? AND YearOfStudy=? ORDER BY YearOfStudy'
+        cursor.execute(sqliteQuery, (specializationId, yearOfStudy,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(row[0])
+
+        return  lst
+
+    ########################################################################################################################
 
     # Создать таблицу предметов
     def initSubject(self):
@@ -589,7 +641,48 @@ class DatabaseManager:
 
         return Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
 
-########################################################################################################################
+    # for prolog
+    def getAllSubjectsDistinct(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT SpecializationId, Name, Semesters FROM SubjectsNEW'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append([row[0], row[1], row[2]])
+        return lst
+
+    # for prolog
+    def getAllSubjectTypesOfClass(self, specializationId, name, semesters):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT TypeOfClass, Frequency FROM SubjectsNEW WHERE SpecializationId=? AND Name=? ' \
+                      'AND Semesters=? '
+        cursor.execute(sqliteQuery, (specializationId, name, semesters,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append([row[0], row[1]])
+        return lst
+
+    # for prolog
+    def getAllSubjectTeachers(self, specializationId, name, semesters, typeOfClass, Frequency):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT TeacherId, AmountOfGroups FROM SubjectsNEW WHERE SpecializationId=? AND Name=? AND ' \
+                      'Semesters=? AND TypeOfClass=? AND Frequency=?'
+        cursor.execute(sqliteQuery, (specializationId, name, semesters, typeOfClass, Frequency,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append([row[0], row[1]])
+        return lst
+
+    ########################################################################################################################
 
     # Создать таблицу учителей
     def initTeacher(self):
@@ -692,7 +785,7 @@ class DatabaseManager:
 
         return Teacher(row[0], row[1], row[2], row[3], row[4])
 
-########################################################################################################################
+    ########################################################################################################################
 
     # Создать таблицу аудиторий
     def initClassroom(self):
@@ -735,8 +828,8 @@ class DatabaseManager:
 
         # Проверка на то, что такая аудитория уже не существует в таблице
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM ClassroomsNEW WHERE Number= ?);'
-        cursor.execute(sqliteQuery, (number,))
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM ClassroomsNEW WHERE Number= ? AND id <> ?);'
+        cursor.execute(sqliteQuery, (number, id))
         rows = cursor.fetchall()
         for row in rows:
             if row[0] == 1:
@@ -775,7 +868,7 @@ class DatabaseManager:
 
         return Classroom(row[0], row[1], row[2], row[3])
 
-########################################################################################################################
+    ########################################################################################################################
 
     # Создать таблицу ограничений
     def initConstraints(self):
@@ -807,20 +900,20 @@ class DatabaseManager:
         if not (type(classesPerDay) is int):
             raise ValueError("classes per day field must be a number")
 
-        if not (1 <= classDuration <= ((24*60)/classesPerDay)):
-            raise ValueError("class duration field must be within 1..", ((24*60)/classesPerDay))
+        if not (1 <= classDuration <= ((24 * 60) / classesPerDay)):
+            raise ValueError("class duration field must be within 1..", ((24 * 60) / classesPerDay))
 
         if not (type(shortBrakeDuration) is int):
             raise ValueError("short brake duration field must be a number")
 
-        if not (0 <= shortBrakeDuration <= ((24*60)/classesPerDay)):
-            raise ValueError("short brake duration field must be within 1..", ((24*60)/classesPerDay))
+        if not (0 <= shortBrakeDuration <= ((24 * 60) / classesPerDay)):
+            raise ValueError("short brake duration field must be within 1..", ((24 * 60) / classesPerDay))
 
         if not (type(largeBrakeDuration) is int):
             raise ValueError("large brake duration field must be a number")
 
-        if not (0 <= largeBrakeDuration <= ((24*60)/classesPerDay)):
-            raise ValueError("large brake duration field must be within 1..", ((24*60)/classesPerDay))
+        if not (0 <= largeBrakeDuration <= ((24 * 60) / classesPerDay)):
+            raise ValueError("large brake duration field must be within 1..", ((24 * 60) / classesPerDay))
 
         if not (type(studyDaysInWeek) is int):
             raise ValueError("study days in week field must be a number")
@@ -852,8 +945,8 @@ class DatabaseManager:
         if not (classesPerDayTeachers <= classesPerDay):
             raise ValueError("classes per day for teachers field must be less than classes per day field")
 
-        if not (1 <= classesPerDayTeachers <= ((24*60)/classDuration)):
-            raise ValueError("study days in week for teachers field must be within 1..", ((24*60)/classDuration))
+        if not (1 <= classesPerDayTeachers <= ((24 * 60) / classDuration)):
+            raise ValueError("study days in week for teachers field must be within 1..", ((24 * 60) / classDuration))
 
         if not (type(classesPerDayStudents) is int):
             raise ValueError("classes per day for students field must be a number")
@@ -861,14 +954,14 @@ class DatabaseManager:
         if not (classesPerDayStudents <= classesPerDay):
             raise ValueError("classes per day for students field must be less than classes per day field")
 
-        if not (1 <= classesPerDayStudents <= ((24*60)/classDuration)):
-            raise ValueError("study days in week for students field must be within 1..", ((24*60)/classDuration))
+        if not (1 <= classesPerDayStudents <= ((24 * 60) / classDuration)):
+            raise ValueError("study days in week for students field must be within 1..", ((24 * 60) / classDuration))
 
         if not (type(lunchBrake) is int):
             raise ValueError("lunch brake duration field must be a number")
 
-        if not (0 <= lunchBrake <= ((24*60)/classesPerDay)):
-            raise ValueError("lunch brake duration field must be within 0..", ((24*60)/classesPerDay))
+        if not (0 <= lunchBrake <= ((24 * 60) / classesPerDay)):
+            raise ValueError("lunch brake duration field must be within 0..", ((24 * 60) / classesPerDay))
 
         if not (type(gaps) is int):
             raise ValueError("gaps field must be a number")
@@ -903,9 +996,10 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-    def updateConstraints(self, firstClassStarts, classDuration, shortBrakeDuration, largeBrakeDuration, studyDaysInWeek,
-                       studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
-                       classesPerDayTeachers, lunchBrake, classroomFillness, semester):
+    def updateConstraints(self, firstClassStarts, classDuration, shortBrakeDuration, largeBrakeDuration,
+                          studyDaysInWeek,
+                          studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
+                          classesPerDayTeachers, lunchBrake, classroomFillness, semester):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'UPDATE ClassroomsNEW SET FirstClassStarts = ?, ClassDuration = ?, ShortBrakeDuration = ?,' \
                       'LargeBrakeDuration = ?, StudyDaysInWeek = ?, StudyDaysInWeekForStudents = ?, ' \
@@ -937,55 +1031,8 @@ class DatabaseManager:
 
         return Constraints(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],
                            row[10], row[11], row[12], row[13], row[14])
-    """
-    def deleteAuditory(self, auditory):
-        cursor = self.sqlite_connection.cursor()
 
-        sqliteQuery = 'DELETE FROM Auditories WHERE TypeOfClass = ? AND Capacity = ? AND Number = ?'
-        cursor.execute(sqliteQuery, (auditory.typesOfClass, auditory.capacity,
-                                     auditory.number,))
-        self.sqlite_connection.commit()
-        cursor.close()
-
-    def deleteTeacher(self, teacher):
-        cursor = self.sqlite_connection.cursor()
-
-        sqliteQuery = 'DELETE FROM Teachers WHERE Name = ? AND DaysCanWork = ? AND DaysWantWork = ? AND Weight = ?'
-        cursor.execute(sqliteQuery, (teacher.name, teacher.daysTeacherCanWork,
-                                     teacher.daysTeacherWantWork, teacher.weight,))
-        sqliteQuery = 'SELECT * FROM Subjects WHERE Teacher = ?'
-        cursor.execute(sqliteQuery, (teacher.name,))
-        rows = cursor.fetchall()
-        sqliteQuery = 'DELETE FROM Subjects WHERE Teacher = ?'
-        cursor.execute(sqliteQuery)
-        for row in rows:
-            self.addSubject(Subject(row[0], row[1], row[2], row[3], row[4], 'Undefined', row[6]))
-
-        self.sqlite_connection.commit()
-        cursor.close()
-
-    def deleteSubject(self, subject):
-        cursor = self.sqlite_connection.cursor()
-
-        sqliteQuery = 'DELETE FROM Subjects WHERE Specialization = ? AND Name = ? AND Semesters = ? AND ' \
-                      'TypeOfClass = ? AND Frequency = ? AND Teacher = ? AND AmountOfGroups = ? '
-        cursor.execute(sqliteQuery, (subject.educationalProgram, subject.subjectName,
-                                     subject.semesters, subject.typeOfClass,
-                                     subject.frequency, subject.teacher, subject.amountOfGroups,))
-
-        self.sqlite_connection.commit()
-        cursor.close()
-
-    def deleteGroup(self, group):
-        cursor = self.sqlite_connection.cursor()
-
-        sqliteQuery = 'DELETE FROM Groups WHERE Specialization = ? AND Number = ? AND AmountOfStudents = ? AND ' \
-                      'YearOfStudy = ? '
-        cursor.execute(sqliteQuery, (group.specialization, group.numberOfGroup,
-                                     group.amountOfStudents, group.yearOfStudy,))
-
-        self.sqlite_connection.commit()
-        cursor.close()
+    ########################################################################################################################
 
     # TODO functions working with generated timetable will be written later because of new solver
     def clearAll(self):
@@ -999,7 +1046,18 @@ class DatabaseManager:
         cursor.execute('DELETE FROM Teachers')
         self.sqlite_connection.commit()
         cursor.close()
-    """
+
+    def getAllTypesOfClasses(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT TypeOfClass FROM Subjects'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(row[0])
+        return lst
 
     def close(self):
         if self.sqlite_connection:
@@ -1056,6 +1114,7 @@ class DatabaseManager:
                 GeneratedClass(i, rows[i][1], rows[i][2], rows[i][3], rows[i][4], rows[i][5], rows[i][6], rows[i][7],
                                rows[i][8], rows[i][9], rows[i][10], rows[i][11]))
         return lst
+
 
 def disassemblePrologList(groupsList):
     prologList2 = groupsList[1:len(groupsList) - 1]
