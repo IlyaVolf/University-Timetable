@@ -996,12 +996,11 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-    def updateConstraints(self, firstClassStarts, classDuration, shortBrakeDuration, largeBrakeDuration,
-                          studyDaysInWeek,
-                          studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
-                          classesPerDayTeachers, lunchBrake, classroomFillness, semester):
+    def updateConstraints(self, firstClassStarts, classDuration, shortBrakeDuration, largeBrakeDuration, studyDaysInWeek,
+                       studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
+                       classesPerDayTeachers, lunchBrake, gaps, classroomFillness, semester):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'UPDATE ClassroomsNEW SET FirstClassStarts = ?, ClassDuration = ?, ShortBrakeDuration = ?,' \
+        sqliteQuery = 'UPDATE ConstraintsNEW SET FirstClassStarts = ?, ClassDuration = ?, ShortBrakeDuration = ?,' \
                       'LargeBrakeDuration = ?, StudyDaysInWeek = ?, StudyDaysInWeekForStudents = ?, ' \
                       'StudyDaysInWeekForTeachers = ?, ClassesPerDay = ?, ClassesPerDayStudents = ?,' \
                       'ClassesPerDayTeachers = ?, LunchBrake = ?, Gaps = ?, ClassroomFillness = ?, Semester = ?' \
@@ -1011,7 +1010,7 @@ class DatabaseManager:
                                      studyDaysInWeek, studyDaysInWeekForStudents,
                                      studyDaysInWeekForTeachers, classesPerDay,
                                      classesPerDayStudents, classesPerDayTeachers,
-                                     lunchBrake, classroomFillness, semester))
+                                     lunchBrake, classroomFillness, gaps, semester))
         self.sqlite_connection.commit()
         cursor.close()
 
