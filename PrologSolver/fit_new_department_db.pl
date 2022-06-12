@@ -99,40 +99,40 @@ subject("Computer Science and Systems Engineering", "Electrical engineering and 
 % PART FOUR - GROUPS OF STUDENTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-group_of_students("Computer Science and Systems Engineering", "19213", 13, 3). 
-group_of_students("Computer Science and Systems Engineering", "19214", 12, 3). 
-group_of_students("Computer Science and Systems Engineering", "20213", 16, 2). 
-group_of_students("Computer Science and Systems Engineering", "20214", 16, 2). 
-group_of_students("Computer Science and Systems Engineering", "20215", 17, 2). 
-group_of_students("Software Engineering and Computer Science", "19201", 17, 3). 
-group_of_students("Software Engineering and Computer Science", "19202", 15, 3). 
-group_of_students("Software Engineering and Computer Science", "19203", 15, 3). 
-group_of_students("Software Engineering and Computer Science", "19204", 12, 3). 
-group_of_students("Software Engineering and Computer Science", "19205", 18, 3). 
-group_of_students("Software Engineering and Computer Science", "19206", 13, 3). 
-group_of_students("Software Engineering and Computer Science", "19207", 12, 3). 
-group_of_students("Software Engineering and Computer Science", "19208", 14, 3). 
-group_of_students("Software Engineering and Computer Science", "19209", 15, 3). 
-group_of_students("Software Engineering and Computer Science", "19210", 12, 3). 
-group_of_students("Software Engineering and Computer Science", "19211", 11, 3). 
-group_of_students("Software Engineering and Computer Science", "19212", 17, 3). 
-group_of_students("Software Engineering and Computer Science", "20201", 17, 2). 
-group_of_students("Software Engineering and Computer Science", "20202", 15, 2). 
-group_of_students("Software Engineering and Computer Science", "20203", 15, 2). 
-group_of_students("Software Engineering and Computer Science", "20204", 12, 2). 
-group_of_students("Software Engineering and Computer Science", "20205", 18, 2). 
-group_of_students("Software Engineering and Computer Science", "20206", 13, 2). 
-group_of_students("Software Engineering and Computer Science", "20207", 15, 2). 
-group_of_students("Software Engineering and Computer Science", "20208", 14, 2). 
-group_of_students("Software Engineering and Computer Science", "20209", 15, 2). 
-group_of_students("Software Engineering and Computer Science", "20210", 14, 2). 
-group_of_students("Software Engineering and Computer Science", "20211", 16, 2). 
-group_of_students("Software Engineering and Computer Science", "20212", 17, 2). 
+group_of_students("Computer Science and Systems Engineering", "19213", 13, 5). 
+group_of_students("Computer Science and Systems Engineering", "19214", 12, 5). 
+group_of_students("Computer Science and Systems Engineering", "20213", 16, 4). 
+group_of_students("Computer Science and Systems Engineering", "20214", 16, 4). 
+group_of_students("Computer Science and Systems Engineering", "20215", 17, 4). 
+group_of_students("Software Engineering and Computer Science", "19201", 17, 5). 
+group_of_students("Software Engineering and Computer Science", "19202", 15, 5). 
+group_of_students("Software Engineering and Computer Science", "19203", 15, 5). 
+group_of_students("Software Engineering and Computer Science", "19204", 12, 5). 
+group_of_students("Software Engineering and Computer Science", "19205", 18, 5). 
+group_of_students("Software Engineering and Computer Science", "19206", 13, 5). 
+group_of_students("Software Engineering and Computer Science", "19207", 12, 5). 
+group_of_students("Software Engineering and Computer Science", "19208", 14, 5). 
+group_of_students("Software Engineering and Computer Science", "19209", 15, 5). 
+group_of_students("Software Engineering and Computer Science", "19210", 12, 5). 
+group_of_students("Software Engineering and Computer Science", "19211", 11, 5). 
+group_of_students("Software Engineering and Computer Science", "19212", 17, 5). 
+group_of_students("Software Engineering and Computer Science", "20201", 17, 4). 
+group_of_students("Software Engineering and Computer Science", "20202", 15, 4). 
+group_of_students("Software Engineering and Computer Science", "20203", 15, 4). 
+group_of_students("Software Engineering and Computer Science", "20204", 12, 4). 
+group_of_students("Software Engineering and Computer Science", "20205", 18, 4). 
+group_of_students("Software Engineering and Computer Science", "20206", 13, 4). 
+group_of_students("Software Engineering and Computer Science", "20207", 15, 4). 
+group_of_students("Software Engineering and Computer Science", "20208", 14, 4). 
+group_of_students("Software Engineering and Computer Science", "20209", 15, 4). 
+group_of_students("Software Engineering and Computer Science", "20210", 14, 4). 
+group_of_students("Software Engineering and Computer Science", "20211", 16, 4). 
+group_of_students("Software Engineering and Computer Science", "20212", 17, 4). 
 
-list_groups_of_students("Computer Science and Systems Engineering", 2, ["20213", "20214", "20215"]). 
-list_groups_of_students("Computer Science and Systems Engineering", 3, ["19213", "19214"]). 
-list_groups_of_students("Software Engineering and Computer Science", 2, ["20201", "20202", "20203", "20204", "20205", "20206", "20207", "20208", "20209", "20210", "20211", "20212"]). 
-list_groups_of_students("Software Engineering and Computer Science", 3, ["19201", "19202", "19203", "19204", "19205", "19206", "19207", "19208", "19209", "19210", "19211", "19212"]). 
+list_groups_of_students("Computer Science and Systems Engineering", 4, ["20213", "20214", "20215"]). 
+list_groups_of_students("Computer Science and Systems Engineering", 5, ["19213", "19214"]). 
+list_groups_of_students("Software Engineering and Computer Science", 4, ["20201", "20202", "20203", "20204", "20205", "20206", "20207", "20208", "20209", "20210", "20211", "20212"]). 
+list_groups_of_students("Software Engineering and Computer Science", 5, ["19201", "19202", "19203", "19204", "19205", "19206", "19207", "19208", "19209", "19210", "19211", "19212"]). 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -149,8 +149,8 @@ first_class_starts(9,0).
 class_duration(90). 
 short_brake_duration(5). 
 long_brake_duration(15). 
-study_days_in_week(5). 
-study_days_in_week_students(5). 
+study_days_in_week(6). 
+study_days_in_week_students(6). 
 study_days_in_week_teachers(5). 
 classes_in_day(7). 
 classes_in_day_students(3). 

@@ -700,8 +700,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-    # Матвей!!! Этот метод вызывается только диспетчером. daysCanWork и daysWantWork ОБЯЗАНЫ быть равны [1,2,3,4,5,6],
-    # weight = 0.
+    # Матвей!!! Этот метод вызывается только диспетчером.
     # Уже потом препод сам через updateTeacher может убрать те дни, когда не может или не хочет работать
     def addTeacher(self, name, daysCanWork, daysWantWork, weight):
         if not (type(weight) is int):
@@ -1104,6 +1103,30 @@ class DatabaseManager:
 ########################################################################################################################
 
     #def getSchedule
+
+########################################################################################################################
+
+    def yearShiftRight(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM GroupsNEW'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        for row in rows:
+            dbManager = DatabaseManager()
+            dbManager.updateGroup(row[0], row[1], row[2], row[3], row[4] + 1)
+
+    def yearShiftLeft(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM GroupsNEW'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        for row in rows:
+            dbManager = DatabaseManager()
+            dbManager.updateGroup(row[0], row[1], row[2], row[3], row[4] - 1)
 
 ########################################################################################################################
 
