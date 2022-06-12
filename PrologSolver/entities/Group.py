@@ -1,7 +1,8 @@
 class Group:
-    def __init__(self, specialization, numberOfGroup,
+    def __init__(self, id, specializationId, name,
                  amountOfStudents, yearOfStudy):
-        self.specialization = specialization
-        self.numberOfGroup = numberOfGroup
+        self.id = id
+        self.specializationId = specializationId
+        self.name = name
         self.amountOfStudents = amountOfStudents
         self.yearOfStudy = yearOfStudy
