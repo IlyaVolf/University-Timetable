@@ -1,8 +1,8 @@
 class Teacher:
-    def __init__(self, subject, name, daysTeacherCanWork,
-                 daysTeacherWantWork, weight):
-        self.subject = subject
+    def __init__(self, id, name, daysCanWork,
+                 daysWantWork, weight):
+        self.id = id
         self.name = name
-        self.daysTeacherCanWork = daysTeacherCanWork
-        self.daysTeacherWantWork = daysTeacherWantWork
+        self.daysCanWork = daysCanWork
+        self.daysWantWork = daysWantWork
         self.weight = weight

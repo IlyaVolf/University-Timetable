@@ -32,7 +32,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 attempts(2). 
-semester(1). 
 
 teacher("Permyakov Ruslan Anatolievich"). 
 teacher("Zlygostev Anton Igorevich"). 
@@ -54,16 +53,15 @@ teacher("Derzho Marina Anatolievna").
 type_of_class("lec"). 
 type_of_class("pr"). 
 
-classroom("t3213", [type_of_class("pr"), type_of_class("lab")], 20). 
+classroom("t3213", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("402 MB", [type_of_class("lec"), type_of_class("pr")], 200). 
 classroom("t2266", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("2128", [type_of_class("lec"), type_of_class("pr")], 80). 
-classroom("t3220", [type_of_class("lab"), type_of_class("pr")], 20). 
+classroom("t3320", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("1154", [type_of_class("lec"), type_of_class("pr")], 20). 
 classroom("406 MB", [type_of_class("lec"), type_of_class("pr")], 20). 
 classroom("1155", [type_of_class("lec"), type_of_class("pr")], 40). 
 classroom("t2213", [type_of_class("lab"), type_of_class("pr")], 20). 
-classroom("SB", [type_of_class("pe")], 500). 
 classroom("1156", [type_of_class("lec"), type_of_class("pr")], 200). 
 classroom("t2221", [type_of_class("lab"), type_of_class("pr")], 20). 
 
@@ -71,10 +69,10 @@ classroom("t2221", [type_of_class("lab"), type_of_class("pr")], 20).
 % PART TWO - FACS, ED PRS, SPECS % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-faculty("Faculty of Information Technologies"). 
+faculty("Department of Information Technologies"). 
+faculty("Department of Natural Science"). 
 
-ed_program("Faculty of Information Technologies", "BACH, 09.03.01, Computer Science and Engineering"). 
-
+ed_program("Department of Information Technologies", "BACH, 09.03.01, Computer Science and Engineering"). 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Computer Science and Systems Engineering"). 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Software Engineering and Computer Science"). 
 
@@ -146,6 +144,7 @@ list_groups_of_students("Software Engineering and Computer Science", 3, ["19201"
 % PART FIVE - HARD CONSTRAINTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
+semester(1). 
 first_class_starts(9,0). 
 class_duration(90). 
 short_brake_duration(5). 
