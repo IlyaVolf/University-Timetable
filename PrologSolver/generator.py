@@ -306,16 +306,15 @@ def create_pl(mode, classToAdd=None):
 
         file.write("\n")
 
-
+# Сохраняем результат в БД
 def save():
-    dbManager.clearGeneratedScheduleTable()
+    dbManager.initGeneratedScheduleTable()
 
     with open("query.txt", "r") as file:
         data = file.read()
 
     strings = data.split("\n")
 
-    dbManager.clearClassToGroupTable()
     for i in range(1, len(strings) - 1, 1):
         elements = strings[i].split(";")
         dbManager.addGeneratedClass(i, elements[0], elements[1].replace(',', ':'), elements[2], elements[3], elements[4],
@@ -403,6 +402,7 @@ def generate():
     prolog.consult("main.pl")
     print(list(prolog.query("main(" + str(attempts) + ").")))
     save()
+    return dbManager.getAllGeneratedClasses()
 
 
 # Добавление одного предмета с неполным указанием характеристик - система к текущему расписанию сама добавит
@@ -486,6 +486,7 @@ dbManager = DatabaseManager()
 
 # test0, test1, test2
 dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
+dbManager.initGeneratedScheduleTable()
 generate() # возвращать массив
 #dbManager.initFaculty()
 #dbManager.addFaculty("Department of Information Technologies")
