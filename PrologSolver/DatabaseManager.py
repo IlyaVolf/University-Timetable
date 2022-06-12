@@ -709,6 +709,19 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # for prolog (incremental adding)
+    def getAllUngeneratedSubjects(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM Subjects WHERE Generated = 0'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
+        return lst
+
     ####################################################################################################################
 
     # Создать таблицу учителей

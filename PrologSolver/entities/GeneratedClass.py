@@ -24,7 +24,7 @@ class GeneratedClass:
         if self.groups == "[]":
             return 0
 
-        tokens = self.getGroups()
+        tokens = self.getGroupsAsString()
 
         return len(tokens)
 
