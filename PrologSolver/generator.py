@@ -486,7 +486,7 @@ dbManager = DatabaseManager()
 
 # test0, test1, test2
 dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
-test0()
+generate() # возвращать массив
 #dbManager.initFaculty()
 #dbManager.addFaculty("Department of Information Technologies")
 #dbManager.addFaculty("Department of Natural Science")
