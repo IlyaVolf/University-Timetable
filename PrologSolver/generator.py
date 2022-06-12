@@ -360,6 +360,7 @@ def generate():
     prolog.consult("fit_new_department_db.pl")
     prolog.consult("main.pl")
     print(list(prolog.query("main(" + str(attempts) + ").")))
+    dbManager.markAsGeneratedSubject()
     save()
     return dbManager.getAllGeneratedClasses()
 
@@ -445,7 +446,7 @@ dbManager = DatabaseManager()
 
 # test0, test1, test2
 dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
-#generate()
+generate()
 #res = dbManager.getScheduleStudents("19209").scheduleEntities
 res = dbManager.getScheduleTeachers("Gorchakov Konstantin Mikhailovich").scheduleEntities
 for i in range(6):

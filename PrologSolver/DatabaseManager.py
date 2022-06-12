@@ -561,7 +561,7 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'CREATE TABLE Subjects(id INTEGER PRIMARY KEY, SpecializationId INTEGER,' \
                       'Name TEXT, Semesters TEXT, TypeOfClass TEXT, Frequency INTEGER, TeacherId INTEGER,' \
-                      'AmountOfGroups INTEGER) '
+                      'AmountOfGroups INTEGER, Generated INTEGER) '
         cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()
@@ -575,6 +575,8 @@ class DatabaseManager:
         cursor.close()
 
     def addSubject(self, specializationId, name, semesters, typeOfClass, frequency, teacherId, amountOfGroups):
+        generated = 0
+
         if not (type(amountOfGroups) is int):
             raise ValueError("amount of groups field must be a number")
 
@@ -589,9 +591,9 @@ class DatabaseManager:
 
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'INSERT INTO Subjects(`SpecializationId`, `Name`, `Semesters`, `TypeOfClass`, `Frequency`, ' \
-                      '`TeacherId`, `AmountOfGroups`) VALUES(?, ?, ?, ?, ?, ?, ?) '
+                      '`TeacherId`, `AmountOfGroups`, `Generated`) VALUES(?, ?, ?, ?, ?, ?, ?, ?) '
         cursor.execute(sqliteQuery, (specializationId, name, semesters, typeOfClass,
-                                     frequency, teacherId, amountOfGroups))
+                                     frequency, teacherId, amountOfGroups, generated))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -634,7 +636,7 @@ class DatabaseManager:
 
         lst = []
         for row in rows:
-            lst.append(Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]))
+            lst.append(Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
         return lst
 
     def getSubject(self, id):
@@ -644,7 +646,7 @@ class DatabaseManager:
         row = cursor.fetchall()[0]
         cursor.close()
 
-        return Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+        return Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
 
     # for prolog
     def getAllSubjectsDistinct(self):
@@ -686,6 +688,26 @@ class DatabaseManager:
         for row in rows:
             lst.append([row[0], row[1]])
         return lst
+
+    # for prolog
+    def markAsGeneratedSubject(self):
+        generated = 1
+        dbManager = DatabaseManager()
+
+        cursor = self.sqlite_connection.cursor()
+        subjects = dbManager.getAllSubject()
+
+        for subject in subjects:
+            semesters = subject.getSemesters()
+            currentSemester = dbManager.getConstraints().semester
+
+            for semester in semesters:
+                if int(semester) % 2 == currentSemester % 2:
+                    sqliteQuery = 'UPDATE Subjects SET Generated = ? WHERE id = ?'
+                    cursor.execute(sqliteQuery, (generated, subject.id,))
+
+        self.sqlite_connection.commit()
+        cursor.close()
 
     ####################################################################################################################
 

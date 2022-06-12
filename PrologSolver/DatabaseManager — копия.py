@@ -1,6 +1,5 @@
 import sqlite3
 
-from entities.Auditory import Auditory
 from entities.Constraints import Constraints
 from entities.EducationalProgram import EducationalProgram
 from entities.GeneratedClass import GeneratedClass

@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a370555f-056d-4618-bcd3-179e68c86526" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DatabaseManager — копия.py" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseManager — копия.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DatabaseManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entities/Auditory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entities/Subject.py" beforeDir="false" afterPath="$PROJECT_DIR$/entities/Subject.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/query.txt" beforeDir="false" afterPath="$PROJECT_DIR$/query.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/timetable.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/timetable.sqlite" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -97,6 +104,17 @@
       <updated>1654607823966</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
