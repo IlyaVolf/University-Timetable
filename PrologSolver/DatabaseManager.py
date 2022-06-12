@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 
 from entities.Faculty import Faculty
 from entities.Constraints import Constraints
@@ -9,6 +10,8 @@ from entities.Group import Group
 from entities.Subject import Subject
 from entities.Teacher import Teacher
 from entities.Classroom import Classroom
+from entities.Schedule import Schedule
+from entities.ScheduleEntity import ScheduleEntity
 
 
 def tupleToList(t):
@@ -18,18 +21,19 @@ def tupleToList(t):
     return lst
 
 
-class DatabaseManager:
-    studyDaysInWeek = 6
+studyDaysInWeek = 6
 
+
+class DatabaseManager:
     def __init__(self, dbFileName='timetable.sqlite'):
         try:
             self.sqlite_connection = sqlite3.connect(dbFileName)
         except sqlite3.Error as error:
             print("Ошибка при подключении к sqlite", error)
 
-    ########################################################################################################################
+    ####################################################################################################################
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     # Создать таблицу факультетов
     def initFaculty(self):
@@ -127,7 +131,7 @@ class DatabaseManager:
 
         return Faculty(row[0], row[1])
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     # Создать таблицу образовательных программ
     def initEducationalProgram(self):
@@ -259,7 +263,7 @@ class DatabaseManager:
             lst.append(EducationalProgram(row[0], row[1], row[2]))
         return lst
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     # Создать таблицу специализаций
     def initSpecialization(self):
@@ -412,7 +416,7 @@ class DatabaseManager:
 
         return lst
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     # Создать таблицу групп
     def initGroup(self):
@@ -549,7 +553,7 @@ class DatabaseManager:
 
         return lst
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     # Создать таблицу предметов
     def initSubject(self):
@@ -682,7 +686,7 @@ class DatabaseManager:
             lst.append([row[0], row[1]])
         return lst
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     # Создать таблицу учителей
     def initTeacher(self):
@@ -784,7 +788,7 @@ class DatabaseManager:
 
         return Teacher(row[0], row[1], row[2], row[3], row[4])
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     # Создать таблицу аудиторий
     def initClassroom(self):
@@ -867,7 +871,7 @@ class DatabaseManager:
 
         return Classroom(row[0], row[1], row[2], row[3])
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     # Создать таблицу ограничений
     def initConstraints(self):
@@ -1031,7 +1035,7 @@ class DatabaseManager:
         return Constraints(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],
                            row[10], row[11], row[12], row[13], row[14])
 
-    ########################################################################################################################
+    ####################################################################################################################
 
     def initGeneratedScheduleTable(self):
         cursor = self.sqlite_connection.cursor()
@@ -1078,6 +1082,7 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM GeneratedSchedule'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
+        self.sqlite_connection.commit()
         cursor.close()
 
         lst = []
@@ -1093,6 +1098,7 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM ClassToGroups WHERE ClassId = ?'
         cursor.execute(sqliteQuery, (classId,))
         rows = cursor.fetchall()
+        self.sqlite_connection.commit()
         cursor.close()
 
         lst = []
@@ -1100,11 +1106,138 @@ class DatabaseManager:
             lst.append(row[2])
         return lst
 
-########################################################################################################################
+    ####################################################################################################################
 
-    #def getSchedule
+    # Формат - объект класса Schedule, который содержит:
+    # 1) Теоретическое число пар
+    # 2) Число учебных дней
+    # 3) список из 6 элементов - объектов класса ScheduleEntity, который содержит:
+    #       String: название предмета
+    #       String: тип занятия
+    #       String: преподаватель
+    #       String: аудитория
+    #       String: группы
+    #       String: номер пары
+    #       String: время
+    def getScheduleStudents(self, groupName):
+        dbManager = DatabaseManager()
 
-########################################################################################################################
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM ClassToGroups WHERE GroupName = ?'
+        cursor.execute(sqliteQuery, (groupName,))
+        rows = cursor.fetchall()
+
+        schedule = []
+        for day in range(studyDaysInWeek):
+            scheduleDay = []
+            for row in rows:
+                sqliteQuery = 'SELECT * FROM GeneratedSchedule WHERE id = ?'
+                cursor.execute(sqliteQuery, (row[1],))
+                rows2 = cursor.fetchall()
+                for row2 in rows2:
+                    if day == (int(row2[10]) - 1):
+                        hours, minutes = dbManager.calculateTimeStart(int(row2[11]))
+                        h = str(hours)
+                        if minutes < 10:
+                            m = "0" + str(minutes)
+                        else:
+                            m = str(minutes)
+                        time = h + ":" + m
+                        scheduleDay.append(
+                            ScheduleEntity(row2[4], row2[7], row2[6], row2[8], row2[9], row2[11], time))
+            schedule.append(scheduleDay)
+
+        self.sqlite_connection.commit()
+        cursor.close()
+
+        return Schedule(dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
+                        schedule)
+
+    # Формат - объект класса Schedule, который содержит:
+    # 1) Теоретическое число пар
+    # 2) Число учебных дней
+    # 3) список из 6 элементов - объектов класса ScheduleEntity, который содержит:
+    #       String: название предмета
+    #       String: тип занятия
+    #       String: преподаватель
+    #       String: аудитория
+    #       String: группы
+    #       String: номер пары
+    #       String: время
+    def getScheduleTeachers(self, teacherName):
+        dbManager = DatabaseManager()
+
+        schedule = []
+        cursor = self.sqlite_connection.cursor()
+        for day in range(studyDaysInWeek):
+            scheduleDay = []
+            sqliteQuery = 'SELECT * FROM GeneratedSchedule WHERE Teacher = ?'
+            cursor.execute(sqliteQuery, (teacherName,))
+            rows = cursor.fetchall()
+            for row in rows:
+                if day == (int(row[10]) - 1):
+                    hours, minutes = dbManager.calculateTimeStart(int(row[11]))
+                    h = str(hours)
+                    if minutes < 10:
+                        m = "0" + str(minutes)
+                    else:
+                        m = str(minutes)
+                    time = h + ":" + m
+                    scheduleDay.append(
+                        ScheduleEntity(row[4], row[7], row[6], row[8], row[9], row[11], time))
+            schedule.append(scheduleDay)
+
+        self.sqlite_connection.commit()
+        cursor.close()
+
+        return Schedule(dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
+                        schedule)
+
+    ####################################################################################################################
+
+    # Функция рассчитывает время начала пары
+    @staticmethod
+    def calculateTimeStart(classNumber):
+        dbManager = DatabaseManager()
+        constraints = dbManager.getConstraints()
+        classesPerDay = int(constraints.classesPerDay)
+        startTime = constraints.firstClassStarts
+        classDuration = int(constraints.classDuration)
+        shortBrake = int(constraints.shortBrakeDuration)
+        longBrake = int(constraints.largeBrakeDuration)
+
+        inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake)
+
+        if classNumber > classesPerDay:
+            return -1, -1
+
+        time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
+               datetime.timedelta(minutes=inMinutes)
+
+        return time.hour, time.minute
+
+    # Функция рассчитывает время конца пары
+    @staticmethod
+    def calculateTimeEnd(classNumber):
+        dbManager = DatabaseManager()
+        constraints = dbManager.getConstraints()
+        classesPerDay = int(constraints.classesPerDay)
+        startTime = constraints.firstClassStarts
+        classDuration = int(constraints.classDuration)
+        shortBrake = int(constraints.shortBrakeDuration)
+        longBrake = int(constraints.largeBrakeDuration)
+
+        inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake) + classDuration + shortBrake
+
+        if classNumber > classesPerDay:
+            return -1, -1
+
+        time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
+               datetime.timedelta(minutes=inMinutes)
+
+        return time.hour, time.minute
+
+    ####################################################################################################################
 
     def yearShiftRight(self):
         cursor = self.sqlite_connection.cursor()
@@ -1128,7 +1261,7 @@ class DatabaseManager:
             dbManager = DatabaseManager()
             dbManager.updateGroup(row[0], row[1], row[2], row[3], row[4] - 1)
 
-########################################################################################################################
+    ####################################################################################################################
 
     # TODO functions working with generated timetable will be written later because of new solver
     def clearAll(self):

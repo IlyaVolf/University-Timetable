@@ -1,5 +1,4 @@
 from pyswip import Prolog
-import datetime
 
 import addManTests
 from DatabaseManager import DatabaseManager
@@ -320,47 +319,6 @@ def save():
         dbManager.addGeneratedClass(i, elements[0], elements[1].replace(',', ':'), elements[2], elements[3], elements[4],
                                     elements[5], elements[6], elements[7], elements[8], elements[9], elements[10])
 
-
-# Функция рассчитывает время начала пары
-def calculateTimeStart(classNumber):
-    constraints = dbManager.getConstraints()
-    classesPerDay = int(constraints.classesPerDay)
-    startTime = constraints.firstClassStarts
-    classDuration = int(constraints.classDuration)
-    shortBrake = int(constraints.shortBrakeDuration)
-    longBrake = int(constraints.largeBrakeDuration)
-
-    inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake)
-
-    if classNumber > classesPerDay:
-        return -1, -1
-
-    time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
-           datetime.timedelta(minutes=inMinutes)
-
-    return time.hour, time.minute
-
-
-# Функция рассчитывает время конца пары
-def calculateTimeEnd(classNumber):
-    constraints = dbManager.getConstraints()
-    classesPerDay = int(constraints.classesPerDay)
-    startTime = constraints.firstClassStarts
-    classDuration = int(constraints.classDuration)
-    shortBrake = int(constraints.shortBrakeDuration)
-    longBrake = int(constraints.largeBrakeDuration)
-
-    inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake) + classDuration + shortBrake
-
-    if classNumber > classesPerDay:
-        return -1, -1
-
-    time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
-           datetime.timedelta(minutes=inMinutes)
-
-    return time.hour, time.minute
-
-
 def fromClassToEvent(classToTransform):
     res = "event(class(\"" + classToTransform.specialization + "\", \"" + classToTransform.subject + "\", " + \
           str(classToTransform.semester) + ", type_of_class(\"" + classToTransform.typeOfClass + "\"), teacher(\"" + \
@@ -486,8 +444,13 @@ dbManager = DatabaseManager()
 
 # test0, test1, test2
 dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
+#res = dbManager.getScheduleStudents("19213").scheduleEntities
+res = dbManager.getScheduleTeachers("Vaskevich Vladimir Leontievich").scheduleEntities
+for i in range(6):
+    for j in range(len(res[i])):
+        print(i+1, res[i][j].subject, res[i][j].typeOfClass, res[i][j].auditory, res[i][j].time)
 #dbManager.initGeneratedScheduleTable()
-dbManager.yearShiftLeft()
+#dbManager.yearShiftLeft()
 #generate() # возвращать массив
 #dbManager.initFaculty()
 #dbManager.addFaculty("Department of Information Technologies")
@@ -505,9 +468,6 @@ dbManager.yearShiftLeft()
 #dbManager.addClassroom("t2221", "lab, pr", 20)
 #dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
 #dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
-
-print(calculateTimeStart(3))
-print(calculateTimeEnd(3))
 
 dbManager.close()
 
