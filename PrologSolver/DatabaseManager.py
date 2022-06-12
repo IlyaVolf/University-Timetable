@@ -1124,7 +1124,7 @@ class DatabaseManager:
         cursor.close()
 
     # Возвращаем все сгенерированные занятия
-    def getAllGeneratedClasses(self):
+    def getAllGeneratedClass(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM GeneratedSchedule'
         cursor.execute(sqliteQuery)
@@ -1138,6 +1138,19 @@ class DatabaseManager:
                 GeneratedClass(rows[i][0], rows[i][1], rows[i][2], rows[i][3], rows[i][4], rows[i][5], rows[i][6],
                                rows[i][7], rows[i][8], rows[i][9], rows[i][10], rows[i][11], rows[i][12]))
         return lst
+
+        # Возвращаем все сгенерированные занятия
+
+    def getGeneratedClass(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM GeneratedSchedule WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
+        self.sqlite_connection.commit()
+        cursor.close()
+
+        return GeneratedClass(row[0], row[1], row[2], row[3], row[4], row[5], row[6],
+                              row[7], row[8], row[9], row[10], row[11], row[12])
 
     # Получить список из всех групп, которые отнесены к конкретному занятию
     def getAllGroupsOfClass(self, classId):

@@ -85,7 +85,14 @@ getSpecialization(Specialization, EdProgram, Faculty) :-
 % PART THREE - SUBJECTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%% 
 
-subject("Computer Science and Systems Engineering", "Interface design", [5], [[type_of_class("lec"), 1, [[teacher("Derzho Marina Anatolievna"), 2]]]]). 
+subject("Computer Science and Systems Engineering", "Models of Computation", [3,4], [[type_of_class("lec"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 3]]], [type_of_class("pr"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 2], [teacher("Avdeev Roman Ruslanovich"), 1]]]]). 
+subject("Computer Science and Systems Engineering", "Machine learning methods", [5], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2]]], [type_of_class("pr"), 1, [[teacher("Antonets Denis Viktorovich"), 2]]]]). 
+subject("Computer Science and Systems Engineering", "Probability theory and mathematical statistics", [3], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 3]]], [type_of_class("pr"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2], [teacher("Antonets Denis Viktorovich"), 1]]]]). 
+subject("Computer Science and Systems Engineering", "Team development of a multifunctional software and hardware complex", [5], [[type_of_class("lec"), 1, [[teacher("Adamansky Anton Valentinovich"), 2]]], [type_of_class("pr"), 2, [[teacher("Adamansky Anton Valentinovich"), 2]]]]). 
+subject("Software Engineering and Computer Science", "Electrical engineering and Electronics", [5], [[type_of_class("lec"), 1, [[teacher("Gorchakov Konstantin Mikhailovich"), 12]]], [type_of_class("pr"), 1, [[teacher("Gorchakov Konstantin Mikhailovich"), 4], [teacher("Gorchakov Konstantin Mikhailovich"), 4], [teacher("Gorchakov Konstantin Mikhailovich"), 4]]]]). 
+subject("Computer Science and Systems Engineering", "Differential equations and the theory of functions of a complex variable", [3], [[type_of_class("lec"), 1, [[teacher("Vaskevich Vladimir Leontievich"), 3]]], [type_of_class("pr"), 1, [[teacher("Vaskevich Vladimir Leontievich"), 2], [teacher("Shvab Irina Vasilievna"), 1]]]]). 
+subject("Computer Science and Systems Engineering", "Computational Mathematics", [5], [[type_of_class("pr"), 1, [[teacher("Shvab Irina Vasilievna"), 1], [teacher("Vaskevich Vladimir Leontievich"), 1]]], [type_of_class("lec"), 1, [[teacher("Vaskevich Vladimir Leontievich"), 2]]]]). 
+subject("Computer Science and Systems Engineering", "Electrical engineering and Electronics", [3,4], [[type_of_class("lec"), 1, [[teacher("Gorchakov Konstantin Mikhailovich"), 3]]], [type_of_class("pr"), 1, [[teacher("Gorchakov Konstantin Mikhailovich"), 3]]]]). 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

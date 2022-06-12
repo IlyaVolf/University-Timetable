@@ -1,17 +1,7 @@
 from pyswip import Prolog
 
-import addManTests
 from DatabaseManager import DatabaseManager
-
-from entities.Faculty import Faculty
-from entities.Constraints import Constraints
-from entities.EducationalProgram import EducationalProgram
-from entities.Specialization import Specialization
 from entities.GeneratedClass import GeneratedClass
-from entities.Group import Group
-from entities.Subject import Subject
-from entities.Teacher import Teacher
-from entities.Classroom import Classroom
 
 # число попыток, если это значение не задано явно
 attempts = 1
@@ -175,10 +165,10 @@ def create_pl(mode):
             # file.write("days_teacher_can_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6]). \n")
             # file.write("days_teacher_want_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6], 0). \n")
 
-            file.write("subject(\"Computer Science and Systems Engineering\", \"Interface design\", [5], "
-                       "[[type_of_class(\"lec\"), 1, [[teacher(\"Derzho Marina Anatolievna\"), 2]]]]). \n")
+            #file.write("subject(\"Computer Science and Systems Engineering\", \"Interface design\", [5], "
+            #           "[[type_of_class(\"lec\"), 1, [[teacher(\"Derzho Marina Anatolievna\"), 2]]]]). \n")
 
-            allSubjects = dbManager.getAllSubjects()
+            allSubjects = dbManager.getAllSubject()
             for subject in allSubjects:
                 file.write("subject(\"" + subject[0] + "\", \"" + subject[1] + "\", [" + subject[2] + "], [")
                 allSubjectsTypesOfClass = dbManager.getAllSubjectTypesOfClass(subject[0], subject[1], subject[2])
@@ -348,7 +338,7 @@ def fromClassesToSchedule(wrapper):
     if wrapper:
         res += "currentSchedule("
 
-    classes = dbManager.getAllGeneratedClasses()
+    classes = dbManager.getAllGeneratedClass()
     res += "["
     for i in range(0, len(classes), 1):
         res += fromClassToEvent(classes[i])
@@ -372,7 +362,7 @@ def generate():
     print(list(prolog.query("main(" + str(attempts) + ").")))
     dbManager.markAsGeneratedSubject()
     save()
-    return dbManager.getAllGeneratedClasses()
+    return dbManager.getAllGeneratedClass()
 
 
 # догенерация расписания, используя текущее сгенерированное расписание
@@ -385,53 +375,38 @@ def overgenerate():
     print(list(prolog.query("add(" + schedule + ", " + str(attempts) + ").")))
     dbManager.markAsGeneratedSubject()
     save()
-    return dbManager.getAllGeneratedClasses()
-
-
-# Добавление одного предмета с неполным указанием характеристик - система к текущему расписанию сама добавит
-# новое занятие самым оптимальным образом, если это возможно.
-# Требуется подать на вход элемент таблицы Subjects (класс Subject).
-# TODO Нужно как-то заполучить занятие - объект класса Subject
-def add(classToAdd):
-    schedule = fromClassesToSchedule(True)
-    create_pl(3, classToAdd)
-    prolog = Prolog()
-    prolog.consult("fit_new_department_db.pl")
-    prolog.consult("main.pl")
-    print(list(prolog.query("add(" + schedule + ", " + str(attempts) + ").")))
-    dbManager.markAsGeneratedSubject()
-    save()
-    return dbManager.getAllGeneratedClasses()
+    return dbManager.getAllGeneratedClass()
 
 
 # удаление одного предмета из текущего расписания. Требуется подать на вход элемент таблицы GeneratedSchedule
 # (класс GeneratedClass).
-# TODO Нужно как-то заполучить занятие - объект класса GeneratedClass (написать метод извлечения по id из dbManager,
-# TODO например)
-def remove_man(classToDelete):
+# TODO Если fail, то размер списка 0?
+def remove_man(id):
+    classToDelete = dbManager.getGeneratedClass(id)
     event = fromClassToEvent(classToDelete)
     schedule = fromClassesToSchedule(False)
-    create_pl(1)
+    create_pl(0)
     prolog = Prolog()
     prolog.consult("fit_new_department_db.pl")
     prolog.consult("main.pl")
     print(list(prolog.query("remove(" + schedule + ", " + event + ")")))
     save()
+    return dbManager.getAllGeneratedClass()
 
 
 # добавление одного предмета с полным указанием параметров вручную. Если противоречий нет с текущим расписанием, то
 # предмет добавится. Требуется подать на вход элемент таблицы GeneratedSchedule (класс GeneratedClass).
-# TODO Нужно как-то заполучить занятие - объект класса GeneratedClass (написать метод извлечения по id из dbManager,
-# TODO например)
+# TODO Если fail, то размер списка 0?
 def add_man(classToAdd):
     event = fromClassToEvent(classToAdd)
     schedule = fromClassesToSchedule(False)
-    create_pl(2)
+    create_pl(0)
     prolog = Prolog()
     prolog.consult("fit_new_department_db.pl")
     prolog.consult("main.pl")
     print(list(prolog.query("addManually(" + schedule + ", " + event + ")")))
     save()
+    return dbManager.getAllGeneratedClass()
 
 
 # ВНУТРЕННИЕ ТЕСТЫ
@@ -444,15 +419,9 @@ def test0():
 # Проверка инкрементального добавления: авто добавления предмета
 def test1():
     generate()
-    add(Subject(
-        "Computer Science and Systems Engineering",
-        "Interface design",
-        "5",
-        "lec",
-        1,
-        16,
-        2
-    ))
+    dbManager.addSubject(1, "Interface design", "5", "lec", 1, 16, 2)
+    overgenerate()
+    dbManager.removeSubject(23)
 
 
 # Тут я провожу тест: генерирую расписание с нуля, затем удаляю пердмет вручную и возвращаю его обратно вручную,
@@ -460,11 +429,28 @@ def test1():
 # зависимости от того, заняты ли 19213 и 19214 группы 4-й парой в субботу или нет.
 def test2():
     generate()
-    a = dbManager.getAllGeneratedClasses()[0]
-    remove_man(a)
+    a = dbManager.getGeneratedClass(1)
+    remove_man(1)
     add_man(a)
-    remove_man(addManTests.test4(a))
-    add_man(addManTests.test4(a))
+
+    # Заполняется диспетчером вручную!
+    clazz = GeneratedClass(
+        a.id,
+        a.faculty,
+        a.educationalProgram,
+        "Computer Science and Systems Engineering",
+        "Interface design",
+        5,
+        "Derzho Marina Anatolievna",
+        "lec",
+        "1156",
+        "[19213,19214]",
+        6,
+        4,
+        16
+    )
+
+    add_man(clazz)
 
 
 dbManager = DatabaseManager()
@@ -473,12 +459,9 @@ dbManager = DatabaseManager()
 dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
 # простая генерация
-generate()
+#generate()
 
-# Проверка инкрементальной генерации
-dbManager.addSubject(1, "Interface design", "5", "lec", 1, 16, 2)
-overgenerate()
-dbManager.removeSubject(23)
+test2()
 
 # res = dbManager.getScheduleStudents("19209").scheduleEntities
 res = dbManager.getScheduleTeachers("Gorchakov Konstantin Mikhailovich").scheduleEntities
