@@ -382,11 +382,18 @@ exportResult2(Events, Fine, Out) :-
 /*
  * The function updates the state of distribution of groups by teachers for each type of subject.
  */
+% Нормас
 add_to_taken_groups(class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, _, _, Order_in_week, _), Groups) :-
 	taken_groups_in_type_of_class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, Current_groups, Order_in_week),
 	% append(Current_groups, Groups, New_groups),
 	subtract(Current_groups, Groups, New_groups),
-	retract(taken_groups_in_type_of_class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, _, Order_in_week)),
+	%write(Name_of_subject),
+	%write(Current_groups),
+	%write(" "),
+	%write(Groups),
+	%write(" "),
+	%writeln(New_groups),
+	retractall(taken_groups_in_type_of_class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, _, Order_in_week)),
 	asserta(taken_groups_in_type_of_class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, New_groups, Order_in_week)).
 	% writeln(taken_groups_in_type_of_class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, New_groups)).
 
@@ -409,6 +416,9 @@ add_to_teacher_day_time(class(_, _, _, _, Teacher, _, _, _), Day, ClassTime) :-
  */
 class_to_group(class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, _, Amount_of_groups, Order_in_week, _), Groups_of_Students) :-
 	taken_groups_in_type_of_class(Name_of_ed_program, Name_of_subject, Semester, Type_of_class, Vacant_groups, Order_in_week),
+	%write(Name_of_subject),
+	%write(" "),
+	%writeln(Vacant_groups),
 	class_to_group2(Name_of_subject, Semester, Type_of_class, [], Groups_of_Students, Amount_of_groups, Vacant_groups).
 
 % Extract followers from unallocated groups as many as required for the duplicate.

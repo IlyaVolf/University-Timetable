@@ -445,12 +445,13 @@ dbManager = DatabaseManager()
 
 # test0, test1, test2
 dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
-generate()
-#res = dbManager.getScheduleStudents("19213").scheduleEntities
-#res = dbManager.getScheduleTeachers("Vaskevich Vladimir Leontievich").scheduleEntities
-#for i in range(6):
-#    for j in range(len(res[i])):
-#        print(i+1, res[i][j].subject, res[i][j].typeOfClass, res[i][j].auditory, res[i][j].time)
+#generate()
+#res = dbManager.getScheduleStudents("19209").scheduleEntities
+res = dbManager.getScheduleTeachers("Gorchakov Konstantin Mikhailovich").scheduleEntities
+for i in range(6):
+    for j in range(len(res[i])):
+        print(i+1, res[i][j].subject, res[i][j].typeOfClass, res[i][j].auditory, res[i][j].groups, res[i][j].time)
+
 #dbManager.initGeneratedScheduleTable()
 #dbManager.yearShiftLeft()
 #generate() # возвращать массив

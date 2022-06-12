@@ -1161,7 +1161,7 @@ class DatabaseManager:
                 rows2 = cursor.fetchall()
                 for row2 in rows2:
                     if day == (int(row2[10]) - 1):
-                        hours, minutes = dbManager.calculateTimeStart(int(row2[11]))
+                        hours, minutes = calculateTimeStart(int(row2[11]))
                         h = str(hours)
                         if minutes < 10:
                             m = "0" + str(minutes)
