@@ -3,8 +3,8 @@ import sqlite3
 from entities.Faculty import Faculty
 from entities.Constraints import Constraints
 from entities.EducationalProgram import EducationalProgram
-from entities.Specialization import Specialization
 from entities.GeneratedClass import GeneratedClass
+from entities.Specialization import Specialization
 from entities.Group import Group
 from entities.Subject import Subject
 from entities.Teacher import Teacher
@@ -547,7 +547,7 @@ class DatabaseManager:
         for row in rows:
             lst.append(row[0])
 
-        return  lst
+        return lst
 
     ########################################################################################################################
 
@@ -996,9 +996,10 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-    def updateConstraints(self, firstClassStarts, classDuration, shortBrakeDuration, largeBrakeDuration, studyDaysInWeek,
-                       studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
-                       classesPerDayTeachers, lunchBrake, gaps, classroomFillness, semester):
+    def updateConstraints(self, firstClassStarts, classDuration, shortBrakeDuration, largeBrakeDuration,
+                          studyDaysInWeek,
+                          studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
+                          classesPerDayTeachers, lunchBrake, gaps, classroomFillness, semester):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'UPDATE ConstraintsNEW SET FirstClassStarts = ?, ClassDuration = ?, ShortBrakeDuration = ?,' \
                       'LargeBrakeDuration = ?, StudyDaysInWeek = ?, StudyDaysInWeekForStudents = ?, ' \
@@ -1033,16 +1034,89 @@ class DatabaseManager:
 
     ########################################################################################################################
 
+    def initGeneratedScheduleTable(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DROP TABLE IF EXISTS GeneratedSchedule;'
+        cursor.execute(sqliteQuery)
+        sqliteQuery = 'DROP TABLE IF EXISTS ClassToGroups;'
+        cursor.execute(sqliteQuery)
+        sqliteQuery = 'create table GeneratedSchedule (id integer primary key autoincrement, `Faculty`, ' \
+                      '`EducationalProgram`, `Specialization`, `Subject`, `Semester`, `Teacher`, `TypeOfClass`, ' \
+                      '`Auditory`, `Groups`, `Day`, `ClassNumber`)'
+        cursor.execute(sqliteQuery)
+        sqliteQuery = 'create table ClassToGroups (id integer primary key autoincrement, `ClassId`, ' \
+                      '`GroupName`)'
+        cursor.execute(sqliteQuery)
+
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def addGeneratedClass(self, classId, faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
+                          auditory, groupsList, day, classNumber):
+
+        groups = disassemblePrologList(groupsList)
+
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'INSERT INTO GeneratedSchedule(`Faculty`, `EducationalProgram`, `Specialization`, `Subject`,' \
+                      '`Semester`, `Teacher`, `TypeOfClass`, `Auditory`, `Groups`, `Day`, `ClassNumber`) VALUES(?, ?,' \
+                      ' ?, ?, ?, ?, ?, ?, ?, ?, ?) '
+        cursor.execute(sqliteQuery, (faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
+                                     auditory, groupsList, day, classNumber,))
+        self.sqlite_connection.commit()
+
+        ############################ GROUPS ARE ADDED SEPERATELY #######################
+
+        for group in groups:
+            sqliteQuery = 'INSERT INTO ClassToGroups(`ClassId`, `GroupName`) VALUES(?, ?) '
+            cursor.execute(sqliteQuery, (classId, group,))
+
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Возвращаем все сгенерированные занятия
+    def getAllGeneratedClasses(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM GeneratedSchedule'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for i in range(len(rows)):
+            lst.append(
+                GeneratedClass(rows[i][0], rows[i][1], rows[i][2], rows[i][3], rows[i][4], rows[i][5], rows[i][6],
+                               rows[i][7], rows[i][8], rows[i][9], rows[i][10], rows[i][11]))
+        return lst
+
+    # Получить список из всех групп, которые отнесены к конкретному занятию
+    def getAllGroupsOfClass(self, classId):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM ClassToGroups WHERE ClassId = ?'
+        cursor.execute(sqliteQuery, (classId,))
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(row[2])
+        return lst
+
+########################################################################################################################
+
+    #def getSchedule
+
+########################################################################################################################
+
     # TODO functions working with generated timetable will be written later because of new solver
     def clearAll(self):
         cursor = self.sqlite_connection.cursor()
-        cursor.execute('DELETE FROM Auditories')
-        cursor.execute('DELETE FROM Constraints')
-        cursor.execute('DELETE FROM EducationalPrograms')
-        cursor.execute('DELETE FROM Faculties')
-        cursor.execute('DELETE FROM Groups')
-        cursor.execute('DELETE FROM Subjects')
-        cursor.execute('DELETE FROM Teachers')
+        cursor.execute('DELETE FROM ClassroomsNEW')
+        cursor.execute('DELETE FROM ConstraintsNEW')
+        cursor.execute('DELETE FROM EducationalProgramsNEW')
+        cursor.execute('DELETE FROM FacultiesNEW')
+        cursor.execute('DELETE FROM GroupsNEW')
+        cursor.execute('DELETE FROM SubjectsNEW')
+        cursor.execute('DELETE FROM TeachersNEW')
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -1061,58 +1135,6 @@ class DatabaseManager:
     def close(self):
         if self.sqlite_connection:
             self.sqlite_connection.close()
-
-    def clearGeneratedScheduleTable(self):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'DROP TABLE IF EXISTS GeneratedSchedule;'
-        cursor.execute(sqliteQuery)
-        sqliteQuery = 'create table GeneratedSchedule (id integer primary key autoincrement, `Faculty`, ' \
-                      '`EducationalProgram`, `Specialization`, `Subject`, `Semester`, `Teacher`, `TypeOfClass`, ' \
-                      '`Auditory`, `Groups`, `Day`, `ClassNumber`)'
-        cursor.execute(sqliteQuery)
-
-    def clearClassToGroupTable(self):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'DELETE From ClassToGroups'
-        cursor.execute(sqliteQuery, ())
-        self.sqlite_connection.commit()
-
-    def addGeneratedClass(self, classId, faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
-                          auditory, groupsList, day, classNumber):
-
-        groups = disassemblePrologList(groupsList)
-
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'INSERT INTO GeneratedSchedule(`Faculty`, `EducationalProgram`, `Specialization`, `Subject`,' \
-                      '`Semester`, `Teacher`, `TypeOfClass`, `Auditory`, `Groups`, `Day`, `ClassNumber`) VALUES(?, ?,' \
-                      ' ?, ?, ?, ?, ?, ?, ?, ?, ?) '
-        cursor.execute(sqliteQuery, (faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
-                                     auditory, groupsList, day, classNumber,))
-        self.sqlite_connection.commit()
-
-        ############################ GROUPS SEPARATE ADDED #######################
-
-        for group in groups:
-            sqliteQuery = 'INSERT INTO ClassToGroups(`ClassId`, `GroupNumber`) VALUES(?, ?) '
-            cursor.execute(sqliteQuery, (classId, group,))
-
-        self.sqlite_connection.commit()
-        cursor.close()
-
-    # Возвращаем все сгенерированные занятия
-    def getAllGeneratedClasses(self):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM GeneratedSchedule'
-        cursor.execute(sqliteQuery)
-        rows = cursor.fetchall()
-        cursor.close()
-
-        lst = []
-        for i in range(len(rows)):
-            lst.append(
-                GeneratedClass(i, rows[i][1], rows[i][2], rows[i][3], rows[i][4], rows[i][5], rows[i][6], rows[i][7],
-                               rows[i][8], rows[i][9], rows[i][10], rows[i][11]))
-        return lst
 
 
 def disassemblePrologList(groupsList):

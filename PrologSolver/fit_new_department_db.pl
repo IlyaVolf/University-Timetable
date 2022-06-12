@@ -149,8 +149,8 @@ first_class_starts(9,0).
 class_duration(90). 
 short_brake_duration(5). 
 long_brake_duration(15). 
-study_days_in_week(6). 
-study_days_in_week_students(6). 
+study_days_in_week(5). 
+study_days_in_week_students(5). 
 study_days_in_week_teachers(5). 
 classes_in_day(7). 
 classes_in_day_students(3). 
