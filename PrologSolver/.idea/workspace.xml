@@ -4,7 +4,6 @@
     <list default="true" id="a370555f-056d-4618-bcd3-179e68c86526" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DatabaseManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/DatabaseManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entities/GeneratedClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/entities/GeneratedClass.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fit_new_department_db.pl" beforeDir="false" afterPath="$PROJECT_DIR$/fit_new_department_db.pl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/generator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/output.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output.txt" afterDir="false" />
@@ -104,12 +103,23 @@
     </task>
     <servers />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DatabaseManager.py</url>
-          <line>25</line>
+          <line>30</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
