@@ -12,6 +12,7 @@ from entities.Teacher import Teacher
 from entities.Classroom import Classroom
 from entities.Schedule import Schedule
 from entities.ScheduleEntity import ScheduleEntity
+from entities.ScheduleTeacher import ScheduleTeacher
 
 
 def tupleToList(t):
@@ -788,6 +789,16 @@ class DatabaseManager:
 
         return Teacher(row[0], row[1], row[2], row[3], row[4])
 
+    # TODO ВРЕМЕННО
+    def getTeacherByName(self, name):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM TeachersNEW WHERE name = ?'
+        cursor.execute(sqliteQuery, (name,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return Teacher(row[0], row[1], row[2], row[3], row[4])
+
     ####################################################################################################################
 
     # Создать таблицу аудиторий
@@ -1043,28 +1054,29 @@ class DatabaseManager:
         cursor.execute(sqliteQuery)
         sqliteQuery = 'DROP TABLE IF EXISTS ClassToGroups;'
         cursor.execute(sqliteQuery)
-        sqliteQuery = 'create table GeneratedSchedule (id integer primary key autoincrement, `Faculty`, ' \
-                      '`EducationalProgram`, `Specialization`, `Subject`, `Semester`, `Teacher`, `TypeOfClass`, ' \
-                      '`Auditory`, `Groups`, `Day`, `ClassNumber`)'
+        sqliteQuery = 'CREATE TABLE GeneratedSchedule(id INTEGER PRIMARY KEY, Faculty TEXT, ' \
+                      'EducationalProgram TEXT, Specialization TEXT, Subject TEXT, Semester INTEGER, Teacher TEXT, ' \
+                      'TypeOfClass TEXT, Auditory TEXT, Groups TEXT, Day INTEGER, ClassNumber INTEGER, ' \
+                      'TeacherId INTEGER)'
         cursor.execute(sqliteQuery)
-        sqliteQuery = 'create table ClassToGroups (id integer primary key autoincrement, `ClassId`, ' \
-                      '`GroupName`)'
+        sqliteQuery = 'CREATE TABLE ClassToGroups (id INTEGER PRIMARY KEY, ClassId INTEGER, ' \
+                      'GroupName TEXT)'
         cursor.execute(sqliteQuery)
 
         self.sqlite_connection.commit()
         cursor.close()
 
     def addGeneratedClass(self, classId, faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
-                          auditory, groupsList, day, classNumber):
+                          auditory, groupsList, day, classNumber, teacherId):
 
         groups = disassemblePrologList(groupsList)
 
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'INSERT INTO GeneratedSchedule(`Faculty`, `EducationalProgram`, `Specialization`, `Subject`,' \
-                      '`Semester`, `Teacher`, `TypeOfClass`, `Auditory`, `Groups`, `Day`, `ClassNumber`) VALUES(?, ?,' \
-                      ' ?, ?, ?, ?, ?, ?, ?, ?, ?) '
+                      '`Semester`, `Teacher`, `TypeOfClass`, `Auditory`, `Groups`, `Day`, `ClassNumber`, `TeacherId`' \
+                      ') VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '
         cursor.execute(sqliteQuery, (faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
-                                     auditory, groupsList, day, classNumber,))
+                                     auditory, groupsList, day, classNumber, teacherId,))
         self.sqlite_connection.commit()
 
         ############################ GROUPS ARE ADDED SEPERATELY #######################
@@ -1089,7 +1101,7 @@ class DatabaseManager:
         for i in range(len(rows)):
             lst.append(
                 GeneratedClass(rows[i][0], rows[i][1], rows[i][2], rows[i][3], rows[i][4], rows[i][5], rows[i][6],
-                               rows[i][7], rows[i][8], rows[i][9], rows[i][10], rows[i][11]))
+                               rows[i][7], rows[i][8], rows[i][9], rows[i][10], rows[i][11], rows[i][12]))
         return lst
 
     # Получить список из всех групп, которые отнесены к конкретному занятию
@@ -1104,6 +1116,19 @@ class DatabaseManager:
         lst = []
         for row in rows:
             lst.append(row[2])
+        return lst
+
+    def getAllGeneratedTeachers(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT Teacher, TeacherId FROM GeneratedSchedule'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        self.sqlite_connection.commit()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(ScheduleTeacher(row[12], row[6], shortenName(row[6])))
         return lst
 
     ####################################################################################################################
@@ -1176,7 +1201,7 @@ class DatabaseManager:
             rows = cursor.fetchall()
             for row in rows:
                 if day == (int(row[10]) - 1):
-                    hours, minutes = dbManager.calculateTimeStart(int(row[11]))
+                    hours, minutes = calculateTimeStart(int(row[11]))
                     h = str(hours)
                     if minutes < 10:
                         m = "0" + str(minutes)
@@ -1194,48 +1219,6 @@ class DatabaseManager:
                         schedule)
 
     ####################################################################################################################
-
-    # Функция рассчитывает время начала пары
-    @staticmethod
-    def calculateTimeStart(classNumber):
-        dbManager = DatabaseManager()
-        constraints = dbManager.getConstraints()
-        classesPerDay = int(constraints.classesPerDay)
-        startTime = constraints.firstClassStarts
-        classDuration = int(constraints.classDuration)
-        shortBrake = int(constraints.shortBrakeDuration)
-        longBrake = int(constraints.largeBrakeDuration)
-
-        inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake)
-
-        if classNumber > classesPerDay:
-            return -1, -1
-
-        time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
-               datetime.timedelta(minutes=inMinutes)
-
-        return time.hour, time.minute
-
-    # Функция рассчитывает время конца пары
-    @staticmethod
-    def calculateTimeEnd(classNumber):
-        dbManager = DatabaseManager()
-        constraints = dbManager.getConstraints()
-        classesPerDay = int(constraints.classesPerDay)
-        startTime = constraints.firstClassStarts
-        classDuration = int(constraints.classDuration)
-        shortBrake = int(constraints.shortBrakeDuration)
-        longBrake = int(constraints.largeBrakeDuration)
-
-        inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake) + classDuration + shortBrake
-
-        if classNumber > classesPerDay:
-            return -1, -1
-
-        time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
-               datetime.timedelta(minutes=inMinutes)
-
-        return time.hour, time.minute
 
     ####################################################################################################################
 
@@ -1293,8 +1276,54 @@ class DatabaseManager:
             self.sqlite_connection.close()
 
 
+# Функция рассчитывает время начала пары
+def calculateTimeStart(classNumber):
+    dbManager = DatabaseManager()
+    constraints = dbManager.getConstraints()
+    classesPerDay = int(constraints.classesPerDay)
+    startTime = constraints.firstClassStarts
+    classDuration = int(constraints.classDuration)
+    shortBrake = int(constraints.shortBrakeDuration)
+    longBrake = int(constraints.largeBrakeDuration)
+
+    inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake)
+
+    if classNumber > classesPerDay:
+        return -1, -1
+
+    time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
+            datetime.timedelta(minutes=inMinutes)
+
+    return time.hour, time.minute
+
+# Функция рассчитывает время конца пары
+def calculateTimeEnd(classNumber):
+    dbManager = DatabaseManager()
+    constraints = dbManager.getConstraints()
+    classesPerDay = int(constraints.classesPerDay)
+    startTime = constraints.firstClassStarts
+    classDuration = int(constraints.classDuration)
+    shortBrake = int(constraints.shortBrakeDuration)
+    longBrake = int(constraints.largeBrakeDuration)
+
+    inMinutes = (classNumber - 1) * (classDuration + shortBrake + longBrake) + classDuration + shortBrake
+
+    if classNumber > classesPerDay:
+        return -1, -1
+
+    time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
+            datetime.timedelta(minutes=inMinutes)
+
+    return time.hour, time.minute
+
+
 def disassemblePrologList(groupsList):
     prologList2 = groupsList[1:len(groupsList) - 1]
     groups = prologList2.split(",")
 
     return groups
+
+
+def shortenName(name):
+    token = name.split(" ")
+    return token[0] + token[1][0] + ". " + token[2][0] + "."

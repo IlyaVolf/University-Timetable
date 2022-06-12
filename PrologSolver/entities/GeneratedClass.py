@@ -1,6 +1,6 @@
 class GeneratedClass:
     def __init__(self, id, faculty, educationalProgram, specialization, subject, semester, teacher, typeOfClass,
-                 auditory, groups, day, classNumber):
+                 auditory, groups, day, classNumber, teacherId):
         self.id = id
         self.faculty = faculty
         self.educationalProgram = educationalProgram
@@ -13,6 +13,7 @@ class GeneratedClass:
         self.groups = disassemblePrologList(groups)
         self.day = day
         self.classNumber = classNumber
+        self.teacherId = teacherId
 
     # ПОЛУЧИТЬ ГРУППЫ МОЖНОИ НАЧЕ, ЧЕРЕЗ: dbManager.getAllGroupsOfClass(id)
 
