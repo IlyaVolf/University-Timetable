@@ -1048,7 +1048,7 @@ class DatabaseManager:
 
     def getAllTypesOfClasses(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT DISTINCT TypeOfClass FROM Subjects'
+        sqliteQuery = 'SELECT DISTINCT TypeOfClass FROM SubjectsNEW'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
         cursor.close()
