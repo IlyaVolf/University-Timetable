@@ -156,22 +156,22 @@ classes_in_day(7).
 classes_in_day_students(3). 
 classes_in_day_teachers(3). 
 
-days_teacher_can_work(teacher("Permyakov Ruslan Anatolievich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Zlygostev Anton Igorevich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Bukshev Ivan Evgenievich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Adamansky Anton Valentinovich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Sitnov Vladimir Evgenievich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Miginsky Dmitry Sergeevich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Terentyeva Tatyana Alexandrovna"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Postovalov Sergey Nikolaevich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Balabanov Artem Andreevich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Antonets Denis Viktorovich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Shvab Irina Vasilievna"), [1,2,3]). 
-days_teacher_can_work(teacher("Avdeev Roman Ruslanovich"), [1]). 
-days_teacher_can_work(teacher("Gorchakov Konstantin Mikhailovich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Puzarenko Vadim Grigorievich"), [4,5,6]). 
-days_teacher_can_work(teacher("Vaskevich Vladimir Leontievich"), [3,4,5,6]). 
-days_teacher_can_work(teacher("Derzho Marina Anatolievna"), [1,2,3,4,5,6]). 
+days_teacher_can_work(teacher("Permyakov Ruslan Anatolievich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Zlygostev Anton Igorevich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Bukshev Ivan Evgenievich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Adamansky Anton Valentinovich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Sitnov Vladimir Evgenievich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Miginsky Dmitry Sergeevich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Terentyeva Tatyana Alexandrovna"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Postovalov Sergey Nikolaevich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Balabanov Artem Andreevich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Antonets Denis Viktorovich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Shvab Irina Vasilievna"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[],[],[]]). 
+days_teacher_can_work(teacher("Avdeev Roman Ruslanovich"), [[1,2],[],[],[],[],[]]). 
+days_teacher_can_work(teacher("Gorchakov Konstantin Mikhailovich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Puzarenko Vadim Grigorievich"), [[],[],[],[5,6],[5,6],[5,6]]). 
+days_teacher_can_work(teacher("Vaskevich Vladimir Leontievich"), [[],[],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("Derzho Marina Anatolievna"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -193,20 +193,20 @@ c_gaps(3,9).
 c_gaps(Amount_of_gaps, 10) :- Amount_of_gaps > 3. 
 classroom_fillness(0, 10, 10). 
 
-days_teacher_want_work(teacher("Permyakov Ruslan Anatolievich"), [1,3,5], 5). 
-days_teacher_want_work(teacher("Zlygostev Anton Igorevich"), [1,2,3,4,5], 2). 
-days_teacher_want_work(teacher("Bukshev Ivan Evgenievich"), [1,2,3,4,5], 5). 
-days_teacher_want_work(teacher("Adamansky Anton Valentinovich"), [3,4,6], 4). 
-days_teacher_want_work(teacher("Sitnov Vladimir Evgenievich"), [1,2,3,4,5], 2). 
-days_teacher_want_work(teacher("Miginsky Dmitry Sergeevich"), [1,2,3,4,5,6], 0). 
-days_teacher_want_work(teacher("Terentyeva Tatyana Alexandrovna"), [3,5], 5). 
-days_teacher_want_work(teacher("Postovalov Sergey Nikolaevich"), [1,2,3,4,5], 2). 
-days_teacher_want_work(teacher("Balabanov Artem Andreevich"), [1,2,3,4,5], 1). 
-days_teacher_want_work(teacher("Antonets Denis Viktorovich"), [1,2,3,4,5], 3). 
-days_teacher_want_work(teacher("Shvab Irina Vasilievna"), [1,2,3], 1). 
-days_teacher_want_work(teacher("Avdeev Roman Ruslanovich"), [1], 10). 
-days_teacher_want_work(teacher("Gorchakov Konstantin Mikhailovich"), [1,2,3,4,5,6], 0). 
-days_teacher_want_work(teacher("Puzarenko Vadim Grigorievich"), [4,5,6], 10). 
-days_teacher_want_work(teacher("Vaskevich Vladimir Leontievich"), [3,4,5,6], 10). 
-days_teacher_want_work(teacher("Derzho Marina Anatolievna"), [1,2,3], 5). 
+days_teacher_want_work(teacher("Permyakov Ruslan Anatolievich"), [[1,2,3,4,5,6,7],[],[1,2,3,4,5,6,7],[],[1,2,3,4,5,6,7],[]], 5). 
+days_teacher_want_work(teacher("Zlygostev Anton Igorevich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 2). 
+days_teacher_want_work(teacher("Bukshev Ivan Evgenievich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 5). 
+days_teacher_want_work(teacher("Adamansky Anton Valentinovich"), [[],[],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[],[1,2,3,4,5,6,7]], 4). 
+days_teacher_want_work(teacher("Sitnov Vladimir Evgenievich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 2). 
+days_teacher_want_work(teacher("Miginsky Dmitry Sergeevich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]], 0). 
+days_teacher_want_work(teacher("Terentyeva Tatyana Alexandrovna"), [[],[],[1,2,3,4,5,6,7],[],[1,2,3,4,5,6,7],[]], 5). 
+days_teacher_want_work(teacher("Postovalov Sergey Nikolaevich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 2). 
+days_teacher_want_work(teacher("Balabanov Artem Andreevich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 1). 
+days_teacher_want_work(teacher("Antonets Denis Viktorovich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 3). 
+days_teacher_want_work(teacher("Shvab Irina Vasilievna"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[],[],[]], 1). 
+days_teacher_want_work(teacher("Avdeev Roman Ruslanovich"), [[1,2],[],[],[],[],[]], 10). 
+days_teacher_want_work(teacher("Gorchakov Konstantin Mikhailovich"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]], 0). 
+days_teacher_want_work(teacher("Puzarenko Vadim Grigorievich"), [[],[],[],[5],[5],[5]], 10). 
+days_teacher_want_work(teacher("Vaskevich Vladimir Leontievich"), [[],[],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]], 10). 
+days_teacher_want_work(teacher("Derzho Marina Anatolievna"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[],[],[]], 5). 
 

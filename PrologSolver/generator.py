@@ -165,7 +165,7 @@ def create_pl(mode):
             # file.write("days_teacher_can_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6]). \n")
             # file.write("days_teacher_want_work(teacher(\"Derzho Marina Anatolievna\"), [1,2,3,4,5,6], 0). \n")
 
-            #file.write("subject(\"Computer Science and Systems Engineering\", \"Interface design\", [5], "
+            # file.write("subject(\"Computer Science and Systems Engineering\", \"Interface design\", [5], "
             #           "[[type_of_class(\"lec\"), 1, [[teacher(\"Derzho Marina Anatolievna\"), 2]]]]). \n")
 
             allSubjects = dbManager.getAllSubject()
@@ -459,15 +459,18 @@ dbManager = DatabaseManager()
 dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
 # простая генерация
-#generate()
+generate()
 
-test2()
+# TODO штраф может быть из-за больших окон. Это нормально!
 
-# res = dbManager.getScheduleStudents("19209").scheduleEntities
-res = dbManager.getScheduleTeachers("Gorchakov Konstantin Mikhailovich").scheduleEntities
+# test2()
+
+res = dbManager.getScheduleStudents("20213").scheduleEntities
+# res = dbManager.getScheduleTeachers("Puzarenko Vadim Grigorievich").scheduleEntities
 for i in range(6):
     for j in range(len(res[i])):
-        print(i + 1, res[i][j].subject, res[i][j].typeOfClass, res[i][j].auditory, res[i][j].groups, res[i][j].time)
+        print(i + 1, res[i][j].subject, res[i][j].teacher, res[i][j].typeOfClass,
+              res[i][j].auditory, res[i][j].groups, res[i][j].time)
 
 # dbManager.initGeneratedScheduleTable()
 # dbManager.yearShiftLeft()
