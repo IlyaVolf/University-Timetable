@@ -32,12 +32,12 @@ def teacher(id):
         return jsonify({'response': 'success'})
     if request.method == 'PUT':
         name = request.args.get('name')
-        daysCanWork = request.args.get('daysCanWork')
-        daysWantWork = request.args.get('daysWantWork')
+        daysCanWork = "[" + request.args.get('daysCanWork').replace(" ", ",") + "]"
+        daysWantWork = "[" + request.args.get('daysWantWork').replace(" ", ",") + "]"
         weight = request.args.get('weight')
         if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
             dbManager = DatabaseManager()
-            dbManager.updateTeacher(id, name, daysCanWork, daysWantWork, weight)
+            dbManager.updateTeacher(id, name, daysCanWork, daysWantWork, int(weight))
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
