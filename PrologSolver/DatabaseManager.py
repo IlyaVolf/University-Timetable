@@ -743,6 +743,9 @@ class DatabaseManager:
     # Матвей!!! Этот метод вызывается только диспетчером.
     # Уже потом препод сам через updateTeacher может убрать те дни, когда не может или не хочет работать
     def addTeacher(self, name, daysCanWork, daysWantWork, weight):
+        dbManager = DatabaseManager()
+        constraints = dbManager.getConstraints()
+
         if not (type(weight) is int):
             raise ValueError("weight field must be a number")
 
@@ -756,8 +759,10 @@ class DatabaseManager:
         for i in range(len(canDays)):
             canTokens = canDays[i][1:-1].split(",")
             wantTokens = wantDays[i][1:-1].split(",")
-            for want in wantTokens:
-                if not (want in canTokens) and want != '':
+            for j in range(len(wantTokens)):
+                if (wantTokens[j] > constraints.classesPerDay) or (canTokens[j] > constraints.classesPerDay):
+                    raise Exception('Пар в день может быть меньше, чем одно из указанных значений')
+                if not (wantTokens[j] in canTokens) and wantTokens[j] != '':
                     raise Exception('Хочет работать в тот день, в который не может работать!')
 
         cursor = self.sqlite_connection.cursor()
