@@ -829,16 +829,6 @@ class DatabaseManager:
 
         return Teacher(row[0], row[1], row[2], row[3], row[4])
 
-    # TODO ВРЕМЕННО
-    def getTeacherByName(self, name):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM Teachers WHERE name = ?'
-        cursor.execute(sqliteQuery, (name,))
-        row = cursor.fetchall()[0]
-        cursor.close()
-
-        return Teacher(row[0], row[1], row[2], row[3], row[4])
-
     ####################################################################################################################
 
     # Создать таблицу аудиторий
