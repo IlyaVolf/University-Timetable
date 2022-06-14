@@ -455,21 +455,21 @@ def test2():
 dbManager = DatabaseManager()
 
 # test0, test1, test2
-dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
+#dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
 # простая генерация
 # generate()
 
 # TODO штраф может быть из-за больших окон. Это нормально!
 
-test1()
+#test1()
 
-res = dbManager.getScheduleStudents("20213").scheduleEntities
+#res = dbManager.getScheduleStudents("20213").scheduleEntities
 # res = dbManager.getScheduleTeachers("Puzarenko Vadim Grigorievich").scheduleEntities
-for i in range(6):
-    for j in range(len(res[i])):
-        print(i + 1, res[i][j].subject, res[i][j].teacher, res[i][j].typeOfClass,
-              res[i][j].auditory, res[i][j].groups, res[i][j].time)
+#for i in range(6):
+#    for j in range(len(res[i])):
+#        print(i + 1, res[i][j].subject, res[i][j].teacher, res[i][j].typeOfClass,
+#              res[i][j].auditory, res[i][j].groups, res[i][j].time)
 
 # dbManager.initGeneratedScheduleTable()
 # dbManager.yearShiftLeft()
@@ -489,6 +489,9 @@ for i in range(6):
 # dbManager.addClassroom("t2221", "lab, pr", 20)
 # dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
 # dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
+
+dbManager.addUser("Permyakov Ruslan Anatolievich", "aaa@mail.ru", 2, 1)
+
 
 dbManager.close()
 

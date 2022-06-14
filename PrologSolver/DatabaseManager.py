@@ -856,7 +856,11 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
-        row = cursor.fetchall()[0]
+        rows = cursor.fetchall()
+        if len(rows) < 1:
+            return
+            # raise ValueError("No such teacher id!")
+        row = rows[0]
         cursor.close()
 
         return Teacher(row[0], row[1], row[2], row[3], row[4])
@@ -1148,7 +1152,6 @@ class DatabaseManager:
                       ') VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '
         cursor.execute(sqliteQuery, (faculty, edProgram, specialization, subject, semester, teacher, typeOfClass,
                                      auditory, groupsList, day, classNumber, teacherId,))
-        self.sqlite_connection.commit()
 
         ############################ GROUPS ARE ADDED SEPERATELY #######################
 
@@ -1366,6 +1369,76 @@ class DatabaseManager:
         if self.sqlite_connection:
             self.sqlite_connection.close()
 
+    ####################################################################################################################
+    # УЧЕТКИ
+    ####################################################################################################################
+
+    # Создать таблицу пользователей с админом
+    # role:
+    # 0 - главный диспетчер (его нельзя удалить)
+    # 1 - диспетчер
+    # 2 - преподаватель
+    # 3 - простой юзер
+    # status:
+    # 0 - приглашение отправлено, но не принято
+    # 1 - приглашение принято, пользователь зарегистрирован
+    def initUsers(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'CREATE TABLE Users(id INTEGER PRIMARY KEY, Name TEXT, Email TEXT, PasswordHash TEXT, ' \
+                      'Role INTEGER, TeacherId INTEGER, Status INTEGER, UpdatedDate TEXT, CreatedDate TEXT,' \
+                      'SignedUpDate TEXT)'
+        cursor.execute(sqliteQuery)
+        sqliteQuery = 'INSERT INTO Users(`Name`, `Email`, `PasswordHash`, `Role`, `TeacherId`, `Status`, ' \
+                      '`UpdatedDate`, `CreatedDate`, `SignedUpDate`) ' \
+                      'VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        date = datetime.datetime.now()
+        cursor.execute(sqliteQuery, ("Admin", "volfilya@gmail.com", "1234", 0, -1, 1, date, date, date))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # Очистить таблицу факультетов
+    def clearUsers(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM Faculties WHERE id <> 1'
+        cursor.execute(sqliteQuery)
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    def addUser(self, name, email, role, teacherId=-1):
+        if role == 0:
+            raise ValueError("chief dispatcher can be only one!")
+
+        if role != 1 and role != 2 and role != 3:
+            raise ValueError("No such role!")
+
+        if role != 2:
+            teacherId = -1
+        else:
+            dbManager = DatabaseManager()
+            teacher = dbManager.getTeacher(teacherId)
+            if teacher is None:
+                raise ValueError("No such teacher id!")
+            if teacher.name != name:
+                raise ValueError("Names do not coincide!")
+
+        cursor = self.sqlite_connection.cursor()
+        # Проверка на то, что такая образовательная программа уже не существует в таблице
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Users WHERE Email = ?); '
+        cursor.execute(sqliteQuery, (email,))
+        rows = cursor.fetchall()
+        for row in rows:
+            if row[0] == 1:
+                raise ValueError('A user with this email already exists!')
+
+
+        sqliteQuery = 'INSERT INTO Users(`Name`, `Email`, `Role`, `TeacherId`, `Status`, `UpdatedDate`,' \
+                      '`CreatedDate`) ' \
+                      'VALUES(?, ?, ?, ?, ?, ?, ?)'
+        cursor.execute(sqliteQuery, (name, email, role, teacherId, 0, datetime.datetime.now(),
+                                     datetime.datetime.now()))
+        self.sqlite_connection.commit()
+        cursor.close()
+
 
 # Функция рассчитывает время начала пары
 def calculateTimeStart(classNumber):
@@ -1383,9 +1456,10 @@ def calculateTimeStart(classNumber):
         return -1, -1
 
     time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
-            datetime.timedelta(minutes=inMinutes)
+           datetime.timedelta(minutes=inMinutes)
 
     return time.hour, time.minute
+
 
 # Функция рассчитывает время конца пары
 def calculateTimeEnd(classNumber):
@@ -1403,7 +1477,7 @@ def calculateTimeEnd(classNumber):
         return -1, -1
 
     time = datetime.datetime(2000, 1, 1, int(startTime.split(",")[0]), int(startTime.split(",")[1]), 0) + \
-            datetime.timedelta(minutes=inMinutes)
+           datetime.timedelta(minutes=inMinutes)
 
     return time.hour, time.minute
 
