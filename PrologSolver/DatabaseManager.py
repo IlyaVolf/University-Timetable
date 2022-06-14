@@ -13,6 +13,7 @@ from entities.Classroom import Classroom
 from entities.Schedule import Schedule
 from entities.ScheduleEntity import ScheduleEntity
 from entities.ScheduleTeacher import ScheduleTeacher
+from entities.User import User
 
 
 def tupleToList(t):
@@ -1388,11 +1389,11 @@ class DatabaseManager:
                       'Role INTEGER, TeacherId INTEGER, Status INTEGER, UpdatedDate TEXT, CreatedDate TEXT,' \
                       'SignedUpDate TEXT)'
         cursor.execute(sqliteQuery)
-        sqliteQuery = 'INSERT INTO Users(`Name`, `Email`, `PasswordHash`, `Role`, `TeacherId`, `Status`, ' \
+        sqliteQuery = 'INSERT INTO Users(`Name`, `Email`, `PasswordHash`, `Role`, `Status`, ' \
                       '`UpdatedDate`, `CreatedDate`, `SignedUpDate`) ' \
-                      'VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                      'VALUES(?, ?, ?, ?, ?, ?, ?, ?)'
         date = datetime.datetime.now()
-        cursor.execute(sqliteQuery, ("Admin", "volfilya@gmail.com", "1234", 0, -1, 1, date, date, date))
+        cursor.execute(sqliteQuery, ("Admin", "volfilya@gmail.com", "1234", 0, 1, date, date, date))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -1404,16 +1405,15 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-    def addUser(self, name, email, role, teacherId=-1):
+    # TODO Матвей
+    def addUser(self, name, role, email=None, teacherId=None):
         if role == 0:
             raise ValueError("chief dispatcher can be only one!")
 
         if role != 1 and role != 2 and role != 3:
             raise ValueError("No such role!")
 
-        if role != 2:
-            teacherId = -1
-        else:
+        if role == 2:
             dbManager = DatabaseManager()
             teacher = dbManager.getTeacher(teacherId)
             if teacher is None:
@@ -1422,22 +1422,137 @@ class DatabaseManager:
                 raise ValueError("Names do not coincide!")
 
         cursor = self.sqlite_connection.cursor()
-        # Проверка на то, что такая образовательная программа уже не существует в таблице
-        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Users WHERE Email = ?); '
-        cursor.execute(sqliteQuery, (email,))
-        rows = cursor.fetchall()
-        for row in rows:
-            if row[0] == 1:
-                raise ValueError('A user with this email already exists!')
 
+        if email is not None:
+            # Проверка на то, что такая образовательная программа уже не существует в таблице
+            sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Users WHERE Email = ?); '
+            cursor.execute(sqliteQuery, (email,))
+            rows = cursor.fetchall()
+            for row in rows:
+                if row[0] == 1:
+                    raise ValueError('A user with this email already exists!')
 
         sqliteQuery = 'INSERT INTO Users(`Name`, `Email`, `Role`, `TeacherId`, `Status`, `UpdatedDate`,' \
                       '`CreatedDate`) ' \
                       'VALUES(?, ?, ?, ?, ?, ?, ?)'
-        cursor.execute(sqliteQuery, (name, email, role, teacherId, 0, datetime.datetime.now(),
-                                     datetime.datetime.now()))
+        date = datetime.datetime.now()
+        cursor.execute(sqliteQuery, (name, email, role, teacherId, 0, date, date))
+
+        sqliteQuery = 'SELECT MAX(id) FROM Users'
+        cursor.execute(sqliteQuery)
+        row = cursor.fetchall()[0]
+
         self.sqlite_connection.commit()
         cursor.close()
+
+        return row[0]
+
+    # TODO Матвей
+    def updateUser(self, id, name, role, email=None, teacherId=None):
+        if role == 0:
+            raise ValueError("chief dispatcher can be only one!")
+
+        if role != 1 and role != 2 and role != 3:
+            raise ValueError("No such role!")
+
+        if role == 2:
+            dbManager = DatabaseManager()
+            teacher = dbManager.getTeacher(teacherId)
+            if teacher is None:
+                raise ValueError("No such teacher id!")
+            if teacher.name != name:
+                raise ValueError("Names do not coincide!")
+
+        cursor = self.sqlite_connection.cursor()
+
+        if email is not None:
+            # Проверка на то, что такая образовательная программа уже не существует в таблице
+            sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Users WHERE Email = ?); '
+            cursor.execute(sqliteQuery, (email,))
+            rows = cursor.fetchall()
+            for row in rows:
+                if row[0] == 1:
+                    raise ValueError('A user with this email already exists!')
+
+        sqliteQuery = 'UPDATE Users SET Name = ?, Email = ?, Role = ?, TeacherId = ?, UpdatedDate = ? WHERE id = ?'
+        date = datetime.datetime.now()
+        cursor.execute(sqliteQuery, (name, email, role, teacherId, date, id))
+
+        sqliteQuery = 'SELECT MAX(id) FROM Users'
+        cursor.execute(sqliteQuery)
+        row = cursor.fetchall()[0]
+
+        self.sqlite_connection.commit()
+        cursor.close()
+
+        return row[0]
+
+    # TODO Матвей
+    def removeUser(self, id):
+        dbManager = DatabaseManager()
+        if (dbManager.getUser(id).role == 0):
+            raise ValueError("Cannot remove the chief dispatcher!")
+
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'DELETE FROM Users WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # TODO МАТВЕЙ
+    def getAllUser(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM Users'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(User(row[0], row[1], row[2], row[4], row[5], row[6], row[7], row[8], row[9]))
+        return lst
+
+    # TODO МАТВЕЙ
+    def getUser(self, id):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
+        cursor.execute(sqliteQuery, (id,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return User(row[0], row[1], row[2], row[4], row[5], row[6], row[7], row[8], row[9])
+
+    # когда через почту подтверждает свое участие + когда уже задал пароль:
+    # TODO МАТВЕЙ
+    def signUpUser(self, id, passwordHash):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'UPDATE Users SET PasswordHash = ?, Status = 1, UpdatedDate = ?, SignedUpDate = ? WHERE id = ?'
+        date = datetime.datetime.now()
+        cursor.execute(sqliteQuery, (passwordHash, date, date, id))
+        self.sqlite_connection.commit()
+        cursor.close()
+
+    # во время входа: для сверки, которая происходит у Матвея, нужно вернуть хеш пароля. По уникальной почте
+    # TODO МАТВЕЙ
+    def getPasswordByEmailHashUser(self, email):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT PasswordHash FROM Users WHERE email = ?'
+        cursor.execute(sqliteQuery, (email,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return row[0]
+
+    # во время входа: для сверки, которая происходит у Матвея, нужно вернуть хеш пароля. По уникальной почте
+    # TODO МАТВЕЙ
+    def getIdByEmailUser(self, email):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT id FROM Users WHERE email = ?'
+        cursor.execute(sqliteQuery, (email,))
+        row = cursor.fetchall()[0]
+        cursor.close()
+
+        return row[0]
 
 
 # Функция рассчитывает время начала пары

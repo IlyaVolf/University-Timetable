@@ -490,8 +490,9 @@ dbManager = DatabaseManager()
 # dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
 # dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
-dbManager.addUser("Permyakov Ruslan Anatolievich", "aaa@mail.ru", 2, 1)
-
+dbManager.initUsers()
+print(dbManager.addUser("ee53533", 3))
+#dbManager.removeUser(2)
 
 dbManager.close()
 
