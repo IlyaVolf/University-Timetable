@@ -54,6 +54,7 @@ class DatabaseManager:
 
     # Добавить факультет
     # faculty - имя факультета
+    # TODO МАТВЕЙ
     def addFaculty(self, faculty):
         cursor = self.sqlite_connection.cursor()
 
@@ -73,6 +74,7 @@ class DatabaseManager:
     # Редактировать факультет
     # id - id факультета
     # faculty - имя факультета
+    # TODO МАТВЕЙ
     def updateFaculty(self, id, faculty):
         cursor = self.sqlite_connection.cursor()
 
@@ -91,6 +93,7 @@ class DatabaseManager:
 
     # Удалить факультет
     # id - id факультета
+    # TODO МАТВЕЙ
     def removeFaculty(self, id):
         cursor = self.sqlite_connection.cursor()
 
@@ -109,6 +112,7 @@ class DatabaseManager:
         cursor.close()
 
     # Получить все факультеты
+    # TODO МАТВЕЙ
     def getAllFaculty(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Faculties'
@@ -123,6 +127,7 @@ class DatabaseManager:
 
     # Получить все факультеты
     # id - id факультета
+    # TODO МАТВЕЙ
     def getFaculty(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Faculties WHERE id = ?'
@@ -154,6 +159,7 @@ class DatabaseManager:
     # Добавить образовательную программу
     # FacultyId - id факультета
     # EducationalProgram - образовательная программа
+    # TODO МАТВЕЙ
     def addEducationalProgram(self, facultyId, educationalProgram):
         cursor = self.sqlite_connection.cursor()
 
@@ -184,6 +190,7 @@ class DatabaseManager:
     # id - id образовательной программы
     # FacultyId - id факультета
     # EducationalProgram - образовательная программа
+    # TODO МАТВЕЙ
     def updateEducationalProgram(self, id, facultyId, educationalProgram):
         cursor = self.sqlite_connection.cursor()
 
@@ -211,6 +218,7 @@ class DatabaseManager:
 
     # Удалить образовательную программу
     # id - id образовательной программы
+    # TODO МАТВЕЙ
     def removeEducationalProgram(self, id):
         cursor = self.sqlite_connection.cursor()
 
@@ -229,6 +237,7 @@ class DatabaseManager:
         cursor.close()
 
     # Получить все образовательные программы
+    # TODO МАТВЕЙ
     def getAllEducationalProgram(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM EducationalPrograms'
@@ -242,6 +251,7 @@ class DatabaseManager:
         return lst
 
     # Получить образовательную программу
+    # TODO МАТВЕЙ
     def getEducationalProgram(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE id = ?'
@@ -252,9 +262,10 @@ class DatabaseManager:
         return EducationalProgram(row[0], row[1], row[2])
 
     # Получить образовательную программу
+    # TODO МАТВЕЙ
     def getAllEducationalProgramByFaculty(self, facultyId):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE id = ?'
+        sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE FacultyId = ?'
         cursor.execute(sqliteQuery, (facultyId,))
         rows = cursor.fetchall()
         cursor.close()
@@ -286,6 +297,7 @@ class DatabaseManager:
     # Добавить специализацию
     # educationalProgramId - id образовательной программы
     # Specialization - специализация
+    # TODO МАТВЕЙ
     def addSpecialization(self, educationalProgramId, specialization):
         cursor = self.sqlite_connection.cursor()
 
@@ -316,6 +328,7 @@ class DatabaseManager:
     # id - id специализации
     # educationalProgramId - id образовательной программы
     # Specialization - специализация
+    # TODO МАТВЕЙ
     def updateSpecialization(self, id, educationalProgramId, specialization):
         cursor = self.sqlite_connection.cursor()
 
@@ -343,6 +356,7 @@ class DatabaseManager:
 
     # Удалить специализацию
     # id - id специализации
+    # TODO МАТВЕЙ
     def removeSpecialization(self, id):
         cursor = self.sqlite_connection.cursor()
 
@@ -368,6 +382,7 @@ class DatabaseManager:
         cursor.close()
 
     # Получить все специализации
+    # TODO МАТВЕЙ
     def getAllSpecialization(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Specializations'
@@ -381,6 +396,7 @@ class DatabaseManager:
         return lst
 
     # Получить специализацию
+    # TODO МАТВЕЙ
     def getSpecialization(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Specializations WHERE id = ?'
@@ -391,6 +407,7 @@ class DatabaseManager:
         return Specialization(row[0], row[1], row[2])
 
     # Получить все специализации
+    # TODO МАТВЕЙ
     def getAllSpecializationByEdProgram(self, educationalProgramId):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Specializations WHERE EducationalProgramId = ?'
@@ -441,6 +458,7 @@ class DatabaseManager:
     # name - имя группы
     # amountOfStudents - число студентов
     # yearOfStudy - од обучения
+    # TODO МАТВЕЙ
     def addGroup(self, specializationId, name, amountOfStudents, yearOfStudy):
         if not (type(amountOfStudents) is int):
             raise ValueError("amount of students field must be a number")
@@ -478,6 +496,7 @@ class DatabaseManager:
     # name - имя группы
     # amountOfStudents - число студентов
     # yearOfStudy - од обучения
+    # TODO МАТВЕЙ
     def updateGroup(self, id, specializationId, name, amountOfStudents, yearOfStudy):
         if not (type(amountOfStudents) is int):
             raise ValueError("amount of students field must be a number")
@@ -512,6 +531,7 @@ class DatabaseManager:
 
     # Удалить группу
     # id - id группы
+    # TODO МАТВЕЙ
     def removeGroup(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'DELETE FROM Groups WHERE id = ?'
@@ -519,6 +539,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def getAllGroup(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Groups'
@@ -531,6 +552,7 @@ class DatabaseManager:
             lst.append(Group(row[0], row[1], row[2], row[3], row[4]))
         return lst
 
+    # TODO МАТВЕЙ
     def getGroup(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Groups WHERE id = ?'
@@ -574,6 +596,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def addSubject(self, specializationId, name, semesters, typeOfClass, frequency, teacherId, amountOfGroups):
         generated = 0
 
@@ -597,6 +620,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def updateSubject(self, id, specializationId, name, semesters, typeOfClass, frequency, teacherId, amountOfGroups):
         if not (type(amountOfGroups) is int):
             raise ValueError("amount of groups field must be a number")
@@ -620,6 +644,7 @@ class DatabaseManager:
 
     # Удалить занятие
     # id - id занятия
+    # TODO МАТВЕЙ
     def removeSubject(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'DELETE FROM Subjects WHERE id = ?'
@@ -627,6 +652,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def getAllSubject(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Subjects'
@@ -639,6 +665,7 @@ class DatabaseManager:
             lst.append(Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
         return lst
 
+    # TODO МАТВЕЙ
     def getSubject(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Subjects WHERE id = ?'
@@ -742,6 +769,7 @@ class DatabaseManager:
 
     # Матвей!!! Этот метод вызывается только диспетчером.
     # Уже потом препод сам через updateTeacher может убрать те дни, когда не может или не хочет работать
+    # TODO МАТВЕЙ
     def addTeacher(self, name, daysCanWork, daysWantWork, weight):
         dbManager = DatabaseManager()
         constraints = dbManager.getConstraints()
@@ -775,6 +803,7 @@ class DatabaseManager:
 
     # Матвей!!! Этот метод вызывается диспетчером и самим преподом.
     # Препод сам может убрать те дни, когда не может или не хочет работать
+    # TODO МАТВЕЙ
     def updateTeacher(self, id, name, daysCanWork, daysWantWork, weight):
         if not (type(weight) is int):
             raise ValueError("weight field must be a number")
@@ -801,6 +830,7 @@ class DatabaseManager:
 
     # Удалить преподавателя
     # id - id преподавателя
+    # TODO МАТВЕЙ
     def removeTeacher(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'DELETE FROM Teachers WHERE id = ?'
@@ -808,6 +838,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def getAllTeacher(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Teachers'
@@ -820,6 +851,7 @@ class DatabaseManager:
             lst.append(Teacher(row[0], row[1], row[2], row[3], row[4]))
         return lst
 
+    # TODO МАТВЕЙ
     def getTeacher(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
@@ -848,6 +880,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def addClassroom(self, number, typesOfClass, capacity):
         if not (type(capacity) is int):
             raise ValueError("capacity field must be a number")
@@ -866,6 +899,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def updateClassroom(self, id, number, typesOfClass, capacity):
         if not (type(capacity) is int):
             raise ValueError("capacity field must be a number")
@@ -884,6 +918,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def removeClassroom(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'DELETE FROM Classrooms WHERE id = ?'
@@ -891,6 +926,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def getAllClassroom(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Classrooms'
@@ -903,6 +939,7 @@ class DatabaseManager:
             lst.append(Classroom(row[0], row[1], row[2], row[3]))
         return lst
 
+    # TODO МАТВЕЙ
     def getClassroom(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Classrooms WHERE id = ?'
@@ -935,6 +972,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def addConstraints(self, firstClassStarts, classDuration, shortBrakeDuration, largeBrakeDuration, studyDaysInWeek,
                        studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
                        classesPerDayTeachers, lunchBrake, gaps, classroomFillness, semester):
@@ -1040,6 +1078,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def updateConstraints(self, firstClassStarts, classDuration, shortBrakeDuration, largeBrakeDuration,
                           studyDaysInWeek,
                           studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
@@ -1059,6 +1098,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def removeConstraints(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'DELETE FROM Classrooms WHERE id = 1'
@@ -1066,6 +1106,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
+    # TODO МАТВЕЙ
     def getConstraints(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Constraints'
@@ -1119,6 +1160,7 @@ class DatabaseManager:
         cursor.close()
 
     # Возвращаем все сгенерированные занятия
+    # TODO МАТВЕЙ
     def getAllGeneratedClass(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM GeneratedSchedule'
@@ -1134,8 +1176,8 @@ class DatabaseManager:
                                rows[i][7], rows[i][8], rows[i][9], rows[i][10], rows[i][11], rows[i][12]))
         return lst
 
-        # Возвращаем все сгенерированные занятия
-
+    # Возвращаем все сгенерированное занятие по id
+    # TODO МАТВЕЙ
     def getGeneratedClass(self, id):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM GeneratedSchedule WHERE id = ?'
@@ -1148,6 +1190,7 @@ class DatabaseManager:
                               row[7], row[8], row[9], row[10], row[11], row[12])
 
     # Получить список из всех групп, которые отнесены к конкретному занятию
+    # TODO МАТВЕЙ
     def getAllGroupsOfClass(self, classId):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM ClassToGroups WHERE ClassId = ?'
@@ -1161,6 +1204,7 @@ class DatabaseManager:
             lst.append(row[2])
         return lst
 
+    # TODO МАТВЕЙ
     def getAllGeneratedTeachers(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT DISTINCT Teacher, TeacherId FROM GeneratedSchedule'
@@ -1187,6 +1231,7 @@ class DatabaseManager:
     #       String: группы
     #       String: номер пары
     #       String: время
+    # TODO МАТВЕЙ
     def getScheduleStudents(self, groupName):
         dbManager = DatabaseManager()
 
@@ -1232,6 +1277,7 @@ class DatabaseManager:
     #       String: группы
     #       String: номер пары
     #       String: время
+    # TODO МАТВЕЙ
     def getScheduleTeachers(self, teacherName):
         dbManager = DatabaseManager()
 
@@ -1265,6 +1311,7 @@ class DatabaseManager:
 
     ####################################################################################################################
 
+    # TODO МАТВЕЙ
     def yearShiftRight(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Groups'
@@ -1276,6 +1323,7 @@ class DatabaseManager:
             dbManager = DatabaseManager()
             dbManager.updateGroup(row[0], row[1], row[2], row[3], row[4] + 1)
 
+    # TODO МАТВЕЙ
     def yearShiftLeft(self):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Groups'

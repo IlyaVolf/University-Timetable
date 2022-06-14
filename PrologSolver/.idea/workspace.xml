@@ -3,11 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a370555f-056d-4618-bcd3-179e68c86526" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fit_new_department_db.pl" beforeDir="false" afterPath="$PROJECT_DIR$/fit_new_department_db.pl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/query.txt" beforeDir="false" afterPath="$PROJECT_DIR$/query.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/timetable.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/timetable.sqlite" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
