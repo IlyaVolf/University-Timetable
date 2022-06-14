@@ -1400,7 +1400,7 @@ class DatabaseManager:
     # Очистить таблицу факультетов
     def clearUsers(self):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'DELETE FROM Faculties WHERE id <> 1'
+        sqliteQuery = 'DELETE FROM Users WHERE id <> 1'
         cursor.execute(sqliteQuery)
         self.sqlite_connection.commit()
         cursor.close()

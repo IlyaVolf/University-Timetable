@@ -4,7 +4,7 @@ from DatabaseManager import DatabaseManager
 from entities.GeneratedClass import GeneratedClass
 
 # число попыток, если это значение не задано явно
-attempts = 1
+attempts = 2
 
 
 def buildPrologList(elements, brackets, prefix, postfix):
@@ -490,8 +490,8 @@ dbManager = DatabaseManager()
 # dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
 # dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
-dbManager.initUsers()
-print(dbManager.addUser("ee53533", 3))
+generate()
+#print(dbManager.addUser("ee53533", 3))
 #dbManager.removeUser(2)
 
 dbManager.close()
