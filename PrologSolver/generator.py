@@ -353,6 +353,7 @@ def fromClassesToSchedule(wrapper):
 
 
 # генерация расписания с 0. Предыдущее расписание, если было, удаляется
+# TODO МАТВЕЙ
 def generate():
     create_pl(0)
     prolog = Prolog()
@@ -365,6 +366,7 @@ def generate():
 
 
 # догенерация расписания, используя текущее сгенерированное расписание
+# TODO МАТВЕЙ
 def overgenerate():
     schedule = fromClassesToSchedule(True)
     create_pl(3)
@@ -380,6 +382,7 @@ def overgenerate():
 # удаление одного предмета из текущего расписания. Требуется подать на вход элемент таблицы GeneratedSchedule
 # (класс GeneratedClass).
 # TODO Если fail, то размер списка 0?
+# TODO МАТВЕЙ
 def remove_man(id):
     classToDelete = dbManager.getGeneratedClass(id)
     event = fromClassToEvent(classToDelete)
@@ -396,6 +399,8 @@ def remove_man(id):
 # добавление одного предмета с полным указанием параметров вручную. Если противоречий нет с текущим расписанием, то
 # предмет добавится. Требуется подать на вход элемент таблицы GeneratedSchedule (класс GeneratedClass).
 # TODO Если fail, то размер списка 0?
+# TODO МАТВЕЙ
+# TODO classToAdd - объект класса GeneratedClass
 def add_man(classToAdd):
     event = fromClassToEvent(classToAdd)
     schedule = fromClassesToSchedule(False)
@@ -466,6 +471,7 @@ dbManager = DatabaseManager()
 
 
 #res = dbManager.getScheduleStudents("20213").scheduleEntities
+generate()
 res = dbManager.getScheduleTeachers(14).scheduleEntities
 for i in range(6):
     for j in range(7):
