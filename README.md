@@ -1,10 +1,6 @@
 # University Timetable Maker
 Constraint solver written on Java + Prolog
 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# Последняя рабочая версия - в ветке Model! (06.06.22)
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 ## Авторы
 
 <img src="https://habrastorage.org/webt/xn/wq/r_/xnwqr_c12neoliwun446oljbewq.png" alt="Кирилл Прокофьев" align="left" width="150"/>
