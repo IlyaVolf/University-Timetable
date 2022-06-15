@@ -354,6 +354,7 @@ def fromClassesToSchedule(wrapper):
 
 # генерация расписания с 0. Предыдущее расписание, если было, удаляется
 # TODO МАТВЕЙ
+# TODO возврат - список класса GeneratedClass (расписание)
 def generate():
     create_pl(0)
     prolog = Prolog()
@@ -367,6 +368,7 @@ def generate():
 
 # догенерация расписания, используя текущее сгенерированное расписание
 # TODO МАТВЕЙ
+# TODO возврат - список класса GeneratedClass (расписание)
 def overgenerate():
     schedule = fromClassesToSchedule(True)
     create_pl(3)
@@ -383,6 +385,7 @@ def overgenerate():
 # (класс GeneratedClass).
 # TODO Если fail, то размер списка 0?
 # TODO МАТВЕЙ
+# TODO возврат - список класса GeneratedClass (расписание)
 def remove_man(id):
     classToDelete = dbManager.getGeneratedClass(id)
     event = fromClassToEvent(classToDelete)
@@ -401,6 +404,7 @@ def remove_man(id):
 # TODO Если fail, то размер списка 0?
 # TODO МАТВЕЙ
 # TODO classToAdd - объект класса GeneratedClass
+# TODO возврат - список класса GeneratedClass (расписание)
 def add_man(classToAdd):
     event = fromClassToEvent(classToAdd)
     schedule = fromClassesToSchedule(False)
