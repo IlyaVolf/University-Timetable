@@ -4,7 +4,7 @@ from DatabaseManager import DatabaseManager
 from entities.GeneratedClass import GeneratedClass
 
 # число попыток, если это значение не задано явно
-attempts = 2
+attempts = 1
 
 
 def buildPrologList(elements, brackets, prefix, postfix):
@@ -73,7 +73,7 @@ def create_pl(mode):
 
         allTeachers = dbManager.getAllTeacher()
         for teacher in allTeachers:
-            file.write("teacher(\"" + str(teacher.id) + "\"). \n")
+            file.write("teacher(\"" + teacher.name + "\"). \n")
 
         file.write("\n")
 
@@ -150,7 +150,7 @@ def create_pl(mode):
                     for j in range(0, len(allSubjectTeachers), 1):
                         subjectTeacher = dbManager.getTeacher(allSubjectTeachers[j][0])
                         file.write(
-                            "[teacher(\"" + str(subjectTeacher.id) + "\"), " + str(allSubjectTeachers[j][1]) + "]")
+                            "[teacher(\"" + subjectTeacher.name + "\"), " + str(allSubjectTeachers[j][1]) + "]")
                         if j < len(allSubjectTeachers) - 1:
                             file.write(", ")
 
@@ -205,7 +205,7 @@ def create_pl(mode):
                 file.write("subject(\"" + spec.specialization + "\", \"" + subjectToAdd.name + "\", " +
                            buildPrologList(subjectToAdd.getSemesters(), False, "", "") + ", [[type_of_class(\""
                            + subjectToAdd.typeOfClass + "\"), " + str(subjectToAdd.frequency) + ", [[teacher(\"" +
-                           str(teac.id) + "\"), " + str(subjectToAdd.amountOfGroups) + "]]]]). \n")
+                           teac.name + "\"), " + str(subjectToAdd.amountOfGroups) + "]]]]). \n")
 
         file.write("\n")
 
@@ -267,7 +267,7 @@ def create_pl(mode):
 
         for teacher in allTeachers:
             file.write(
-                "days_teacher_can_work(teacher(\"" + str(teacher.id) + "\"), " + teacher.daysCanWork + "). \n")
+                "days_teacher_can_work(teacher(\"" + teacher.name + "\"), " + teacher.daysCanWork + "). \n")
 
         file.write("\n")
 
@@ -296,7 +296,7 @@ def create_pl(mode):
 
         for teacher in allTeachers:
             file.write(
-                "days_teacher_want_work(teacher(\"" + str(teacher.id) + "\"), " + str(teacher.daysWantWork) + ", " +
+                "days_teacher_want_work(teacher(\"" + teacher.name + "\"), " + str(teacher.daysWantWork) + ", " +
                 str(teacher.weight) + "). \n")
 
         file.write("\n")
@@ -314,14 +314,15 @@ def save():
     for i in range(1, len(strings) - 1, 1):
         elements = strings[i].split(";")
         dbManager.addGeneratedClass(i, elements[0], elements[1].replace(',', ':'), elements[2], elements[3],
-                                    elements[4], dbManager.getTeacher(elements[5]).name, elements[6], elements[7],
-                                    elements[8], elements[9], elements[10], elements[5])
+                                    elements[4],
+                                    elements[5], elements[6], elements[7], elements[8], elements[9], elements[10],
+                                    dbManager.getTeacherByName(elements[5]).id)
 
 
 def fromClassToEvent(classToTransform):
     res = "event(class(\"" + classToTransform.specialization + "\", \"" + classToTransform.subject + "\", " + \
           str(classToTransform.semester) + ", type_of_class(\"" + classToTransform.typeOfClass + "\"), teacher(\"" + \
-          str(classToTransform.teacherId) + "\"), " + str(classToTransform.getAmountOfGroups()) + ", 1, 0), \"" + \
+          classToTransform.teacher + "\"), " + str(classToTransform.getAmountOfGroups()) + ", 1, 0), \"" + \
           classToTransform.auditory + "\", " + \
           str(classToTransform.day) + ", " + \
           buildPrologList(classToTransform.getGroupsAsString(), True, "", "") + \
@@ -455,23 +456,21 @@ def test2():
 dbManager = DatabaseManager()
 
 # test0, test1, test2
-#dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
+dbManager.updateConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
 # простая генерация
-# generate()
+generate()
 
 # TODO штраф может быть из-за больших окон. Это нормально!
 
-#test1()
+# test2()
 
-
-#res = dbManager.getScheduleStudents("20213").scheduleEntities
-res = dbManager.getScheduleTeachers(14).scheduleEntities
+res = dbManager.getScheduleStudents("20213").scheduleEntities
+# res = dbManager.getScheduleTeachers("Puzarenko Vadim Grigorievich").scheduleEntities
 for i in range(6):
-    for j in range(7):
-        if res[i][j] is not None:
-            print(i + 1, res[i][j].subject, res[i][j].teacher, res[i][j].typeOfClass,
-                res[i][j].auditory, res[i][j].groups, res[i][j].time)
+    for j in range(len(res[i])):
+        print(i + 1, res[i][j].subject, res[i][j].teacher, res[i][j].typeOfClass,
+              res[i][j].auditory, res[i][j].groups, res[i][j].time)
 
 # dbManager.initGeneratedScheduleTable()
 # dbManager.yearShiftLeft()
@@ -492,10 +491,6 @@ for i in range(6):
 # dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
 # dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
-#generate()
-#print(dbManager.addUser("ee53533", 3))
-#dbManager.removeUser(2)
-
 dbManager.close()
 
-# TODO вам надо: generate, remove_man, add, add_man
+# вам надо: generate, remove_man, add, add_man, calculateTimeEnd, calculateTimeStart
