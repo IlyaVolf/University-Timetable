@@ -347,7 +347,7 @@ class DatabaseManager:
         #        raise ValueError('This EducationalProgramId does not exist!')
 
         # Проверка на то, что такая специализация уже не существует в таблице
-        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Specializations WHERE EducationalProgramId = ? AND' \
+        sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Specializations WHERE EducationalProgramId = ? AND ' \
                       'Specialization = ? AND id <> ?); '
         cursor.execute(sqliteQuery, (educationalProgramId, specialization, id,))
         rows = cursor.fetchall()
@@ -484,8 +484,8 @@ class DatabaseManager:
 
         # Проверка на то, что такая группа уже не существует в таблице
         sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Groups WHERE SpecializationId = ? AND ' \
-                      'name = ? AND id <> ?);'
-        cursor.execute(sqliteQuery, (specializationId, name, id))
+                      'name = ?);'
+        cursor.execute(sqliteQuery, (specializationId, name,))
         rows = cursor.fetchall()
         for row in rows:
             if row[0] == 1:
@@ -811,23 +811,25 @@ class DatabaseManager:
             raise ValueError("weight field must be within 0..10")
 
         # Проверка на то, что учитель хочет работать в тот день, когда он не может
-        canDays = daysCanWork[1:-1].split(";")
-        wantDays = daysWantWork[1:-1].split(";")
+        canDays = daysCanWork.split(";")
+        wantDays = daysWantWork.split(";")
 
         for i in range(len(canDays)):
-            canTokens = canDays[i][1:-1].split(",")
-            wantTokens = wantDays[i][1:-1].split(",")
+            canTokens = canDays[i].split(",")
+            wantTokens = wantDays[i].split(",")
             for j in range(len(wantTokens)):
-                if (wantTokens[j] > constraints.classesPerDay) or (canTokens[j] > constraints.classesPerDay):
+                if (int(wantTokens[j]) > constraints.classesPerDay) or (int(canTokens[j]) > constraints.classesPerDay):
                     raise ValueError('Пар в день может быть меньше, чем одно из указанных значений')
                 if not (wantTokens[j] in canTokens) and wantTokens[j] != '':
                     raise ValueError('Хочет работать в тот день, в который не может работать!')
+        
 
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'INSERT INTO Teachers(`Name`, `DaysCanWork`, `DaysWantWork`, `Weight`) VALUES(?, ' \
                       '?, ?, ?) '
 
-        cursor.execute(sqliteQuery, (name, daysCanWork.replace(';', ','), daysWantWork.replace(';', ','), weight,))
+        cursor.execute(sqliteQuery, (name, "[[" + daysCanWork.replace(';', '],[').replace('0', '') + "]]", 
+            "[[" + daysWantWork.replace(';', '],[').replace('0', '') + "]]", weight,))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -842,19 +844,20 @@ class DatabaseManager:
             raise ValueError("weight field must be within 0..10")
 
         # Проверка на то, что учитель хочет работать в тот день, когда он не может
-        canDays = daysCanWork[1:-1].split(";")
-        wantDays = daysWantWork[1:-1].split(";")
+        canDays = daysCanWork.split(";")
+        wantDays = daysWantWork.split(";")
 
         for i in range(len(canDays)):
-            canTokens = canDays[i][1:-1].split(",")
-            wantTokens = wantDays[i][1:-1].split(",")
+            canTokens = canDays[i].split(",")
+            wantTokens = wantDays[i].split(",")
             for want in wantTokens:
                 if not (want in canTokens) and want != '':
                     raise ValueError('Хочет работать в тот день, в который не может работать!')
 
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'UPDATE Teachers SET Name = ?, DaysCanWork = ?, DaysWantWork = ?, Weight = ? WHERE id = ?'
-        cursor.execute(sqliteQuery, (name, daysCanWork.replace(';', ','), daysWantWork.replace(';', ','), weight, id))
+        cursor.execute(sqliteQuery, (name, "[[" + daysCanWork.replace(';', '],[').replace('0', '') + "]]", 
+            "[[" + daysWantWork.replace(';', '],[').replace('0', '') + "]]", weight, id))
         self.sqlite_connection.commit()
         cursor.close()
 
@@ -1332,9 +1335,10 @@ class DatabaseManager:
         rows = cursor.fetchall()
         cursor.close()
 
+        dbManager = DatabaseManager()
         for row in rows:
-            dbManager = DatabaseManager()
             dbManager.updateGroup(row[0], row[1], row[2], row[3], row[4] + 1)
+        dbManager.close()
 
     # TODO МАТВЕЙ
     def yearShiftLeft(self):
@@ -1344,9 +1348,10 @@ class DatabaseManager:
         rows = cursor.fetchall()
         cursor.close()
 
+        dbManager = DatabaseManager()
         for row in rows:
-            dbManager = DatabaseManager()
             dbManager.updateGroup(row[0], row[1], row[2], row[3], row[4] - 1)
+        dbManager.close()
 
     ####################################################################################################################
 

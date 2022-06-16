@@ -6,6 +6,9 @@ from entities.Group import Group
 from entities.Subject import Subject
 from entities.Specialization import Specialization
 from entities.Constraints import Constraints
+from entities.GeneratedClass import GeneratedClass
+from entities.ScheduleEntity import ScheduleEntity
+from entities.Schedule import Schedule
 
 def serialiseTeacher(teacher: Teacher):
     return {
@@ -68,18 +71,65 @@ def serialiseSpecialization(specialization: Specialization):
 
 def serialiseConstraints(constraints: Constraints):
     return {
-        'firstClassStarts': 'null', 
-        'classDuration': 'null',
-        'shortBrakeDuration': 'null', 
-        'largeBrakeDuration': 'null', 
-        'studyDaysInWeek': 'null',
-        'studyDaysInWeekForStudents': 'null', 
-        'studyDaysInWeekForTeachers': 'null', 
-        'classesPerDay': 'null', 
-        'classesPerDayStudents': 'null', 
-        'classesPerDayTeachers': 'null',
-        'lunchBrake': 'null', 
-        'gaps': 'null', 
-        'classroomFillness': 'null', 
-        'semester': 'null'
+        'firstClassStarts': constraints.firstClassStarts, 
+        'classDuration': constraints.classDuration,
+        'shortBrakeDuration': constraints.shortBrakeDuration, 
+        'largeBrakeDuration': constraints.largeBrakeDuration, 
+        'studyDaysInWeek': constraints.studyDaysInWeek,
+        'studyDaysInWeekForStudents': constraints.studyDaysInWeekForStudents, 
+        'studyDaysInWeekForTeachers': constraints.studyDaysInWeekForTeachers, 
+        'classesPerDay': constraints.classesPerDay, 
+        'classesPerDayStudents': constraints.classesPerDayStudents, 
+        'classesPerDayTeachers': constraints.classesPerDayTeachers,
+        'lunchBrake': constraints.lunchBrake, 
+        'gaps': constraints.gaps, 
+        'classroomFillness': constraints.classroomFillness, 
+        'semester': constraints.semester
+    }
+
+def serialiseGeneratedClass(generatedClass: GeneratedClass):
+    return {
+        'id': generatedClass.id,
+        'faculty': generatedClass.faculty,
+        'educationalProgram': generatedClass.educationalProgram,
+        'specialization': generatedClass.specialization,
+        'subject': generatedClass.subject,
+        'semester': generatedClass.semester,
+        'teacher': generatedClass.teacher,
+        'typeOfClass': generatedClass.typeOfClass,
+        'auditory': generatedClass.auditory,
+        'groups': generatedClass.groups,
+        'day': generatedClass.day,
+        'classNumber': generatedClass.classNumber,
+        'teacherId': generatedClass.teacherId
+    }
+
+def serialiseScheduleEntity(scheduleEntity):
+    if scheduleEntity is not None:
+        return {
+            'subject': scheduleEntity.subject,
+            'typeOfClass': scheduleEntity.typeOfClass,
+            'teacher': scheduleEntity.teacher,
+            'auditory': scheduleEntity.auditory,
+            'groups': scheduleEntity.groups,
+            'classNumber': scheduleEntity.classNumber,
+            'time': scheduleEntity.time
+        }
+    return {
+            'subject': 'null',
+            'typeOfClass': 'null',
+            'teacher': 'null',
+            'auditory': 'null',
+            'groups': 'null',
+            'classNumber': 'null',
+            'time': 'null'
+        }
+
+def serialiseSchedule(schedule: Schedule):
+    entities = [[serialiseScheduleEntity(schedule.scheduleEntities[i][j]) for i in range(schedule.studyDaysInWeek)] for j in range(schedule.classesPerDay)]
+    return {
+        'type': schedule.type,
+        'classesPerDay': schedule.classesPerDay,
+        'studyDaysInWeek': schedule.studyDaysInWeek,
+        'scheduleEntities': entities
     }

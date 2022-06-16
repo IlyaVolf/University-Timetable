@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject, serialiseSpecialization, serialiseConstraints
+from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject, serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule
 from DatabaseManager import DatabaseManager
 
 # configuration
@@ -16,8 +16,6 @@ CORS(app)
 
 @app.route('/teachers/<id>', methods=['GET','DELETE','PUT'])
 def teacher(id):
-    response_object = {'id': 'null', 'name': 'null','daysCanWork': 'null',
-    'daysWantWork': 'null', 'weight': 'null'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
         teacher = dbManager.getTeacher(id)
@@ -31,8 +29,8 @@ def teacher(id):
         return jsonify({'response': 'success'})
     if request.method == 'PUT':
         name = request.args.get('name')
-        daysCanWork = "[" + request.args.get('daysCanWork').replace(" ", ",") + "]"
-        daysWantWork = "[" + request.args.get('daysWantWork').replace(" ", ",") + "]"
+        daysCanWork = request.args.get('daysCanWork').replace(" ", ",").replace("_", ";")
+        daysWantWork = request.args.get('daysWantWork').replace(" ", ",").replace("_", ";")
         weight = request.args.get('weight')
         if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
             dbManager = DatabaseManager()
@@ -46,8 +44,8 @@ def teacher(id):
 def addTeacher():
     if request.method == 'POST':
         name = request.args.get('name')
-        daysCanWork = "[" + request.args.get('daysCanWork').replace(" ", ",") + "]"
-        daysWantWork = "[" + request.args.get('daysWantWork').replace(" ", ",") + "]"
+        daysCanWork = request.args.get('daysCanWork').replace(" ", ",").replace("_", ";")
+        daysWantWork = request.args.get('daysWantWork').replace(" ", ",").replace("_", ";")
         weight = request.args.get('weight')
         if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
             dbManager = DatabaseManager()
@@ -62,8 +60,6 @@ def addTeacher():
 
 @app.route('/classrooms/<id>', methods=['GET','DELETE','PUT'])
 def classroom(id):
-    response_object = {'id': 'null', 'capacity': 'null','number': 'null',
-    'typesOfClass': 'null'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
         classroom = dbManager.getClassroom(id)
@@ -122,7 +118,7 @@ def faculty(id):
         name = request.args.get('name')
         if name is not None:
             dbManager = DatabaseManager()
-            dbManager.updateFaculty(id, faculty)
+            dbManager.updateFaculty(id, name)
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -145,7 +141,6 @@ def addFaculty():
 
 @app.route('/educationalPrograms/<id>', methods=['GET','DELETE','PUT'])
 def educationalProgram(id):
-    response_object = {'id': 'null', 'facultyId': 'null', 'name': 'null'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
         educationalProgram = dbManager.getEducationalProgram(id)
@@ -159,7 +154,7 @@ def educationalProgram(id):
         return jsonify({'response': 'success'})
     if request.method == 'PUT':
         facultyId = request.args.get('facultyId')
-        name = request.args.get('name')
+        name = request.args.get('name').replace("_", ",").replace("-", ".")
         if facultyId is not None and name is not None:
             dbManager = DatabaseManager()
             dbManager.updateEducationalProgram(id, facultyId, name)
@@ -172,7 +167,7 @@ def educationalProgram(id):
 def addEducationalProgram():
     if request.method == 'POST':
         facultyId = request.args.get('facultyId')
-        name = request.args.get('name')
+        name = request.args.get('name').replace("_", ",").replace("-", ".")
         if name is not None and facultyId is not None:
             dbManager = DatabaseManager()
             dbManager.addEducationalProgram(facultyId, name)
@@ -201,12 +196,12 @@ def group(id):
         return jsonify({'response': 'success'})
     if request.method == 'PUT':
         specializationId = request.args.get('specializationId')
-        name = request.args.get('name')
+        name = request.args.get('name').replace("-", ".")
         amountOfStudents = request.args.get('amountOfStudents')
         yearOfStudy = request.args.get('yearOfStudy')
         if specializationId is not None and name is not None and amountOfStudents is not None and yearOfStudy is not None:
             dbManager = DatabaseManager()
-            dbManager.updateGroup(id, specializationId, name, amountOfStudents, yearOfStudy)
+            dbManager.updateGroup(id, specializationId, name, int(amountOfStudents), int(yearOfStudy))
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -216,13 +211,13 @@ def group(id):
 def addGroup():
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
-        name = request.args.get('name')
+        name = request.args.get('name').replace("-", ".")
         amountOfStudents = request.args.get('amountOfStudents')
         yearOfStudy = request.args.get('yearOfStudy')
         if (specializationId is not None and name is not None and 
             amountOfStudents is not None and yearOfStudy is not None):
             dbManager = DatabaseManager()
-            dbManager.addGroup(specializationId, name, amountOfStudents, yearOfStudy)
+            dbManager.addGroup(specializationId, name, int(amountOfStudents), int(yearOfStudy))
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -233,9 +228,6 @@ def addGroup():
 
 @app.route('/subjects/<id>', methods=['GET','DELETE','PUT'])
 def subject(id):
-    response_object = {'id': 'null', 'specializationId': 'null', 'name': 'null',
-    'semesters': 'null', 'typeOfClass': 'null', 'frequency': 'null', 'teacherId': 'null',
-    'amountOfGroups': 'null', 'generated': 'null'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
         subject = dbManager.getSubject(id)
@@ -250,18 +242,17 @@ def subject(id):
     if request.method == 'PUT':
         specializationId = request.args.get('specializationId')
         name = request.args.get('name')
-        semesters = request.args.get('semesters')
+        semesters = request.args.get('semesters').replace("_", ",")
         typeOfClass = request.args.get('typeOfClass')
         frequency = request.args.get('frequency')
         teacherId = request.args.get('teacherId')
         amountOfGroups = request.args.get('amountOfGroups')
-        generated = request.args.get('generated')
         if (specializationId is not None and name is not None and semesters is not None 
             and typeOfClass is not None and frequency is not None and teacherId is not None
-            and amountOfGroups is not None and generated is not None):
+            and amountOfGroups is not None):
             dbManager = DatabaseManager()
             dbManager.updateSubject(id, specializationId, name, semesters, typeOfClass,
-                frequency, teacherId, amountOfGroups)
+                int(frequency), teacherId, int(amountOfGroups))
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -272,18 +263,17 @@ def addSubject():
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
         name = request.args.get('name')
-        semesters = request.args.get('semesters')
+        semesters = request.args.get('semesters').replace("_", ",")
         typeOfClass = request.args.get('typeOfClass')
         frequency = request.args.get('frequency')
         teacherId = request.args.get('teacherId')
         amountOfGroups = request.args.get('amountOfGroups')
-        generated = request.args.get('generated')
         if (specializationId is not None and name is not None and semesters is not None 
             and typeOfClass is not None and frequency is not None and teacherId is not None
-            and amountOfGroups is not None and generated is not None):
+            and amountOfGroups is not None):
             dbManager = DatabaseManager()
             dbManager.addSubject(specializationId, name, semesters, typeOfClass,
-                frequency, teacherId, amountOfGroups)
+                int(frequency), teacherId, int(amountOfGroups))
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -294,7 +284,6 @@ def addSubject():
 
 @app.route('/specializations/<id>', methods=['GET','DELETE','PUT'])
 def specialization(id):
-    response_object = {'id': 'null', 'educationalProgramId': 'null', 'name': 'null'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
         specialization = dbManager.getSpecialization(id)
@@ -311,7 +300,7 @@ def specialization(id):
         name = request.args.get('name')
         if educationalProgramId is not None and name is not None:
             dbManager = DatabaseManager()
-            dbManager.updateSpecialization(id, educationalProgramId, specialization)
+            dbManager.updateSpecialization(id, educationalProgramId, name)
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -328,18 +317,19 @@ def addSpecialization():
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
+    if request.method == 'GET' and request.args.get('educationalProgramId') is not None:
+        educationalProgramId = request.args.get('educationalProgramId')
+        dbManager = DatabaseManager()
+        specializations = dbManager.getAllSpecializationByEdProgram(educationalProgramId)
+        dbManager.close()
+        return jsonify(list(map(lambda x: serialiseSpecialization(x), specializations)))
     dbManager = DatabaseManager()
     specializations = dbManager.getAllSpecialization()
     dbManager.close()
     return jsonify(list(map(lambda x: serialiseSpecialization(x), specializations)))
 
 @app.route('/constraints', methods=['GET','DELETE','PUT', 'POST'])
-def constraints(id):
-    response_object = {'firstClassStarts': 'null', 'classDuration': 'null',
-    'shortBrakeDuration': 'null', 'largeBrakeDuration': 'null', 'studyDaysInWeek': 'null',
-    'studyDaysInWeekForStudents': 'null', 'studyDaysInWeekForTeachers': 'null', 
-    'classesPerDay': 'null', 'classesPerDayStudents': 'null', 'classesPerDayTeachers': 'null',
-    'lunchBrake': 'null', 'gaps': 'null', 'classroomFillness': 'null', 'semester': 'null'}
+def constraints():
     if request.method == 'GET':
         dbManager = DatabaseManager()
         constraints = dbManager.getConstraints()
@@ -388,6 +378,55 @@ def constraints(id):
         dbManager.close()
         return jsonify({'response': 'success'})
     return jsonify({'response': 'failure'})
-    
+
+@app.route('/generatedClasses', methods=['GET'])
+def generatedClasses():
+    dbManager = DatabaseManager()
+    generatedClasses = dbManager.getAllGeneratedClass()
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), generatedClasses)))
+
+@app.route('/generatedClasses/<id>', methods=['GET'])
+def generatedClass(id):
+    dbManager = DatabaseManager()
+    generatedClass = dbManager.getGeneratedClass(id)
+    dbManager.close()
+    return jsonify(serialiseGeneratedClass(generatedClass))
+
+@app.route('/groupsOfClass/<id>', methods=['GET'])
+def groupsOfClass(id):
+    dbManager = DatabaseManager()
+    groupsOfClass = dbManager.getAllGroupsOfClass(id)
+    dbManager.close()
+    return jsonify(groupsOfClass)
+
+@app.route('/getScheduleStudents/<group>', methods=['GET'])
+def scheduleStudents(group):
+    dbManager = DatabaseManager()
+    schedule = dbManager.getScheduleStudents(group)
+    dbManager.close()
+    return jsonify(serialiseSchedule(schedule))
+
+@app.route('/getScheduleTeachers/<teacherId>', methods=['GET'])
+def scheduleTeachers(teacherId):
+    dbManager = DatabaseManager()
+    schedule = dbManager.getScheduleTeachers(teacherId)
+    dbManager.close()
+    return jsonify(serialiseSchedule(schedule))
+
+@app.route('/yearShiftRight', methods=['PUT'])
+def doYearShiftRight():
+    dbManager = DatabaseManager()
+    dbManager.yearShiftRight()
+    dbManager.close()
+    return jsonify({'response': 'success'})
+
+@app.route('/yearShiftLeft', methods=['PUT'])
+def doYearShiftLeft():
+    dbManager = DatabaseManager()
+    dbManager.yearShiftLeft()
+    dbManager.close()
+    return jsonify({'response': 'success'})
+
 if __name__ == '__main__':
     app.run()
