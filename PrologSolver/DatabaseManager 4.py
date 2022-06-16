@@ -1,6 +1,5 @@
 import sqlite3
 import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from entities.Faculty import Faculty
 from entities.Constraints import Constraints
@@ -14,7 +13,7 @@ from entities.Classroom import Classroom
 from entities.Schedule import Schedule
 from entities.ScheduleEntity import ScheduleEntity
 from entities.ScheduleTeacher import ScheduleTeacher
-from entities.User import User
+from entities.UserOld import UserOld
 
 
 def tupleToList(t):
@@ -1407,8 +1406,7 @@ class DatabaseManager:
         cursor.close()
 
     # TODO Матвей
-    # Добавляем юзера, возвращаем добавленного юзера
-    def addUser(self, name, email, role, teacherId=None):
+    def addUser(self, name, role, email=None, teacherId=None):
         if role == 0:
             raise ValueError("chief dispatcher can be only one!")
 
@@ -1417,8 +1415,6 @@ class DatabaseManager:
 
         if role == 2:
             dbManager = DatabaseManager()
-            if teacherId is None:
-                raise ValueError("Teacher was not specified!")
             teacher = dbManager.getTeacher(teacherId)
             if teacher is None:
                 raise ValueError("No such teacher id!")
@@ -1444,19 +1440,15 @@ class DatabaseManager:
 
         sqliteQuery = 'SELECT MAX(id) FROM Users'
         cursor.execute(sqliteQuery)
-        id = cursor.fetchall()[0][0]
-
-        sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
-        cursor.execute(sqliteQuery, (id,))
         row = cursor.fetchall()[0]
 
         self.sqlite_connection.commit()
         cursor.close()
 
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+        return row[0]
 
     # TODO Матвей
-    def updateUser(self, id, name, email, role, teacherId=None):
+    def updateUser(self, id, name, role, email=None, teacherId=None):
         if role == 0:
             raise ValueError("chief dispatcher can be only one!")
 
@@ -1465,8 +1457,6 @@ class DatabaseManager:
 
         if role == 2:
             dbManager = DatabaseManager()
-            if teacherId is None:
-                raise ValueError("Teacher was not specified!")
             teacher = dbManager.getTeacher(teacherId)
             if teacher is None:
                 raise ValueError("No such teacher id!")
@@ -1490,16 +1480,12 @@ class DatabaseManager:
 
         sqliteQuery = 'SELECT MAX(id) FROM Users'
         cursor.execute(sqliteQuery)
-        id = cursor.fetchall()[0][0]
-
-        sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
-        cursor.execute(sqliteQuery, (id,))
         row = cursor.fetchall()[0]
 
         self.sqlite_connection.commit()
         cursor.close()
 
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+        return row[0]
 
     # TODO Матвей
     def removeUser(self, id):
@@ -1523,7 +1509,7 @@ class DatabaseManager:
 
         lst = []
         for row in rows:
-            lst.append(User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]))
+            lst.append(UserOld(row[0], row[1], row[2], row[4], row[5], row[6], row[7], row[8], row[9]))
         return lst
 
     # TODO МАТВЕЙ
@@ -1532,20 +1518,14 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
-        rows = cursor.fetchall()
+        row = cursor.fetchall()[0]
         cursor.close()
 
-        if len(rows) < 1:
-            return None
-
-        row = rows[0]
-
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+        return UserOld(row[0], row[1], row[2], row[4], row[5], row[6], row[7], row[8], row[9])
 
     # когда через почту подтверждает свое участие + когда уже задал пароль:
     # TODO МАТВЕЙ
-    def signUpUser(self, id, password):
-        passwordHash = generate_password_hash(password)
+    def signUpUser(self, id, passwordHash):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'UPDATE Users SET PasswordHash = ?, Status = 1, UpdatedDate = ?, SignedUpDate = ? WHERE id = ?'
         date = datetime.datetime.now()

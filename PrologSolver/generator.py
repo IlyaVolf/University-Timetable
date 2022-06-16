@@ -2,6 +2,7 @@ from pyswip import Prolog
 
 from DatabaseManager import DatabaseManager
 from entities.GeneratedClass import GeneratedClass
+from entities.User import User
 
 # число попыток, если это значение не задано явно
 attempts = 2
@@ -353,6 +354,7 @@ def fromClassesToSchedule(wrapper):
 
 
 # генерация расписания с 0. Предыдущее расписание, если было, удаляется
+# TODO Матвей
 def generate():
     create_pl(0)
     prolog = Prolog()
@@ -365,6 +367,7 @@ def generate():
 
 
 # догенерация расписания, используя текущее сгенерированное расписание
+# TODO Матвей
 def overgenerate():
     schedule = fromClassesToSchedule(True)
     create_pl(3)
@@ -380,6 +383,7 @@ def overgenerate():
 # удаление одного предмета из текущего расписания. Требуется подать на вход элемент таблицы GeneratedSchedule
 # (класс GeneratedClass).
 # TODO Если fail, то размер списка 0?
+# TODO Матвей
 def remove_man(id):
     classToDelete = dbManager.getGeneratedClass(id)
     event = fromClassToEvent(classToDelete)
@@ -396,6 +400,7 @@ def remove_man(id):
 # добавление одного предмета с полным указанием параметров вручную. Если противоречий нет с текущим расписанием, то
 # предмет добавится. Требуется подать на вход элемент таблицы GeneratedSchedule (класс GeneratedClass).
 # TODO Если fail, то размер списка 0?
+# TODO Матвей
 def add_man(classToAdd):
     event = fromClassToEvent(classToAdd)
     schedule = fromClassesToSchedule(False)
@@ -490,9 +495,10 @@ dbManager = DatabaseManager()
 # dbManager.addSubject(1, "Electrical engineering and Electronics", "3,4", "pr", 1, 13, 3)
 # dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
-generate()
-#print(dbManager.addUser("ee53533", 3))
-#dbManager.removeUser(2)
+#generate()
+#user = dbManager.addUser("ee53533", "1", 1)
+#print(user.id)
+
 
 dbManager.close()
 

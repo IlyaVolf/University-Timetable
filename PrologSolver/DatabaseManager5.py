@@ -1447,16 +1447,18 @@ class DatabaseManager:
         id = cursor.fetchall()[0][0]
 
         sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
-        cursor.execute(sqliteQuery, (id,))
+        cursor.execute(sqliteQuery, (int(id),))
         row = cursor.fetchall()[0]
 
         self.sqlite_connection.commit()
         cursor.close()
 
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+        return User(str(row[0]), row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
     # TODO Матвей
     def updateUser(self, id, name, email, role, teacherId=None):
+        id = int(id)
+
         if role == 0:
             raise ValueError("chief dispatcher can be only one!")
 
@@ -1493,7 +1495,7 @@ class DatabaseManager:
         id = cursor.fetchall()[0][0]
 
         sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
-        cursor.execute(sqliteQuery, (id,))
+        cursor.execute(sqliteQuery, (int(id),))
         row = cursor.fetchall()[0]
 
         self.sqlite_connection.commit()
@@ -1532,13 +1534,8 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
-        rows = cursor.fetchall()
+        row = cursor.fetchall()[0]
         cursor.close()
-
-        if len(rows) < 1:
-            return None
-
-        row = rows[0]
 
         return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
@@ -1564,7 +1561,7 @@ class DatabaseManager:
             raise ValueError("No account with this email!")
         cursor.close()
 
-        return rows[0][0]
+        return str(rows[0][0])
 
     # во время входа: для сверки, которая происходит у Матвея, нужно вернуть хеш пароля. По уникальной почте
     # TODO МАТВЕЙ
