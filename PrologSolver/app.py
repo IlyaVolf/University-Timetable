@@ -1,10 +1,11 @@
 from operator import ge
 import os
 from webbrowser import get
+#from PrologSolver.entities.GeneratedClass import GeneratedClass
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-#import shutil
-import threading
+import generator
+from entities import GeneratedClass
 
 from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject,serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule, serialiseGeneratedClass
 from DatabaseManager import DatabaseManager
@@ -426,6 +427,7 @@ def groupsOfClass(id):
     dbManager = DatabaseManager()
     groupsOfClass = dbManager.getAllGroupsOfClass(id)
     dbManager.close()
+    
     return jsonify(groupsOfClass)
 
 @app.route('/getScheduleStudents/<group>', methods=['GET'])
@@ -456,16 +458,51 @@ def doYearShiftLeft():
     dbManager.close()
     return jsonify({'response': 'success'})
 
-
-import generator
-
 @app.route('/generate', methods=['GET'])
 def generate():
-    global i
-    i = 1
-
     dbManager = DatabaseManager()
     generator.generate()
+    res = dbManager.getAllGeneratedClass()
+
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+
+@app.route('/overgenerate', methods=['GET'])
+def overgenerate():
+    dbManager = DatabaseManager()
+    generator.overgenerate()
+    res = dbManager.getAllGeneratedClass()
+
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+
+# id не надо!
+@app.route('/addman', methods=['GET'])
+def add_man():
+    faculty = request.args.get('faculty')
+    educationalProgram = request.args.get('educationalProgram')
+    specialization = request.args.get('specialization')
+    subject = request.args.get('subject')
+    semester = request.args.get('semester')
+    teacher = request.args.get('teacher')
+    typeOfClass = request.args.get('typeOfClass')
+    auditory = request.args.get('auditory')
+    groups = request.args.get('groups')
+    day = request.args.get('day')
+    classNumber = request.args.get('classNumber')
+    teacherId = request.args.get('teacherId')
+
+    dbManager = DatabaseManager()
+    generator.add_man(GeneratedClass(0, faculty, educationalProgram, specialization, subject, semester, teacher, typeOfClass, auditory, groups, day, classNumber, teacherId))
+    res = dbManager.getAllGeneratedClass()
+
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+
+@app.route('/removeman/<id>', methods=['GET'])
+def remove_man(id):
+    dbManager = DatabaseManager()
+    generator.remove_man(id)
     res = dbManager.getAllGeneratedClass()
 
     dbManager.close()
@@ -489,12 +526,6 @@ def login():
 
     return jsonify({'response': 'success'})
 
-@app.route('/sisi')
-def sisi():
-    print(current_user.is_authenticated)
-
-    return jsonify({'response': 'success'})
-
 @app.route('/logout')
 @login_required
 def logout():
@@ -502,13 +533,7 @@ def logout():
     logout_user()
 
     return jsonify({'response': 'success'})
-
-flag = 0
-if (flag):
-    while (i == 0):
-        threading.Timer(2, check)
     
 if __name__ == '__main__':
-    flag = 1
     app.secret_key = os.urandom(24)
     app.run()
