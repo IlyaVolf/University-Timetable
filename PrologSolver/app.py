@@ -25,13 +25,6 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app)
 
-i = 0
-def check():
-    print("HI")
-    if (i == 1):
-        import generator
-        print("JU")
-
 login_manager = LoginManager()
 #login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
@@ -44,9 +37,9 @@ def load_user(user_id):
 
 @app.route('/teachers/<id>', methods=['GET','DELETE','PUT'])
 def teacher(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -74,9 +67,9 @@ def teacher(id):
 
 @app.route('/teachers', methods=['POST','GET'])
 def addTeacher():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'POST':
         name = request.args.get('name')
@@ -97,9 +90,9 @@ def addTeacher():
 # только интересуют вес и даты
 @app.route('/teacherconstraints', methods=['GET','PUT'])
 def teacher_constraints():
-    if (current_user.is_authenticated):
-        if (current_user.role == 2):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 2):
+    #        return Response("{'response': 'failure'}", status=401)    
     
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -125,9 +118,9 @@ def teacher_constraints():
 
 @app.route('/classrooms/<id>', methods=['GET','DELETE','PUT'])
 def classroom(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -154,9 +147,9 @@ def classroom(id):
 
 @app.route('/classrooms', methods=['POST','GET'])
 def addClassroom():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
     
     if request.method == 'POST':
         number = request.args.get('number')
@@ -175,9 +168,9 @@ def addClassroom():
 
 @app.route('/faculties/<id>', methods=['GET','DELETE','PUT'])
 def faculty(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     response_object = {'id': 'null', 'faculty': 'null'}
     if request.method == 'GET':
@@ -203,9 +196,9 @@ def faculty(id):
 
 @app.route('/faculties', methods=['POST','GET'])
 def addFaculty():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'POST':
         name = request.args.get('name')
@@ -222,9 +215,9 @@ def addFaculty():
 
 @app.route('/educationalPrograms/<id>', methods=['GET','DELETE','PUT'])
 def educationalProgram(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -250,9 +243,9 @@ def educationalProgram(id):
 
 @app.route('/educationalPrograms', methods=['POST','GET'])
 def addEducationalProgram():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'POST':
         facultyId = request.args.get('facultyId')
@@ -270,9 +263,9 @@ def addEducationalProgram():
 
 @app.route('/groups/<id>', methods=['GET','DELETE','PUT'])
 def group(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
     
     response_object = {'id': 'null', 'specializationId': 'null', 'name': 'null',
     'amountOfStudents': 'null', 'yearOfStudy': 'null'}
@@ -302,9 +295,9 @@ def group(id):
 
 @app.route('/groups', methods=['POST','GET'])
 def addGroup():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
     
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
@@ -325,9 +318,9 @@ def addGroup():
 
 @app.route('/subjects/<id>', methods=['GET','DELETE','PUT'])
 def subject(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -361,9 +354,9 @@ def subject(id):
 
 @app.route('/subjects', methods=['POST','GET'])
 def addSubject():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
@@ -389,9 +382,9 @@ def addSubject():
 
 @app.route('/specializations/<id>', methods=['GET','DELETE','PUT'])
 def specialization(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
     
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -417,9 +410,9 @@ def specialization(id):
 
 @app.route('/specializations', methods=['POST','GET'])
 def addSpecialization():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
     
     if request.method == 'POST':
         educationalProgramId = request.args.get('educationalProgramId')
@@ -443,9 +436,9 @@ def addSpecialization():
 
 @app.route('/constraints', methods=['GET','DELETE','PUT', 'POST'])
 def constraints():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
     
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -498,9 +491,9 @@ def constraints():
 
 @app.route('/generatedClasses', methods=['GET'])
 def generatedClasses():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
     
     dbManager = DatabaseManager()
     generatedClasses = dbManager.getAllGeneratedClass()
@@ -509,9 +502,9 @@ def generatedClasses():
 
 @app.route('/generatedClasses/<id>', methods=['GET'])
 def generatedClass(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
     
     dbManager = DatabaseManager()
     generatedClass = dbManager.getGeneratedClass(id)
@@ -520,9 +513,9 @@ def generatedClass(id):
 
 @app.route('/groupsOfClass/<id>', methods=['GET'])
 def groupsOfClass(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)        
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)        
     
     dbManager = DatabaseManager()
     groupsOfClass = dbManager.getAllGroupsOfClass(id)
@@ -572,9 +565,9 @@ def scheduleTeachers(teacherId):
 
 @app.route('/yearShiftRight', methods=['PUT'])
 def doYearShiftRight():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)        
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)        
     
     dbManager = DatabaseManager()
     dbManager.yearShiftRight()
@@ -583,9 +576,9 @@ def doYearShiftRight():
 
 @app.route('/yearShiftLeft', methods=['PUT'])
 def doYearShiftLeft():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)        
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)        
     
     dbManager = DatabaseManager()
     dbManager.yearShiftLeft()
@@ -594,9 +587,9 @@ def doYearShiftLeft():
 
 @app.route('/generate', methods=['GET'])
 def generate():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
 
 
     dbManager = DatabaseManager()
@@ -608,9 +601,9 @@ def generate():
 
 @app.route('/overgenerate', methods=['GET'])
 def overgenerate():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)        
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)        
     
     dbManager = DatabaseManager()
     generator.overgenerate()
@@ -622,9 +615,9 @@ def overgenerate():
 # id не надо!
 @app.route('/addman', methods=['GET'])
 def add_man():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
 
     faculty = request.args.get('faculty')
     educationalProgram = request.args.get('educationalProgram')
@@ -648,9 +641,9 @@ def add_man():
 
 @app.route('/removeman/<id>', methods=['GET'])
 def remove_man(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)        
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)        
     
     dbManager = DatabaseManager()
     generator.remove_man(id)
@@ -662,9 +655,9 @@ def remove_man(id):
 
 @app.route('/users/<id>', methods=['GET','DELETE','PUT'])
 def user(id):
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -701,9 +694,9 @@ def currentUser():
 
 @app.route('/users', methods=['POST','GET'])
 def addUser():
-    if (current_user.is_authenticated):
-        if (current_user.role == 0 or current_user.role == 1):
-            return Response("{'response': 'failure'}", status=401)    
+    #if (current_user.is_authenticated):
+    #    if (current_user.role == 0 or current_user.role == 1):
+    #        return Response("{'response': 'failure'}", status=401)    
 
     if request.method == 'POST':
         name = request.args.get('name')
