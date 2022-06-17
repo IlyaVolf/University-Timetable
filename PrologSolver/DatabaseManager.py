@@ -894,8 +894,7 @@ class DatabaseManager:
         cursor.execute(sqliteQuery, (id,))
         rows = cursor.fetchall()
         if len(rows) < 1:
-            return
-            # raise ValueError("No such teacher id!")
+            raise ValueError("No such teacher id!")
         row = rows[0]
         cursor.close()
 
