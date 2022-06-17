@@ -702,7 +702,9 @@ def addUser():
         name = request.args.get('name')
         email = request.args.get('email')
         role = int(request.args.get('role'))
-        teacherId = int(request.args.get('teacherId'))
+        teacherId = request.args.get('teacherId')
+        if request.args.get('teacherId') is not None:
+            teacherId = int(teacherId)
         if name is not None and email is not None and role is not None:
             dbManager = DatabaseManager()
             dbManager.addUser(name, email, role, teacherId)
