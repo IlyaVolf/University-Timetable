@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="a370555f-056d-4618-bcd3-179e68c86526" name="Changes" comment="" />
+=======
+    <list default="true" id="a370555f-056d-4618-bcd3-179e68c86526" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+>>>>>>> feature/prolog
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,6 +32,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -34,6 +41,18 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Artysh\Downloads\ily PO FASTU\University-Timetable\PrologSolver" />
+=======
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Ilya Volf/Pictures/ВУЗ/Проектирование ПО/timetable/University-Timetable/PrologSolver/entities&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Ilya Volf\Pictures\ВУЗ\Проектирование ПО\timetable\University-Timetable\PrologSolver\entities" />
+>>>>>>> feature/prolog
       <recent name="C:\Users\Ilya Volf\Pictures\ВУЗ\Проектирование ПО\timetable\University-Timetable\PrologSolver" />
     </key>
   </component>
@@ -110,7 +129,11 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/DatabaseManager.py</url>
+<<<<<<< HEAD
           <line>35</line>
+=======
+          <line>32</line>
+>>>>>>> feature/prolog
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

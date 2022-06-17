@@ -2,6 +2,7 @@ from pyswip import Prolog
 
 from DatabaseManager import DatabaseManager
 from entities.GeneratedClass import GeneratedClass
+from entities.User import User
 
 # число попыток, если это значение не задано явно
 attempts = 2
@@ -505,6 +506,8 @@ for i in range(6):
 #generate()
 #print(dbManager.addUser("ee53533", 3))
 #dbManager.removeUser(2)
+#user = dbManager.addUser("ee53533", "1", 1)
+#print(user.id)
 
 dbManager.close()
 

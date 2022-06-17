@@ -13,6 +13,7 @@ from entities.Teacher import Teacher
 from entities.Classroom import Classroom
 from entities.Schedule import Schedule
 from entities.ScheduleEntity import ScheduleEntity
+from entities.ScheduleTeacher import ScheduleTeacher
 from entities.User import User
 
 
@@ -24,13 +25,7 @@ def tupleToList(t):
 
 
 studyDaysInWeek = 6
-amountOfClassesPerDay = 7
 
-# TODO НУЖНО ПРОЮБЕЖАТЬСЯ И УБЕДИТЬСЯ В НАЛИЧИИ ВСЕХ ПОМЕЧЕННЫХ МЕТОДОВ
-# TODO ВНИМАНИЕ, у teacher появилось новое поле - ShortenName!!!!
-# TODO у GeneratedSchedule - поле teacherId (хотя уже давно)
-# TODO Schedule и ScheduleEntity тоже изменены!
-# TODO Касатально ошибок - кидаются ТОЛЬКО ValueError
 
 class DatabaseManager:
     def __init__(self, dbFileName='timetable.sqlite'):
@@ -569,30 +564,6 @@ class DatabaseManager:
 
         return Group(row[0], row[1], row[2], row[3], row[4])
 
-    # TODO МАТВЕЙ
-    def getAllGroupByFaculty(self, facultyId):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE FacultyId = ?'
-        cursor.execute(sqliteQuery, (facultyId,))
-        rows = cursor.fetchall()
-
-        lst = []
-        for row in rows:
-            sqliteQuery = 'SELECT * FROM Specializations WHERE EducationalProgramId = ?'
-            cursor.execute(sqliteQuery, (row[0],))
-            rows2 = cursor.fetchall()
-            for row2 in rows2:
-                sqliteQuery = 'SELECT * FROM Groups WHERE SpecializationId = ?'
-                cursor.execute(sqliteQuery, (row2[0],))
-                rows3 = cursor.fetchall()
-                for row3 in rows3:
-                    lst.append(Group(row3[0], row3[1], row3[2], row3[3], row3[4]))
-
-        cursor.close()
-
-        return lst
-
-
     # for prolog
     def getAllSpecializationGroups(self, specializationId, yearOfStudy):
         cursor = self.sqlite_connection.cursor()
@@ -820,9 +791,9 @@ class DatabaseManager:
             wantTokens = wantDays[i][1:-1].split(",")
             for j in range(len(wantTokens)):
                 if (wantTokens[j] > constraints.classesPerDay) or (canTokens[j] > constraints.classesPerDay):
-                    raise ValueError('Пар в день может быть меньше, чем одно из указанных значений')
+                    raise Exception('Пар в день может быть меньше, чем одно из указанных значений')
                 if not (wantTokens[j] in canTokens) and wantTokens[j] != '':
-                    raise ValueError('Хочет работать в тот день, в который не может работать!')
+                    raise Exception('Хочет работать в тот день, в который не может работать!')
 
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'INSERT INTO Teachers(`Name`, `DaysCanWork`, `DaysWantWork`, `Weight`) VALUES(?, ' \
@@ -851,7 +822,7 @@ class DatabaseManager:
             wantTokens = wantDays[i][1:-1].split(",")
             for want in wantTokens:
                 if not (want in canTokens) and want != '':
-                    raise ValueError('Хочет работать в тот день, в который не может работать!')
+                    raise Exception('Хочет работать в тот день, в который не может работать!')
 
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'UPDATE Teachers SET Name = ?, DaysCanWork = ?, DaysWantWork = ?, Weight = ? WHERE id = ?'
@@ -1238,6 +1209,20 @@ class DatabaseManager:
             lst.append(row[2])
         return lst
 
+    # TODO МАТВЕЙ
+    def getAllGeneratedTeachers(self):
+        cursor = self.sqlite_connection.cursor()
+        sqliteQuery = 'SELECT DISTINCT Teacher, TeacherId FROM GeneratedSchedule'
+        cursor.execute(sqliteQuery)
+        rows = cursor.fetchall()
+        self.sqlite_connection.commit()
+        cursor.close()
+
+        lst = []
+        for row in rows:
+            lst.append(ScheduleTeacher(row[12], row[6], shortenName(row[6])))
+        return lst
+
     ####################################################################################################################
 
     # Формат - объект класса Schedule, который содержит:
@@ -1252,8 +1237,6 @@ class DatabaseManager:
     #       String: номер пары
     #       String: время
     # TODO МАТВЕЙ
-    # TODO ТУТ БЫЛО ИЗМЕНЕНИЕ
-    # TODO Внимание, поле Schedule - матрица, некоторые значения None!
     def getScheduleStudents(self, groupName):
         dbManager = DatabaseManager()
 
@@ -1262,25 +1245,30 @@ class DatabaseManager:
         cursor.execute(sqliteQuery, (groupName,))
         rows = cursor.fetchall()
 
-        schedule = [[None for x in range(amountOfClassesPerDay)] for y in range(studyDaysInWeek)]
-        for row in rows:
-            sqliteQuery = 'SELECT * FROM GeneratedSchedule WHERE id = ?'
-            cursor.execute(sqliteQuery, (row[1],))
-            rows2 = cursor.fetchall()
-            for row2 in rows2:
-                hours, minutes = calculateTimeStart(int(row2[11]))
-                h = str(hours)
-                if minutes < 10:
-                    m = "0" + str(minutes)
-                else:
-                    m = str(minutes)
-                time = h + ":" + m
-                schedule[row2[10]-1][row2[11]-1] = ScheduleEntity(row2[4], row2[7], row2[6], row2[8], row2[9], row2[11], time)
+        schedule = []
+        for day in range(studyDaysInWeek):
+            scheduleDay = []
+            for row in rows:
+                sqliteQuery = 'SELECT * FROM GeneratedSchedule WHERE id = ?'
+                cursor.execute(sqliteQuery, (row[1],))
+                rows2 = cursor.fetchall()
+                for row2 in rows2:
+                    if day == (int(row2[10]) - 1):
+                        hours, minutes = calculateTimeStart(int(row2[11]))
+                        h = str(hours)
+                        if minutes < 10:
+                            m = "0" + str(minutes)
+                        else:
+                            m = str(minutes)
+                        time = h + ":" + m
+                        scheduleDay.append(
+                            ScheduleEntity(row2[4], row2[7], row2[6], row2[8], row2[9], row2[11], time))
+            schedule.append(scheduleDay)
 
         self.sqlite_connection.commit()
         cursor.close()
 
-        return Schedule(0, dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
+        return Schedule(dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
                         schedule)
 
     # Формат - объект класса Schedule, который содержит:
@@ -1295,30 +1283,33 @@ class DatabaseManager:
     #       String: номер пары
     #       String: время
     # TODO МАТВЕЙ
-    # TODO ТУТ БЫЛО ИЗМЕНЕНИЕ
-    # TODO Внимание, поле Schedule - матрица, некоторые значения None!
-    def getScheduleTeachers(self, teacherId):
+    def getScheduleTeachers(self, teacherName):
         dbManager = DatabaseManager()
 
-        schedule = [[None for x in range(amountOfClassesPerDay)] for y in range(studyDaysInWeek)]
+        schedule = []
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT * FROM GeneratedSchedule WHERE TeacherId = ?'
-        cursor.execute(sqliteQuery, (teacherId,))
-        rows = cursor.fetchall()
-        for row in rows:
-            hours, minutes = calculateTimeStart(int(row[11]))
-            h = str(hours)
-            if minutes < 10:
-                m = "0" + str(minutes)
-            else:
-                m = str(minutes)
-            time = h + ":" + m
-            schedule[row[10] - 1][row[11] - 1] = ScheduleEntity(row[4], row[7], row[6], row[8], row[9], row[11], time)
+        for day in range(studyDaysInWeek):
+            scheduleDay = []
+            sqliteQuery = 'SELECT * FROM GeneratedSchedule WHERE Teacher = ?'
+            cursor.execute(sqliteQuery, (teacherName,))
+            rows = cursor.fetchall()
+            for row in rows:
+                if day == (int(row[10]) - 1):
+                    hours, minutes = calculateTimeStart(int(row[11]))
+                    h = str(hours)
+                    if minutes < 10:
+                        m = "0" + str(minutes)
+                    else:
+                        m = str(minutes)
+                    time = h + ":" + m
+                    scheduleDay.append(
+                        ScheduleEntity(row[4], row[7], row[6], row[8], row[9], row[11], time))
+            schedule.append(scheduleDay)
 
         self.sqlite_connection.commit()
         cursor.close()
 
-        return Schedule(1, dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
+        return Schedule(dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
                         schedule)
 
     ####################################################################################################################
@@ -1456,16 +1447,18 @@ class DatabaseManager:
         id = cursor.fetchall()[0][0]
 
         sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
-        cursor.execute(sqliteQuery, (id,))
+        cursor.execute(sqliteQuery, (int(id),))
         row = cursor.fetchall()[0]
 
         self.sqlite_connection.commit()
         cursor.close()
 
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+        return User(str(row[0]), row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
     # TODO Матвей
     def updateUser(self, id, name, email, role, teacherId=None):
+        id = int(id)
+
         if role == 0:
             raise ValueError("chief dispatcher can be only one!")
 
@@ -1502,7 +1495,7 @@ class DatabaseManager:
         id = cursor.fetchall()[0][0]
 
         sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
-        cursor.execute(sqliteQuery, (id,))
+        cursor.execute(sqliteQuery, (int(id),))
         row = cursor.fetchall()[0]
 
         self.sqlite_connection.commit()
@@ -1541,13 +1534,8 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
-        rows = cursor.fetchall()
+        row = cursor.fetchall()[0]
         cursor.close()
-
-        if len(rows) < 1:
-            return None
-
-        row = rows[0]
 
         return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
@@ -1573,7 +1561,7 @@ class DatabaseManager:
             raise ValueError("No account with this email!")
         cursor.close()
 
-        return rows[0][0]
+        return str(rows[0][0])
 
     # во время входа: для сверки, которая происходит у Матвея, нужно вернуть хеш пароля. По уникальной почте
     # TODO МАТВЕЙ
