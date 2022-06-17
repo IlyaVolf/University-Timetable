@@ -1558,7 +1558,7 @@ class DatabaseManager:
 
         return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
-    # когда через почту подтверждает свое участие + когда уже задал пароль:
+    # когда через почту подтверждает свое участие:
     # TODO МАТВЕЙ
     def signUpUser(self, id, password):
         passwordHash = generate_password_hash(password)
@@ -1585,6 +1585,7 @@ class DatabaseManager:
 
     # во время входа: для сверки, которая происходит у Матвея, нужно вернуть хеш пароля. По уникальной почте
     # TODO МАТВЕЙ
+    """
     def getPasswordHashByEmailUser(self, email):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT PasswordHash FROM Users WHERE email = ?'
@@ -1596,6 +1597,7 @@ class DatabaseManager:
         cursor.close()
 
         return rows[0][0]
+    """
 
 
 # Функция рассчитывает время начала пары

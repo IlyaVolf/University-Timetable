@@ -7,7 +7,6 @@ from entities.Subject import Subject
 from entities.Specialization import Specialization
 from entities.Constraints import Constraints
 from entities.GeneratedClass import GeneratedClass
-from entities.ScheduleEntity import ScheduleEntity
 from entities.Schedule import Schedule
 from entities.User import User
 

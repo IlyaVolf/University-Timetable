@@ -567,8 +567,10 @@ def test2():
 #user = dbManager.getUser(1)
 #user.signUpUser("1234")
 #dbManager.removeUser(2)
-#user = dbManager.addUser("ee53533", "1", 1)
+#dbManager = DatabaseManager()
+#user = dbManager.addUser("Permyakov Ruslan Anatolievich", "222", 2, 1)
 #print(user.id)
+#dbManager.close()
 
 #print(dbManager.getTeacher(1).name)
 #dbManager.close()
