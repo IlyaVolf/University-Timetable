@@ -10,4 +10,6 @@ class Teacher:
 
 def shortenName(name):
     token = name.split(" ")
-    return token[0] + token[1][0] + ". " + token[2][0] + "."
+    if len(token) is 3:
+        return token[0] + token[1][0] + ". " + token[2][0] + "."
+    return token[0] + token[1][0] + "."
