@@ -37,15 +37,19 @@ def load_user(user_id):
 
 @app.route('/teachers/<id>', methods=['GET','DELETE','PUT'])
 def teacher(id):
+    response_object = {'response': 'success'}
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        teacher = dbManager.getTeacher(id)
+        try:
+            teacher = dbManager.getTeacher(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseTeacher(teacher)
+        response_object['teacher'] = serialiseTeacher(teacher)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
@@ -59,7 +63,10 @@ def teacher(id):
         weight = request.args.get('weight')
         if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
             dbManager = DatabaseManager()
-            dbManager.updateTeacher(id, name, daysCanWork, daysWantWork, int(weight))
+            try:
+                dbManager.updateTeacher(id, name, daysCanWork, daysWantWork, int(weight))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -70,7 +77,7 @@ def addTeacher():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
-
+    response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
         daysCanWork = request.args.get('daysCanWork').replace(" ", ",").replace("_", ";")
@@ -78,14 +85,18 @@ def addTeacher():
         weight = request.args.get('weight')
         if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
             dbManager = DatabaseManager()
-            dbManager.addTeacher(name, daysCanWork, daysWantWork, int(weight))
+            try:
+                dbManager.addTeacher(name, daysCanWork, daysWantWork, int(weight))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     dbManager = DatabaseManager()
     teachers = dbManager.getAllTeacher()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseTeacher(x), teachers)))
+    response_object['teachers'] = list(map(lambda x: serialiseTeacher(x), teachers))
+    return jsonify(response_object)
 
 # только интересуют вес и даты
 @app.route('/teacherconstraints', methods=['GET','PUT'])
@@ -93,12 +104,12 @@ def teacher_constraints():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 2):
     #        return Response("{'response': 'failure'}", status=401)    
-    
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
         teacher = dbManager.getTeacher(current_user.teacherId)
         dbManager.close()
-        response_object = serialiseTeacher(teacher)
+        response_object['teacher'] = serialiseTeacher(teacher)
         return jsonify(response_object)
     if request.method == 'PUT':
         dbManager = DatabaseManager()
@@ -121,12 +132,15 @@ def classroom(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
-
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        classroom = dbManager.getClassroom(id)
+        try:
+            classroom = dbManager.getClassroom(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseClassroom(classroom)
+        response_object['classroom'] = serialiseClassroom(classroom)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
@@ -139,7 +153,10 @@ def classroom(id):
         typesOfClass = request.args.get('typesOfClass').replace(" ", ",")
         if number is not None and capacity is not None and typesOfClass is not None:
             dbManager = DatabaseManager()
-            dbManager.updateClassroom(id, number, typesOfClass, int(capacity))
+            try:
+                dbManager.updateClassroom(id, number, typesOfClass, int(capacity))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -150,21 +167,25 @@ def addClassroom():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
-    
+    response_object = {'response': 'success'}
     if request.method == 'POST':
         number = request.args.get('number')
         capacity = request.args.get('capacity')
         typesOfClass = request.args.get('typesOfClass').replace(" ", ",")
         if number is not None and capacity is not None and typesOfClass is not None:
             dbManager = DatabaseManager()
-            dbManager.addClassroom(number, typesOfClass, int(capacity))
+            try:
+                dbManager.addClassroom(number, typesOfClass, int(capacity))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     dbManager = DatabaseManager()
     teachers = dbManager.getAllClassroom()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseClassroom(x), teachers)))
+    response_object['classrooms'] = list(map(lambda x: serialiseClassroom(x), teachers))
+    return jsonify(response_object)
 
 @app.route('/faculties/<id>', methods=['GET','DELETE','PUT'])
 def faculty(id):
@@ -172,12 +193,15 @@ def faculty(id):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
 
-    response_object = {'id': 'null', 'faculty': 'null'}
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        faculty = dbManager.getFaculty(id)
+        try:
+            faculty = dbManager.getFaculty(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseFaculty(faculty)
+        response_object['faculty'] = serialiseFaculty(faculty)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
@@ -188,7 +212,10 @@ def faculty(id):
         name = request.args.get('name')
         if name is not None:
             dbManager = DatabaseManager()
-            dbManager.updateFaculty(id, name)
+            try:
+                dbManager.updateFaculty(id, name)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -199,31 +226,38 @@ def addFaculty():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
-
+    response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
         if name is not None:
             dbManager = DatabaseManager()
-            dbManager.addFaculty(name)
+            try:
+                dbManager.addFaculty(name)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     dbManager = DatabaseManager()
     faculties = dbManager.getAllFaculty()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseFaculty(x), faculties)))
+    response_object['faculties'] = list(map(lambda x: serialiseFaculty(x), faculties))
+    return jsonify(response_object)
 
 @app.route('/educationalPrograms/<id>', methods=['GET','DELETE','PUT'])
 def educationalProgram(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
-
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        educationalProgram = dbManager.getEducationalProgram(id)
+        try:
+            educationalProgram = dbManager.getEducationalProgram(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseEducationalProgram(educationalProgram)
+        response_object['educationalProgram'] = serialiseEducationalProgram(educationalProgram)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
@@ -235,7 +269,10 @@ def educationalProgram(id):
         name = request.args.get('name').replace("_", ",").replace("-", ".")
         if facultyId is not None and name is not None:
             dbManager = DatabaseManager()
-            dbManager.updateEducationalProgram(id, facultyId, name)
+            try:
+                dbManager.updateEducationalProgram(id, facultyId, name)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -246,34 +283,39 @@ def addEducationalProgram():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
-
+    response_object = {'response': 'success'}
     if request.method == 'POST':
         facultyId = request.args.get('facultyId')
         name = request.args.get('name').replace("_", ",").replace("-", ".")
         if name is not None and facultyId is not None:
             dbManager = DatabaseManager()
-            dbManager.addEducationalProgram(facultyId, name)
+            try:
+                dbManager.addEducationalProgram(facultyId, name)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     dbManager = DatabaseManager()
     educationalPrograms = dbManager.getAllEducationalProgram()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseEducationalProgram(x), educationalPrograms)))
+    response_object['educationalPrograms'] = list(map(lambda x: serialiseEducationalProgram(x), educationalPrograms))
+    return jsonify(response_object)
 
 @app.route('/groups/<id>', methods=['GET','DELETE','PUT'])
 def group(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)    
-    
-    response_object = {'id': 'null', 'specializationId': 'null', 'name': 'null',
-    'amountOfStudents': 'null', 'yearOfStudy': 'null'}
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        group = dbManager.getGroup(id)
+        try:
+            group = dbManager.getGroup(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseGroup(group)
+        response_object['group'] = serialiseGroup(group)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
@@ -287,7 +329,10 @@ def group(id):
         yearOfStudy = request.args.get('yearOfStudy')
         if specializationId is not None and name is not None and amountOfStudents is not None and yearOfStudy is not None:
             dbManager = DatabaseManager()
-            dbManager.updateGroup(id, specializationId, name, int(amountOfStudents), int(yearOfStudy))
+            try:
+                dbManager.updateGroup(id, specializationId, name, int(amountOfStudents), int(yearOfStudy))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -298,7 +343,7 @@ def addGroup():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)    
-    
+    response_object = {'response': 'success'}
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
         name = request.args.get('name').replace("-", ".")
@@ -307,26 +352,33 @@ def addGroup():
         if (specializationId is not None and name is not None and 
             amountOfStudents is not None and yearOfStudy is not None):
             dbManager = DatabaseManager()
-            dbManager.addGroup(specializationId, name, int(amountOfStudents), int(yearOfStudy))
+            try:
+                dbManager.addGroup(specializationId, name, int(amountOfStudents), int(yearOfStudy))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     dbManager = DatabaseManager()
     groups = dbManager.getAllGroup()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseGroup(x), groups)))
+    response_object['groups'] = list(map(lambda x: serialiseGroup(x), groups))
+    return jsonify(response_object)
 
 @app.route('/subjects/<id>', methods=['GET','DELETE','PUT'])
 def subject(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
-
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        subject = dbManager.getSubject(id)
+        try:
+            subject = dbManager.getSubject(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseSubject(subject)
+        response_object['subject'] = serialiseSubject(subject)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
@@ -345,8 +397,11 @@ def subject(id):
             and typeOfClass is not None and frequency is not None and teacherId is not None
             and amountOfGroups is not None):
             dbManager = DatabaseManager()
-            dbManager.updateSubject(id, specializationId, name, semesters, typeOfClass,
-                int(frequency), teacherId, int(amountOfGroups))
+            try:
+                dbManager.updateSubject(id, specializationId, name, semesters, typeOfClass,
+                    int(frequency), teacherId, int(amountOfGroups))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -357,7 +412,7 @@ def addSubject():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)
-
+    response_object = {'response': 'success'}
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
         name = request.args.get('name')
@@ -370,27 +425,34 @@ def addSubject():
             and typeOfClass is not None and frequency is not None and teacherId is not None
             and amountOfGroups is not None):
             dbManager = DatabaseManager()
-            dbManager.addSubject(specializationId, name, semesters, typeOfClass,
-                int(frequency), teacherId, int(amountOfGroups))
+            try:
+                dbManager.addSubject(specializationId, name, semesters, typeOfClass,
+                    int(frequency), teacherId, int(amountOfGroups))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     dbManager = DatabaseManager()
     subjects = dbManager.getAllSubject()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseSubject(x), subjects)))
+    response_object['subjects'] = list(map(lambda x: serialiseSubject(x), subjects))
+    return jsonify(response_object)
 
 @app.route('/specializations/<id>', methods=['GET','DELETE','PUT'])
 def specialization(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)    
-    
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        specialization = dbManager.getSpecialization(id)
+        try:
+            specialization = dbManager.getSpecialization(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseSpecialization(specialization)
+        response_object['specialization'] = serialiseSpecialization(specialization)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
@@ -402,7 +464,10 @@ def specialization(id):
         name = request.args.get('name')
         if educationalProgramId is not None and name is not None:
             dbManager = DatabaseManager()
-            dbManager.updateSpecialization(id, educationalProgramId, name)
+            try:
+                dbManager.updateSpecialization(id, educationalProgramId, name)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -413,38 +478,48 @@ def addSpecialization():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)    
-    
+    response_object = {'response': 'success'}
     if request.method == 'POST':
         educationalProgramId = request.args.get('educationalProgramId')
         name = request.args.get('name')
         if name is not None and educationalProgramId is not None:
             dbManager = DatabaseManager()
-            dbManager.addSpecialization(educationalProgramId, name)
+            try:
+                dbManager.addSpecialization(educationalProgramId, name)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     if request.method == 'GET' and request.args.get('educationalProgramId') is not None:
         educationalProgramId = request.args.get('educationalProgramId')
         dbManager = DatabaseManager()
-        specializations = dbManager.getAllSpecializationByEdProgram(educationalProgramId)
+        try:
+            specializations = dbManager.getAllSpecializationByEdProgram(educationalProgramId)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
         return jsonify(list(map(lambda x: serialiseSpecialization(x), specializations)))
     dbManager = DatabaseManager()
     specializations = dbManager.getAllSpecialization()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseSpecialization(x), specializations)))
+    response_object['specializations'] = list(map(lambda x: serialiseSpecialization(x), specializations))
+    return jsonify(response_object)
 
 @app.route('/constraints', methods=['GET','DELETE','PUT', 'POST'])
 def constraints():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)    
-    
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        constraints = dbManager.getConstraints()
+        try:
+            constraints = dbManager.getConstraints()
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseConstraints(constraints)
+        response_object['constraints'] = serialiseConstraints(constraints)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
@@ -474,17 +549,23 @@ def constraints():
         classroomFillness is not None and semester is not None):
         dbManager = DatabaseManager()
         if request.method == 'PUT':
-            dbManager.updateConstraints(firstClassStarts, classDuration,
-                shortBrakeDuration, largeBrakeDuration, studyDaysInWeek,
-                studyDaysInWeekForStudents, studyDaysInWeekForTeachers,
-                classesPerDay, classesPerDayStudents, classesPerDayTeachers,
-                lunchBrake, gaps, classroomFillness, semester)
+            try:
+                dbManager.updateConstraints(firstClassStarts, classDuration,
+                    shortBrakeDuration, largeBrakeDuration, studyDaysInWeek,
+                    studyDaysInWeekForStudents, studyDaysInWeekForTeachers,
+                    classesPerDay, classesPerDayStudents, classesPerDayTeachers,
+                    lunchBrake, gaps, classroomFillness, semester)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
         if request.method == 'POST':
-            dbManager.addConstraints(firstClassStarts, int(classDuration),
-                int(shortBrakeDuration), int(largeBrakeDuration), int(studyDaysInWeek),
-                int(studyDaysInWeekForStudents), int(studyDaysInWeekForTeachers),
-                int(classesPerDay), int(classesPerDayStudents), int(classesPerDayTeachers),
-                int(lunchBrake), int(gaps), int(classroomFillness), int(semester))
+            try:
+                dbManager.addConstraints(firstClassStarts, int(classDuration),
+                    int(shortBrakeDuration), int(largeBrakeDuration), int(studyDaysInWeek),
+                    int(studyDaysInWeekForStudents), int(studyDaysInWeekForTeachers),
+                    int(classesPerDay), int(classesPerDayStudents), int(classesPerDayTeachers),
+                    int(lunchBrake), int(gaps), int(classroomFillness), int(semester))
+            except ValueError as e:
+                return jsonify({'error': str(e)})
         dbManager.close()
         return jsonify({'response': 'success'})
     return jsonify({'response': 'failure'})
@@ -494,74 +575,86 @@ def generatedClasses():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)    
-    
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generatedClasses = dbManager.getAllGeneratedClass()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), generatedClasses)))
+    response_object['generatedClasses'] = list(map(lambda x: serialiseGeneratedClass(x), generatedClasses))
+    return jsonify(response_object)
 
 @app.route('/generatedClasses/<id>', methods=['GET'])
 def generatedClass(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
-    
+    #        return Response("{'response': 'failure'}", status=401)
+    response_object = {'response': 'success'}    
     dbManager = DatabaseManager()
     generatedClass = dbManager.getGeneratedClass(id)
     dbManager.close()
-    return jsonify(serialiseGeneratedClass(generatedClass))
+    response_object['generatedClass'] = serialiseGeneratedClass(generatedClass)
+    return jsonify(response_object)
 
 @app.route('/groupsOfClass/<id>', methods=['GET'])
 def groupsOfClass(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)        
-    
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     groupsOfClass = dbManager.getAllGroupsOfClass(id)
     dbManager.close()
-    
-    return jsonify(groupsOfClass)
+    response_object['groupsOfClass'] = groupsOfClass
+    return jsonify(response_object)
 
 # Доступ для всех
 @app.route('/schedule/faculties', methods=['GET'])
 def getFacultiesForSchedule():
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     faculties = dbManager.getAllFaculty()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseFaculty(x), faculties)))
+    response_object['facultiesForSchedule'] = list(map(lambda x: serialiseFaculty(x), faculties))
+    return jsonify(response_object)
 
 # Доступ для всех
 @app.route('/schedule/faculties/<id>', methods=['GET'])
 def getGroupsForSchedule(id):
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     groups = dbManager.getAllGroupByFaculty(id)
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseGroup(x), groups)))
+    response_object['groupsForSchedule'] = list(map(lambda x: serialiseGroup(x), groups))
+    return jsonify(response_object)
 
 # Доступ для всех
 @app.route('/schedule/groups/<group>', methods=['GET'])
 def scheduleStudents(group):
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     schedule = dbManager.getScheduleStudents(group)
     dbManager.close()
-    return jsonify(serialiseSchedule(schedule))
+    response_object['scheduleStudents'] = serialiseSchedule(schedule)
+    return jsonify(response_object)
 
 # Доступ для всех
 @app.route('/schedule/teachers', methods=['GET'])
 def getTeachersForSchedule():
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     teachers = dbManager.getAllTeacher()
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseTeacher(x), teachers)))
+    response_object['teachersForSchedule'] = list(map(lambda x: serialiseTeacher(x), teachers))
+    return jsonify(response_object)
 
 # Доступ для всех
 @app.route('/schedule/teachers/<teacherId>', methods=['GET'])
 def scheduleTeachers(teacherId):
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     schedule = dbManager.getScheduleTeachers(teacherId)
     dbManager.close()
-    return jsonify(serialiseSchedule(schedule))
+    response_object['scheduleTeachers'] = serialiseSchedule(schedule)
+    return jsonify(response_object)
 
 @app.route('/yearShiftRight', methods=['PUT'])
 def doYearShiftRight():
@@ -589,28 +682,29 @@ def doYearShiftLeft():
 def generate():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
-
-
+    #        return Response("{'response': 'failure'}", status=401)
+    response_object = {'response': 'success'}    
     dbManager = DatabaseManager()
     generator.generate()
     res = dbManager.getAllGeneratedClass()
 
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+    response_object['generate'] = list(map(lambda x: serialiseGeneratedClass(x), res))
+    return jsonify(response_object)
 
 @app.route('/overgenerate', methods=['GET'])
 def overgenerate():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)        
-    
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generator.overgenerate()
     res = dbManager.getAllGeneratedClass()
 
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+    response_object['overgenerate'] = list(map(lambda x: serialiseGeneratedClass(x), res))
+    return jsonify(response_object)
 
 # id не надо!
 @app.route('/addman', methods=['GET'])
@@ -618,7 +712,7 @@ def add_man():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)    
-
+    response_object = {'response': 'success'}
     faculty = request.args.get('faculty')
     educationalProgram = request.args.get('educationalProgram')
     specialization = request.args.get('specialization')
@@ -637,20 +731,22 @@ def add_man():
     res = dbManager.getAllGeneratedClass()
 
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+    response_object['addman'] = list(map(lambda x: serialiseGeneratedClass(x), res))
+    return jsonify(response_object)
 
 @app.route('/removeman/<id>', methods=['GET'])
 def remove_man(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)        
-    
+    response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generator.remove_man(id)
     res = dbManager.getAllGeneratedClass()
 
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+    response_object['removeman'] = list(map(lambda x: serialiseGeneratedClass(x), res))
+    return jsonify(response_object)
 
 
 @app.route('/users/<id>', methods=['GET','DELETE','PUT'])
@@ -658,16 +754,22 @@ def user(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
     #        return Response("{'response': 'failure'}", status=401)    
-
+    response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
-        user = dbManager.getUser(id)
+        try:
+            user = dbManager.getUser(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
-        response_object = serialiseUser(user)
+        response_object['user'] = serialiseUser(user)
         return jsonify(response_object)
     if request.method == 'DELETE':
         dbManager = DatabaseManager()
-        dbManager.removeUser(id)
+        try:
+            dbManager.removeUser(id)
+        except ValueError as e:
+            return jsonify({'error': str(e)})
         dbManager.close()
         return jsonify({'response': 'success'})
     if request.method == 'PUT':
@@ -677,7 +779,10 @@ def user(id):
         teacherId = int(request.args.get('teacherId'))
         if name is not None and email is not None and role is not None:
             dbManager = DatabaseManager()
-            dbManager.updateUser(id, name, email, role, teacherId)
+            try:
+                dbManager.updateUser(id, name, email, role, teacherId)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -685,36 +790,44 @@ def user(id):
 
 @app.route('/currentuser', methods=['GET'])
 def currentUser():
+    response_object = {'response': 'success'}
     if (current_user.is_authenticated):
         response_object = serialiseUser(current_user)
         return jsonify(response_object)
     user = User.User(role = 3)
-    response_object = serialiseUser(user)
+    response_object['currentuser'] = serialiseUser(user)
     return jsonify(response_object)
 
 @app.route('/users', methods=['POST','GET'])
 def addUser():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
-
+    #        return Response("{'response': 'failure'}", status=401)
+    response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
         email = request.args.get('email')
         role = int(request.args.get('role'))
         teacherId = request.args.get('teacherId')
-        if request.args.get('teacherId') is not None:
+        if teacherId is not None:
             teacherId = int(teacherId)
         if name is not None and email is not None and role is not None:
             dbManager = DatabaseManager()
-            dbManager.addUser(name, email, role, teacherId)
+            try:
+                dbManager.addUser(name, email, role, teacherId)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     dbManager = DatabaseManager()
-    users = dbManager.getAllUser()
+    try:
+        users = dbManager.getAllUser()
+    except ValueError as e:
+            return jsonify({'error': str(e)})
     dbManager.close()
-    return jsonify(list(map(lambda x: serialiseUser(x), users)))
+    response_object['users'] = list(map(lambda x: serialiseUser(x), users))
+    return jsonify(response_object)
 
 @app.route('/signUp', methods=['POST','GET'])
 def signUpUser():
@@ -723,7 +836,10 @@ def signUpUser():
         password = request.args.get('password')
         if id is not None and password is not None:
             dbManager = DatabaseManager()
-            dbManager.signUpUser(id, password)
+            try:
+                dbManager.signUpUser(id, password)
+            except ValueError as e:
+                return jsonify({'error': str(e)})
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -739,7 +855,10 @@ def login():
     password = request.args.get('password')
     remember = True
     dbManager = DatabaseManager()
-    user = dbManager.signInUser(email)
+    try:
+        user = dbManager.signInUser(email)
+    except ValueError as e:
+            return jsonify({'error': str(e)})
     dbManager.close()
 
     if not user.checkPassword(password):
