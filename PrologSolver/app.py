@@ -1,8 +1,18 @@
+from operator import ge
+import os
+from webbrowser import get
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+#import shutil
+import threading
 
-from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject, serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule
+from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject,serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule, serialiseGeneratedClass
 from DatabaseManager import DatabaseManager
+
+
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import LoginManager
 
 # configuration
 DEBUG = True
@@ -13,6 +23,23 @@ app.config.from_object(__name__)
 
 # enable CORS
 CORS(app)
+
+i = 0
+def check():
+    print("HI")
+    if (i == 1):
+        import generator
+        print("JU")
+
+login_manager = LoginManager()
+#login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+@login_manager.user_loader
+def load_user(user_id):
+    dbManager = DatabaseManager()
+    res = dbManager.getUser(user_id)
+    dbManager.close()
+    return res
 
 @app.route('/teachers/<id>', methods=['GET','DELETE','PUT'])
 def teacher(id):
@@ -101,6 +128,7 @@ def addClassroom():
     return jsonify(list(map(lambda x: serialiseClassroom(x), teachers)))
 
 @app.route('/faculties/<id>', methods=['GET','DELETE','PUT'])
+@login_required
 def faculty(id):
     response_object = {'id': 'null', 'faculty': 'null'}
     if request.method == 'GET':
@@ -428,5 +456,59 @@ def doYearShiftLeft():
     dbManager.close()
     return jsonify({'response': 'success'})
 
+
+import generator
+
+@app.route('/generate', methods=['GET'])
+def generate():
+    global i
+    i = 1
+
+    dbManager = DatabaseManager()
+    generator.generate()
+    res = dbManager.getAllGeneratedClass()
+
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+
+@app.route('/login')
+def login():
+    email = request.args.get('email')
+    print(email)
+    password = request.args.get('password')
+    remember = True
+    dbManager = DatabaseManager()
+    user = dbManager.signInUser(email)
+
+    if not user.checkPassword(password):
+        return jsonify({'response': 'failure'})
+
+    login_user(user, remember=remember)
+
+    print("Hello ", current_user.name)
+
+    return jsonify({'response': 'success'})
+
+@app.route('/sisi')
+def sisi():
+    print(current_user.is_authenticated)
+
+    return jsonify({'response': 'success'})
+
+@app.route('/logout')
+@login_required
+def logout():
+    print(current_user.name)
+    logout_user()
+
+    return jsonify({'response': 'success'})
+
+flag = 0
+if (flag):
+    while (i == 0):
+        threading.Timer(2, check)
+    
 if __name__ == '__main__':
+    flag = 1
+    app.secret_key = os.urandom(24)
     app.run()

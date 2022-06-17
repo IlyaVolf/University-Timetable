@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-#from flask_login import UserMixin, login_user, logout_user, login_required
+from flask_login import UserMixin, login_user, logout_user, login_required
 import sqlite3
 import datetime
 
@@ -45,9 +45,9 @@ import datetime
 #     logout_user()!!!!!!!!!
 #     return redirect(url_for('main.index'))
 
-#class User(UserMixin):
+class User(UserMixin):
 # role 0 - главный диспетчер, 1 - диспетчер, 2 - препод (требует teacher.id)
-class User:
+#class User:
     def __init__(self, id=None, name=None, email=None, passwordHash=None, role=None, teacherId=None, status=None,
                  updatedDate=None, createdDate=None, signedUpDate=None):
         self.id = id
@@ -60,7 +60,7 @@ class User:
         self.updatedDate = updatedDate
         self.createdDate = createdDate
         self.signedUpDate = signedUpDate
-        self.sqlite_connection = sqlite3.connect('timetable.sqlite')
+        self.sqlite_connection = sqlite3.connect('timetable.sqlite', check_same_thread=False)
 
     # когда через почту подтверждает свое участие: задаём пароль
     def signUpUser(self, password):
