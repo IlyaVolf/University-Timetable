@@ -1,12 +1,13 @@
 from operator import ge
 import os
 from webbrowser import get
+#from PrologSolver.entities.GeneratedClass import GeneratedClass
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-#import shutil
-import threading
+import generator
+from entities import GeneratedClass
 
-from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject,serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule, serialiseGeneratedClass
+from EntitySerializer import serialiseTeacher, serialiseUser, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject,serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule, serialiseGeneratedClass
 from DatabaseManager import DatabaseManager
 
 
@@ -84,6 +85,31 @@ def addTeacher():
     teachers = dbManager.getAllTeacher()
     dbManager.close()
     return jsonify(list(map(lambda x: serialiseTeacher(x), teachers)))
+
+# только интересуют вес и даты
+@app.route('/teacherconstraints', methods=['GET','PUT'])
+def teacher_constraints():
+    if request.method == 'GET':
+        dbManager = DatabaseManager()
+        teacher = dbManager.getTeacher(current_user.teacherId)
+        dbManager.close()
+        response_object = serialiseTeacher(teacher)
+        return jsonify(response_object)
+    if request.method == 'PUT':
+        dbManager = DatabaseManager()
+        name = dbManager.getTeacher(current_user.teacherId).name
+        daysCanWork = request.args.get('daysCanWork').replace(" ", ",").replace("_", ";")
+        daysWantWork = request.args.get('daysWantWork').replace(" ", ",").replace("_", ";")
+        weight = request.args.get('weight')
+        if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
+            dbManager = DatabaseManager()
+            dbManager.updateTeacher(current_user.teacherId, name, daysCanWork, daysWantWork, int(weight))
+            dbManager.close()
+            return jsonify({'response': 'success'})
+        dbManager.close()
+        return jsonify({'response': 'failure'})
+    dbManager.close()
+    return jsonify({'response': 'failure'})
 
 @app.route('/classrooms/<id>', methods=['GET','DELETE','PUT'])
 def classroom(id):
@@ -426,6 +452,7 @@ def groupsOfClass(id):
     dbManager = DatabaseManager()
     groupsOfClass = dbManager.getAllGroupsOfClass(id)
     dbManager.close()
+    
     return jsonify(groupsOfClass)
 
 @app.route('/getScheduleStudents/<group>', methods=['GET'])
@@ -456,14 +483,8 @@ def doYearShiftLeft():
     dbManager.close()
     return jsonify({'response': 'success'})
 
-
-import generator
-
 @app.route('/generate', methods=['GET'])
 def generate():
-    global i
-    i = 1
-
     dbManager = DatabaseManager()
     generator.generate()
     res = dbManager.getAllGeneratedClass()
@@ -471,7 +492,106 @@ def generate():
     dbManager.close()
     return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
 
-@app.route('/login')
+@app.route('/overgenerate', methods=['GET'])
+def overgenerate():
+    dbManager = DatabaseManager()
+    generator.overgenerate()
+    res = dbManager.getAllGeneratedClass()
+
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+
+# id не надо!
+@app.route('/addman', methods=['GET'])
+def add_man():
+    faculty = request.args.get('faculty')
+    educationalProgram = request.args.get('educationalProgram')
+    specialization = request.args.get('specialization')
+    subject = request.args.get('subject')
+    semester = request.args.get('semester')
+    teacher = request.args.get('teacher')
+    typeOfClass = request.args.get('typeOfClass')
+    auditory = request.args.get('auditory')
+    groups = request.args.get('groups')
+    day = request.args.get('day')
+    classNumber = request.args.get('classNumber')
+    teacherId = request.args.get('teacherId')
+
+    dbManager = DatabaseManager()
+    generator.add_man(GeneratedClass(0, faculty, educationalProgram, specialization, subject, semester, teacher, typeOfClass, auditory, groups, day, classNumber, teacherId))
+    res = dbManager.getAllGeneratedClass()
+
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+
+@app.route('/removeman/<id>', methods=['GET'])
+def remove_man(id):
+    dbManager = DatabaseManager()
+    generator.remove_man(id)
+    res = dbManager.getAllGeneratedClass()
+
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+
+
+@app.route('/users/<id>', methods=['GET','DELETE','PUT'])
+def user(id):
+    if request.method == 'GET':
+        dbManager = DatabaseManager()
+        user = dbManager.getUser(id)
+        dbManager.close()
+        response_object = serialiseUser(user)
+        return jsonify(response_object)
+    if request.method == 'DELETE':
+        dbManager = DatabaseManager()
+        dbManager.removeUser(id)
+        dbManager.close()
+        return jsonify({'response': 'success'})
+    if request.method == 'PUT':
+        name = request.args.get('name')
+        email = request.args.get('email')
+        role = int(request.args.get('role'))
+        teacherId = int(request.args.get('teacherId'))
+        if name is not None and email is not None and role is not None:
+            dbManager = DatabaseManager()
+            dbManager.updateUser(id, name, email, role, teacherId)
+            dbManager.close()
+            return jsonify({'response': 'success'})
+        return jsonify({'response': 'failure'})
+    return jsonify({'response': 'failure'})
+
+@app.route('/users', methods=['POST','GET'])
+def addUser():
+    if request.method == 'POST':
+        name = request.args.get('name')
+        email = request.args.get('email')
+        role = int(request.args.get('role'))
+        teacherId = int(request.args.get('teacherId'))
+        if name is not None and email is not None and role is not None:
+            dbManager = DatabaseManager()
+            dbManager.addUser(name, email, role, teacherId)
+            dbManager.close()
+            return jsonify({'response': 'success'})
+        return jsonify({'response': 'failure'})
+    dbManager = DatabaseManager()
+    users = dbManager.getAllUser()
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseUser(x), users)))
+
+@app.route('/signUp', methods=['POST','GET'])
+def signUpUser():
+    if request.method == 'POST':
+        id = request.args.get('id')
+        password = request.args.get('password')
+        if id is not None and password is not None:
+            dbManager = DatabaseManager()
+            dbManager.signUpUser(id, password)
+            dbManager.close()
+            return jsonify({'response': 'success'})
+        return jsonify({'response': 'failure'})
+    return jsonify({'response': 'failure'})
+
+@app.route('/login', methods=['POST'])
 def login():
     email = request.args.get('email')
     print(email)
@@ -479,6 +599,7 @@ def login():
     remember = True
     dbManager = DatabaseManager()
     user = dbManager.signInUser(email)
+    dbManager.close()
 
     if not user.checkPassword(password):
         return jsonify({'response': 'failure'})
@@ -489,26 +610,14 @@ def login():
 
     return jsonify({'response': 'success'})
 
-@app.route('/sisi')
-def sisi():
-    print(current_user.is_authenticated)
-
-    return jsonify({'response': 'success'})
-
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 @login_required
 def logout():
     print(current_user.name)
     logout_user()
 
     return jsonify({'response': 'success'})
-
-flag = 0
-if (flag):
-    while (i == 0):
-        threading.Timer(2, check)
     
 if __name__ == '__main__':
-    flag = 1
     app.secret_key = os.urandom(24)
     app.run()

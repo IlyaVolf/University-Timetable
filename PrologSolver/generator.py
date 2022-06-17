@@ -410,6 +410,12 @@ def generate():
 def overgenerate():
     schedule = fromClassesToSchedule(True)
     dbManager = DatabaseManager()
+    a = dbManager.getAllUngeneratedSubjects()
+    if len(a) < 1:
+        res = dbManager.getAllGeneratedClass()
+        dbManager.close()
+        return res
+
     create_pl(3)
     prolog = PrologMT()
     prolog.consult("fit_new_department_db.pl")
@@ -430,6 +436,11 @@ def overgenerate():
 def remove_man(id):
     dbManager = DatabaseManager()
     classToDelete = dbManager.getGeneratedClass(id)
+    if classToDelete is None:
+        res = dbManager.getAllGeneratedClass()
+        dbManager.close()
+        return res
+
     event = fromClassToEvent(classToDelete)
     schedule = fromClassesToSchedule(False)
     create_pl(0)
@@ -556,8 +567,10 @@ def test2():
 #user = dbManager.getUser(1)
 #user.signUpUser("1234")
 #dbManager.removeUser(2)
-#user = dbManager.addUser("ee53533", "1", 1)
+#dbManager = DatabaseManager()
+#user = dbManager.addUser("Permyakov Ruslan Anatolievich", "222", 2, 1)
 #print(user.id)
+#dbManager.close()
 
 #print(dbManager.getTeacher(1).name)
 #dbManager.close()
