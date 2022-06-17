@@ -5,7 +5,7 @@ from webbrowser import get
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import generator
-from entities import GeneratedClass
+from entities import GeneratedClass, User
 
 from EntitySerializer import serialiseTeacher, serialiseUser, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject,serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule, serialiseGeneratedClass
 from DatabaseManager import DatabaseManager
@@ -560,6 +560,15 @@ def user(id):
         return jsonify({'response': 'failure'})
     return jsonify({'response': 'failure'})
 
+@app.route('/currentuser', methods=['GET'])
+def currentUser():
+    if (current_user.is_authenticated):
+        response_object = serialiseUser(current_user)
+        return jsonify(response_object)
+    user = User.User(role = 3)
+    response_object = serialiseUser(user)
+    return jsonify(response_object)
+
 @app.route('/users', methods=['POST','GET'])
 def addUser():
     if request.method == 'POST':
@@ -610,9 +619,12 @@ def login():
 
     return jsonify({'response': 'success'})
 
+from flask import Response
 @app.route('/logout', methods=['POST'])
-@login_required
 def logout():
+    if (current_user.is_authorized):
+        return Response("{'response': 'failure'}", status=201)
+        
     print(current_user.name)
     logout_user()
 
