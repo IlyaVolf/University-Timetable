@@ -36,7 +36,7 @@ amountOfClassesPerDay = 7
 class DatabaseManager:
     def __init__(self, dbFileName='timetable.sqlite'):
         try:
-            self.sqlite_connection = sqlite3.connect(dbFileName)
+            self.sqlite_connection = sqlite3.connect(dbFileName, check_same_thread=False)
             print("successful")
         except sqlite3.Error as error:
             print("Ошибка при подключении к sqlite", error)

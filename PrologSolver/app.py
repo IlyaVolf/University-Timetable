@@ -1,9 +1,14 @@
+from operator import ge
 import os
+from webbrowser import get
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+#import shutil
+import threading
 
-from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject, serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule
+from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject,serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule, serialiseGeneratedClass
 from DatabaseManager import DatabaseManager
+
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -18,6 +23,13 @@ app.config.from_object(__name__)
 
 # enable CORS
 CORS(app)
+
+i = 0
+def check():
+    print("HI")
+    if (i == 1):
+        import generator
+        print("JU")
 
 login_manager = LoginManager()
 #login_manager.login_view = 'auth.login'
@@ -444,7 +456,22 @@ def doYearShiftLeft():
     dbManager.close()
     return jsonify({'response': 'success'})
 
-@app.route('/login', methods=['POST'])
+
+import generator
+
+@app.route('/generate', methods=['GET'])
+def generate():
+    global i
+    i = 1
+
+    dbManager = DatabaseManager()
+    generator.generate()
+    res = dbManager.getAllGeneratedClass()
+
+    dbManager.close()
+    return jsonify(list(map(lambda x: serialiseGeneratedClass(x), res)))
+
+@app.route('/login')
 def login():
     email = request.args.get('email')
     print(email)
@@ -476,7 +503,12 @@ def logout():
 
     return jsonify({'response': 'success'})
 
-
+flag = 0
+if (flag):
+    while (i == 0):
+        threading.Timer(2, check)
+    
 if __name__ == '__main__':
+    flag = 1
     app.secret_key = os.urandom(24)
     app.run()

@@ -9,6 +9,7 @@ from entities.Constraints import Constraints
 from entities.GeneratedClass import GeneratedClass
 from entities.ScheduleEntity import ScheduleEntity
 from entities.Schedule import Schedule
+from entities.User import User
 
 def serialiseTeacher(teacher: Teacher):
     return {
@@ -47,6 +48,17 @@ def serialiseGroup(group: Group):
         'name': group.name,
         'amountOfStudents': group.amountOfStudents,
         'yearOfStudy': group.yearOfStudy
+    }
+
+def serialiseUser(user: User):
+    return {
+        'id': user.id,
+        'name': user.name,
+        'email': user.email,
+        'passwordHash': user.passwordHash,
+        'role': user.role,
+        'teacherId': user.teacherId,
+        'status': user.status
     }
 
 def serialiseSubject(subject: Subject):

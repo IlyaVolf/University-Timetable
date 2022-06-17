@@ -60,7 +60,7 @@ class User(UserMixin):
         self.updatedDate = updatedDate
         self.createdDate = createdDate
         self.signedUpDate = signedUpDate
-        self.sqlite_connection = sqlite3.connect('timetable.sqlite')
+        self.sqlite_connection = sqlite3.connect('timetable.sqlite', check_same_thread=False)
 
     # когда через почту подтверждает свое участие: задаём пароль
     def signUpUser(self, password):
