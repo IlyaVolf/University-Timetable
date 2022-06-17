@@ -1,8 +1,13 @@
+import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from EntitySerializer import serialiseTeacher, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject, serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule
 from DatabaseManager import DatabaseManager
+
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import LoginManager
 
 # configuration
 DEBUG = True
@@ -13,6 +18,16 @@ app.config.from_object(__name__)
 
 # enable CORS
 CORS(app)
+
+login_manager = LoginManager()
+#login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+@login_manager.user_loader
+def load_user(user_id):
+    dbManager = DatabaseManager()
+    res = dbManager.getUser(user_id)
+    dbManager.close()
+    return res
 
 @app.route('/teachers/<id>', methods=['GET','DELETE','PUT'])
 def teacher(id):
@@ -101,6 +116,7 @@ def addClassroom():
     return jsonify(list(map(lambda x: serialiseClassroom(x), teachers)))
 
 @app.route('/faculties/<id>', methods=['GET','DELETE','PUT'])
+@login_required
 def faculty(id):
     response_object = {'id': 'null', 'faculty': 'null'}
     if request.method == 'GET':
@@ -428,5 +444,39 @@ def doYearShiftLeft():
     dbManager.close()
     return jsonify({'response': 'success'})
 
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.args.get('email')
+    print(email)
+    password = request.args.get('password')
+    remember = True
+    dbManager = DatabaseManager()
+    user = dbManager.signInUser(email)
+
+    if not user.checkPassword(password):
+        return jsonify({'response': 'failure'})
+
+    login_user(user, remember=remember)
+
+    print("Hello ", current_user.name)
+
+    return jsonify({'response': 'success'})
+
+@app.route('/sisi')
+def sisi():
+    print(current_user.is_authenticated)
+
+    return jsonify({'response': 'success'})
+
+@app.route('/logout')
+@login_required
+def logout():
+    print(current_user.name)
+    logout_user()
+
+    return jsonify({'response': 'success'})
+
+
 if __name__ == '__main__':
+    app.secret_key = os.urandom(24)
     app.run()

@@ -32,10 +32,12 @@ amountOfClassesPerDay = 7
 # TODO Schedule и ScheduleEntity тоже изменены!
 # TODO Касатально ошибок - кидаются ТОЛЬКО ValueError
 
+
 class DatabaseManager:
     def __init__(self, dbFileName='timetable.sqlite'):
         try:
             self.sqlite_connection = sqlite3.connect(dbFileName)
+            print("successful")
         except sqlite3.Error as error:
             print("Ошибка при подключении к sqlite", error)
 
@@ -1571,14 +1573,15 @@ class DatabaseManager:
     # TODO МАТВЕЙ
     def signInUser(self, email):
         cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'SELECT id FROM Users WHERE email = ?'
+        sqliteQuery = 'SELECT * FROM Users WHERE email = ?'
         cursor.execute(sqliteQuery, (email,))
         rows = cursor.fetchall()
         if len(rows) < 1:
             raise ValueError("No account with this email!")
         cursor.close()
+        row = rows[0]
 
-        return rows[0][0]
+        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
     # во время входа: для сверки, которая происходит у Матвея, нужно вернуть хеш пароля. По уникальной почте
     # TODO МАТВЕЙ

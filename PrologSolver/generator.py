@@ -5,7 +5,7 @@ from entities.GeneratedClass import GeneratedClass
 from entities.User import User
 
 # число попыток, если это значение не задано явно
-attempts = 2
+attempts = 1
 
 
 def buildPrologList(elements, brackets, prefix, postfix):
@@ -476,7 +476,7 @@ dbManager = DatabaseManager()
 
 
 #res = dbManager.getScheduleStudents("20213").scheduleEntities
-generate()
+#generate()
 res = dbManager.getScheduleTeachers(14).scheduleEntities
 for i in range(6):
     for j in range(7):
@@ -504,11 +504,13 @@ for i in range(6):
 # dbManager.addConstraints("9,0", 90, 5, 15, 6, 6, 5, 7, 3, 3, 5, 3, 6, 1)
 
 #generate()
-#print(dbManager.addUser("ee53533", 3))
+user = dbManager.getUser(1)
+user.signUpUser("1234")
 #dbManager.removeUser(2)
 #user = dbManager.addUser("ee53533", "1", 1)
 #print(user.id)
 
+#print(dbManager.getTeacher(1).name)
 dbManager.close()
 
 # TODO вам надо: generate, remove_man, add, add_man
