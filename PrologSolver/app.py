@@ -2,7 +2,7 @@ from operator import ge
 import os
 from webbrowser import get
 #from PrologSolver.entities.GeneratedClass import GeneratedClass
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, make_response, request
 from flask_cors import CORS
 import generator
 from entities import GeneratedClass, User
@@ -10,10 +10,12 @@ from entities import GeneratedClass, User
 from EntitySerializer import serialiseTeacher, serialiseUser, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject,serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule, serialiseGeneratedClass
 from DatabaseManager import DatabaseManager
 
+import uuid
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_login import LoginManager
+from flask_mail import Mail, Message
 
 # configuration
 DEBUG = True
@@ -22,8 +24,20 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+
+app.config['MAIL_SERVER'] = 'smtp.rambler.ru'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'timetablensu@rambler.ru'  # введите свой адрес электронной почты здесь
+app.config['MAIL_DEFAULT_SENDER'] = 'timetablensu@rambler.ru'  # и здесь
+app.config['MAIL_PASSWORD'] = 'yGj-iK2-skz-US7'  # введите пароль
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
 # enable CORS
 CORS(app)
+
+mail = Mail(app)
 
 login_manager = LoginManager()
 #login_manager.login_view = 'auth.login'
@@ -40,7 +54,7 @@ def teacher(id):
     response_object = {'response': 'success'}
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -76,7 +90,7 @@ def teacher(id):
 def addTeacher():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
@@ -103,7 +117,7 @@ def addTeacher():
 def teacher_constraints():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 2):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -131,7 +145,7 @@ def teacher_constraints():
 def classroom(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -166,7 +180,7 @@ def classroom(id):
 def addClassroom():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'POST':
         number = request.args.get('number')
@@ -191,7 +205,7 @@ def addClassroom():
 def faculty(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
 
     response_object = {'response': 'success'}
     if request.method == 'GET':
@@ -225,7 +239,7 @@ def faculty(id):
 def addFaculty():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
@@ -248,7 +262,7 @@ def addFaculty():
 def educationalProgram(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -282,7 +296,7 @@ def educationalProgram(id):
 def addEducationalProgram():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'POST':
         facultyId = request.args.get('facultyId')
@@ -306,7 +320,7 @@ def addEducationalProgram():
 def group(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -342,7 +356,7 @@ def group(id):
 def addGroup():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
@@ -369,7 +383,7 @@ def addGroup():
 def subject(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -411,7 +425,7 @@ def subject(id):
 def addSubject():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
@@ -443,7 +457,7 @@ def addSubject():
 def specialization(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -477,7 +491,7 @@ def specialization(id):
 def addSpecialization():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'POST':
         educationalProgramId = request.args.get('educationalProgramId')
@@ -510,7 +524,7 @@ def addSpecialization():
 def constraints():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -574,7 +588,7 @@ def constraints():
 def generatedClasses():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generatedClasses = dbManager.getAllGeneratedClass()
@@ -586,7 +600,7 @@ def generatedClasses():
 def generatedClass(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}    
     dbManager = DatabaseManager()
     generatedClass = dbManager.getGeneratedClass(id)
@@ -598,7 +612,7 @@ def generatedClass(id):
 def groupsOfClass(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)        
+    #        return make_response(jsonify({'response': 'failure'}), 401)        
     response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     groupsOfClass = dbManager.getAllGroupsOfClass(id)
@@ -660,7 +674,7 @@ def scheduleTeachers(teacherId):
 def doYearShiftRight():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)        
+    #        return make_response(jsonify({'response': 'failure'}), 401)        
     
     dbManager = DatabaseManager()
     dbManager.yearShiftRight()
@@ -671,7 +685,7 @@ def doYearShiftRight():
 def doYearShiftLeft():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)        
+    #        return make_response(jsonify({'response': 'failure'}), 401)        
     
     dbManager = DatabaseManager()
     dbManager.yearShiftLeft()
@@ -682,7 +696,7 @@ def doYearShiftLeft():
 def generate():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}    
     dbManager = DatabaseManager()
     generator.generate()
@@ -696,7 +710,7 @@ def generate():
 def overgenerate():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)        
+    #        return make_response(jsonify({'response': 'failure'}), 401)        
     response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generator.overgenerate()
@@ -711,7 +725,7 @@ def overgenerate():
 def add_man():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     faculty = request.args.get('faculty')
     educationalProgram = request.args.get('educationalProgram')
@@ -738,7 +752,7 @@ def add_man():
 def remove_man(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)        
+    #        return make_response(jsonify({'response': 'failure'}), 401)        
     response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generator.remove_man(id)
@@ -753,7 +767,7 @@ def remove_man(id):
 def user(id):
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)    
+    #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -802,19 +816,28 @@ def currentUser():
 def addUser():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-    #        return Response("{'response': 'failure'}", status=401)
+    #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
         email = request.args.get('email')
         role = int(request.args.get('role'))
+        if role == 1:
+            roleString = "Dispatcher"
+        if role == 2:
+            roleString = "Teacher"
         teacherId = request.args.get('teacherId')
         if teacherId is not None:
             teacherId = int(teacherId)
         if name is not None and email is not None and role is not None:
             dbManager = DatabaseManager()
+            password = str(uuid.uuid4())
+            passwordHash = generate_password_hash(password)
             try:
-                dbManager.addUser(name, email, role, teacherId)
+                dbManager.addUser(name, email, passwordHash, role, teacherId)
+                msg = Message("NSU Timetable Membership", recipients=[email])
+                msg.body = "Dear " + name + "!\n\nYou are now a member of NSU Timetable.\nYour role is: " + roleString + "\n\nYour automatically generated password is:\n" + password + "\n You can change it later"
+                mail.send(msg)
             except ValueError as e:
                 return jsonify({'error': str(e)})
             dbManager.close()
@@ -829,6 +852,7 @@ def addUser():
     response_object['users'] = list(map(lambda x: serialiseUser(x), users))
     return jsonify(response_object)
 
+"""
 @app.route('/signUp', methods=['POST','GET'])
 def signUpUser():
     if request.method == 'POST':
@@ -844,16 +868,16 @@ def signUpUser():
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
     return jsonify({'response': 'failure'})
+"""
 
 @app.route('/login', methods=['POST'])
 def login():
     email = request.args.get('email')
-    print(email)
     password = request.args.get('password')
     remember = True
     dbManager = DatabaseManager()
     try:
-        user = dbManager.signInUser(email)
+        user = dbManager.getUserByEmail(email)
     except ValueError as e:
             return jsonify({'error': str(e)})
     dbManager.close()
@@ -863,15 +887,30 @@ def login():
 
     login_user(user, remember=remember)
 
-    print("Hello ", current_user.name)
+    return jsonify({'response': 'success'})
+
+@app.route('/changePassword', methods=['POST'])
+def changePassword():
+    if not current_user.is_authenticated:
+        return make_response(jsonify({'response': 'failure'}), 401)
+
+    oldPassword = request.args.get('oldPassword')
+    newPassword = request.args.get('newPassword')
+    newPasswordHash = generate_password_hash(newPassword)
+    user = current_user
+    dbManager = DatabaseManager()
+
+    if not user.checkPassword(oldPassword):
+        return  jsonify({'error': str("wrong password")})
+
+    dbManager.changePassword(user.id, newPasswordHash)
 
     return jsonify({'response': 'success'})
 
-from flask import Response
 @app.route('/logout', methods=['POST'])
 def logout():
-    if (current_user.is_authenticated):
-        return Response("{'response': 'failure'}", status=401)
+    if not current_user.is_authenticated:
+            return make_response(jsonify({'response': 'failure'}), 401)
         
     print(current_user.name)
     logout_user()
