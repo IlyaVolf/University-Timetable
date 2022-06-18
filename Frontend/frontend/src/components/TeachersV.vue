@@ -204,7 +204,7 @@ export default {
 methods: {
     // 1 GET METHOD
     getTeachers() {
-      const path = 'http://localhost:5000/teachers';
+      const path = 'http://127.0.0.1:5000/teachers';
       axios.get(path)
         .then((res) => {
           this.teachers = res.data.teachers;
@@ -215,7 +215,7 @@ methods: {
     },
     // 2 Add Teacher Button
     addTeacher(payload) {
-      const path = 'http://localhost:5000/teachers/';
+      const path = 'http://127.0.0.1:5000/teachers/';
       axios.post(path, payload)
         .then(() => {
           this.getTeachers();
@@ -281,7 +281,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
 updateTeacher(id, payload) {
-  const path = `http://localhost:5000/teachers/${id}?name=${payload.name}&daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
+  const path = `http://127.0.0.1:5000/teachers/${id}?name=${payload.name}&daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
   axios.put(path, payload)    
     .then(() => {
       this.getTeachers();
@@ -306,7 +306,7 @@ onResetUpdate(e) {
 },
 // Remove teacher [ Delete Button ]
 removeTeacher(id) {
-  const path = `http://localhost:5000/teachers/${id}`;
+  const path = `http://127.0.0.1:5000/teachers/${id}`;
   axios.delete(path)
     .then(() => {
       this.getTeachers();

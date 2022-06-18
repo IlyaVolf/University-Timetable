@@ -206,7 +206,7 @@ export default {
 methods: {
     // 1 GET METHOD
     getGroups() {
-      const path = 'http://localhost:5000/groups';
+      const path = 'http://127.0.0.1:5000/groups';
       axios.get(path)
         .then((res) => {
           this.groups = res.data.groups;
@@ -217,7 +217,7 @@ methods: {
     },
     // 2 Add Faculty Button
     addGroup(payload) {
-      const path = 'http://localhost:5000/groups';
+      const path = 'http://127.0.0.1:5000/groups';
       axios.post(path, payload)
         .then(() => {
           this.getGroups();
@@ -283,7 +283,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
   updateGroup(id, payload) {
-    const path = `http://localhost:5000/groups/${id}?specializationId=${payload.specializationId}&name=${payload.name}&amountOfStudents=${payload.amountOfStudents}&yearOfStudy=${payload.yearOfStudy}`;
+    const path = `http://127.0.0.1:5000/groups/${id}?specializationId=${payload.specializationId}&name=${payload.name}&amountOfStudents=${payload.amountOfStudents}&yearOfStudy=${payload.yearOfStudy}`;
     axios.put(path, payload, {
       
     })    
@@ -310,7 +310,7 @@ methods: {
   },
   // Remove teacher [ Delete Button ]
   removeGroup(id) {
-    const path = `http://localhost:5000/groups/${id}`;
+    const path = `http://127.0.0.1:5000/groups/${id}`;
     axios.delete(path)
       .then(() => {
         this.getGroups();

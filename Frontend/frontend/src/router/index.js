@@ -33,7 +33,7 @@ const routes = [
     component : TableTwo, 
   },
   {
-    path : '/schedule/faculties/groups/:id',
+    path : '/schedule/groups/:id',
     name : 'GroupsSchedule',
     component : TableTwo, 
   },

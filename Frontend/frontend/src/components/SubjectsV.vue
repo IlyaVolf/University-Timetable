@@ -282,7 +282,7 @@ export default {
 methods: {
     // 1 GET METHOD
     getSubjects() {
-      const path = 'http://localhost:5000/subjects';
+      const path = 'http://127.0.0.1:5000/subjects';
       axios.get(path)
         .then((res) => {
           this.subjects = res.data.subjects;
@@ -293,7 +293,7 @@ methods: {
     },
     // 2 Add Faculty Button
     addSubjects(payload) {
-      const path = 'http://localhost:5000/subjects';
+      const path = 'http://127.0.0.1:5000/subjects';
       axios.post(path, payload)
         .then(() => {
           this.getSubjects();
@@ -371,7 +371,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
   updateSubject(id, payload) {
-    const path = `http://localhost:5000/subjects/${id}?specializationId=${payload.specializationId}&name=${payload.name}&semesters=${payload.semesters}&typeOfClass=${payload.typeOfClass}&frequency=${payload.frequency}&teacherId=${payload.teacherId}&amountOfGroups=${payload.amountOfGroups}`;
+    const path = `http://127.0.0.1:5000/subjects/${id}?specializationId=${payload.specializationId}&name=${payload.name}&semesters=${payload.semesters}&typeOfClass=${payload.typeOfClass}&frequency=${payload.frequency}&teacherId=${payload.teacherId}&amountOfGroups=${payload.amountOfGroups}`;
     axios.put(path, payload, {
       
     })    
@@ -398,7 +398,7 @@ methods: {
   },
   // Remove teacher [ Delete Button ]
   removeSubject(id) {
-    const path = `http://localhost:5000/subjects/${id}`;
+    const path = `http://127.0.0.1:5000/subjects/${id}`;
     axios.delete(path)
       .then(() => {
         this.getSubjects();

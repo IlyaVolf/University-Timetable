@@ -135,7 +135,7 @@ methods: {
 
     // 1 GET METHOD
     getFaculties() {
-      const path = 'http://localhost:5000/faculties';
+      const path = 'http://127.0.0.1:5000/faculties';
       axios.get(path)
         .then((res) => {
           this.faculties = res.data.faculties;
@@ -147,7 +147,7 @@ methods: {
     
     // 2 Add Faculty Button
     addFaculty(payload) {
-      const path = `http://localhost:5000/faculties?name=${payload.faculty}`;
+      const path = `http://127.0.0.1:5000/faculties?name=${payload.faculty}`;
       axios.post(path, payload)
         .then(() => {
           this.getFaculties();
@@ -201,7 +201,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
   updateFaculty(id, payload) {
-    const path = `http://localhost:5000/faculties/${id}?name=${payload.faculty}`;
+    const path = `http://127.0.0.1:5000/faculties/${id}?name=${payload.faculty}`;
     axios.put(path, payload, {
       
     })    
@@ -228,7 +228,7 @@ methods: {
   },
   // Remove teacher [ Delete Button ]
   removeFaculty(id) {
-    const path = `http://localhost:5000/faculties/${id}`;
+    const path = `http://127.0.0.1:5000/faculties/${id}`;
     axios.delete(path)
       .then(() => {
         this.getFaculties();

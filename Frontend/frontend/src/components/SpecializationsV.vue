@@ -166,7 +166,7 @@ export default {
 methods: {
     // 1 GET METHOD
     getSpecializations() {
-      const path = 'http://localhost:5000/specializations';
+      const path = 'http://127.0.0.1:5000/specializations';
       axios.get(path)
         .then((res) => {
           this.specializations = res.data.specializations;
@@ -176,7 +176,7 @@ methods: {
         });
     },
     getEducationalPrograms() {
-      const path = 'http://localhost:5000/educationalPrograms';
+      const path = 'http://127.0.0.1:5000/educationalPrograms';
       axios.get(path)
         .then((res) => {
           this.educationalPrograms = res.data.educationalPrograms;
@@ -187,7 +187,7 @@ methods: {
     },
     // 2 Add Teacher Button
     addSpecialization(payload) {
-      const path = 'http://localhost:5000/pecializations';
+      const path = 'http://127.0.0.1:5000/pecializations';
       axios.post(path, payload)
         .then(() => {
           this.getSpecialization();
@@ -244,7 +244,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
 updateSpecialization(payload, id) {
-  const path = `http://localhost:5000/specializations/${id}`;
+  const path = `http://127.0.0.1:5000/specializations/${id}`;
   axios.put(path, payload)    
     .then(() => {
       this.getSpecializations();
@@ -269,7 +269,7 @@ onResetUpdate(e) {
 },
 // Remove teacher [ Delete Button ]
 removeSpecialization(id) {
-  const path = `http://localhost:5000/specializations/${id}`;
+  const path = `http://127.0.0.1:5000/specializations/${id}`;
   axios.delete(path)
     .then(() => {
       this.getSpecializations();

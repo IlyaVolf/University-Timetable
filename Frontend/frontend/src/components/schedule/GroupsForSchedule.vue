@@ -25,7 +25,7 @@
             <!-- tr: table row -->
             <tr v-for="(group, index) in groupsForSchedule" :key="index">
                 <td>
-                    <a :href="'groups/' + group.id" >{{group.name}}</a> 
+                    <a :href="'groups/' + group.name" >{{group.name}}</a> 
                 </td>
                       
             </tr>
@@ -55,7 +55,7 @@ export default {
     methods: {
         // 1 GET METHOD
         getFaculties() {
-        const path = 'http://localhost:5000/schedule/faculties/1';
+        const path = 'http://127.0.0.1:5000/schedule/faculties/1';
         axios.get(path)
             .then((res) => {
             this.groupsForSchedule = res.data.groupsForSchedule;

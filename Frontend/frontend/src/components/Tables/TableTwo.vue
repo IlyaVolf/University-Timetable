@@ -97,7 +97,7 @@ import axios from 'axios';
      methods: {
     // 1 GET METHOD
     convertFrontUrlToBackUrl(){
-      this.mypath = this.mypath.replace(8080,5000);
+      this.mypath = this.mypath.replace("localhost", "127.0.0.1").replace(8080,5000);
     },
     getGeneratedClasses() {
       const path = this.mypath;

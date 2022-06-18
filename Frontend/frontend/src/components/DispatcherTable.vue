@@ -77,7 +77,7 @@ export default {
   methods: {
     // 1 GET METHOD
     getGeneratedClasses() {
-      const path = 'http://localhost:5000/generatedClasses';
+      const path = 'http://127.0.0.1:5000/generatedClasses';
       axios.get(path)
         .then((res) => {
           this.generatedClasses = res.data.generatedClasses;
@@ -87,7 +87,7 @@ export default {
         });
     },
     generate(payload) {
-      const path = 'http://localhost:5000/generate';
+      const path = 'http://127.0.0.1:5000/generate';
       axios.get(path, payload)
         .then(() => {
           this.getGeneratedClasses();
@@ -105,7 +105,7 @@ export default {
         });
     },
     overgenerate(payload) {
-      const path = 'http://localhost:5000/overgenerate';
+      const path = 'http://127.0.0.1:5000/overgenerate';
       axios.get(path, payload)
         .then(() => {
           this.getGeneratedClasses();
