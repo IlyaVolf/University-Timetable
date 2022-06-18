@@ -847,9 +847,6 @@ def signUpUser():
 
 @app.route('/login', methods=['POST'])
 def login():
-    if (current_user.is_authenticated):
-        return jsonify({'response': 'success'})
-
     email = request.args.get('email')
     print(email)
     password = request.args.get('password')
@@ -862,7 +859,7 @@ def login():
     dbManager.close()
 
     if not user.checkPassword(password):
-        return jsonify({'response': 'failure'})
+        return  jsonify({'error': str("wrong password")})
 
     login_user(user, remember=remember)
 
