@@ -14,6 +14,8 @@
          <!-- Alert -->
         <!-- Add Teacher button -->
         <button type="button" class="btn btn-success btn-sm" v-b-modal.teacher-modal>Add Group</button>
+        <button type="button" class="btn btn-success btn-sm" @click="yearShiftLeft()">Shift left</button>
+        <button type="button" class="btn btn-success btn-sm" @click="yearShiftRight()">Shift right</button>
         <br><br>
         <!-- Add a bootstrap table -->
         <table class="table table-hover">
@@ -224,6 +226,42 @@ methods: {
           
           // for message alert
           this.message = 'Faculty added !';
+          
+          // to show message when faculty is added
+          this.showMessage = true;
+  
+        })
+        .catch((error) => {
+          console.log(error);
+          this.getGroups();
+        });
+    },
+    yearShiftLeft(payload) {
+      const path = 'http://localhost:5000/yearShiftLeft';
+      axios.put(path, payload)
+        .then(() => {
+          this.getGroups();
+          
+          // for message alert
+          this.message = 'Left shifted !';
+          
+          // to show message when faculty is added
+          this.showMessage = true;
+  
+        })
+        .catch((error) => {
+          console.log(error);
+          this.getGroups();
+        });
+    },
+    yearShiftRight(payload) {
+      const path = 'http://localhost:5000/yearShiftRight';
+      axios.put(path, payload)
+        .then(() => {
+          this.getGroups();
+          
+          // for message alert
+          this.message = 'Right shifted !';
           
           // to show message when faculty is added
           this.showMessage = true;

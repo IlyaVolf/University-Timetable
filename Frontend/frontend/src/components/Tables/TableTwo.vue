@@ -3,6 +3,8 @@
 <div id='timetable'>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/yeti/bootstrap.min.css"
       integrity="sha384-mLBxp+1RMvmQmXOjBzRjqqr0dP9VHU2tb3FK6VB0fJN/AOu7/y+CAeYeWJZ4b3ii" crossorigin="anonymous">
+      <h5 class="text-center bg-primary text-white" style="border-radius:10px" v-if="isTeacherSchedule"> {{teacherName}} </h5>
+      <h5 class="text-center bg-primary text-white" style="border-radius:10px" v-if="isGroupSchedule"> {{groupNumber}} </h5>
   <table cellpadding='0' cellspacing='6'>
     <tr class="days">
       <th></th>
@@ -11,73 +13,34 @@
     <tr v-for="(h, i) in hours" :key="i">
       <td class='time'>{{ h }}</td>
       <td v-for="(day,j) in days" :key="j">
-        <template v-if="scheduleEntities[i][j][0].auditory !== 'null' && 
-        scheduleEntities[i][j][0].groups !== 'null' &&
-        scheduleEntities[i][j][0].subject !== 'null' &&
-        scheduleEntities[i][j][0].typeOfClass !== 'null' &&
-        scheduleEntities[i][j][0].classNumber !== 'null'">
-        {{scheduleEntities[i][j][0].auditory}}<br>
-        {{scheduleEntities[i][j][0].groups}}<br>
-        {{scheduleEntities[i][j][0].subject}}<br>
-        {{scheduleEntities[i][j][0].typeOfClass}}<br>
-        {{scheduleEntities[i][j][0].classNumber}}<br>
+        <template v-if="isTeacherSchedule">
+          <template v-if="scheduleTeacherEntities[i][j][0].auditory !== 'null' && 
+          scheduleTeacherEntities[i][j][0].groups !== 'null' &&
+          scheduleTeacherEntities[i][j][0].subject !== 'null' &&
+          scheduleTeacherEntities[i][j][0].typeOfClass !== 'null' &&
+          scheduleTeacherEntities[i][j][0].classNumber !== 'null'">
+          {{scheduleTeacherEntities[i][j][0].auditory}}<br>
+          {{scheduleTeacherEntities[i][j][0].groups}}<br>
+          {{scheduleTeacherEntities[i][j][0].subject}}<br>
+          {{scheduleTeacherEntities[i][j][0].typeOfClass}}<br>
+          <!--{{scheduleTeacherEntities[i][j][0].classNumber}}<br>-->
+          </template> 
+        </template> 
+        <template v-if="isGroupSchedule">
+          <template v-if="scheduleStudentEntities[i][j][0].auditory !== 'null' && 
+          scheduleStudentEntities[i][j][0].teacher !== 'null' &&
+          scheduleStudentEntities[i][j][0].subject !== 'null' &&
+          scheduleStudentEntities[i][j][0].typeOfClass !== 'null' &&
+          scheduleStudentEntities[i][j][0].classNumber !== 'null'">
+          {{scheduleStudentEntities[i][j][0].auditory}}<br>
+          {{scheduleStudentEntities[i][j][0].teacher}}<br>
+          {{scheduleStudentEntities[i][j][0].subject}}<br>
+          {{scheduleStudentEntities[i][j][0].typeOfClass}}<br>
+          <!--{{scheduleStudentEntities[i][j][0].classNumber}}<br>-->
+          </template> 
         </template> 
       </td>
     </tr>
-    <!--
-    <tr>
-      <td>{{mypath}}</td>
-      <td></td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td class='time'>10.50</td>
-      <td></td>
-      <td class='cs335 blue lab' data-tooltip='Software Engineering &amp; Software Process'>CS335 [Lab]</td>
-      <td class='md352 green' data-tooltip='Multimedia Production &amp; Management'>MD352 [Kairos]</td>
-      <td></td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td class='time'>12.40</td>
-      <td></td>
-      <td class='cs335 blue lab' data-tooltip='Software Engineering &amp; Software Process'>CS335 [Lab]</td>
-      <td class='md352 green' data-tooltip='Multimedia Production &amp; Management'>MD352 [Kairos]</td>
-      <td class='cs240 orange' data-tooltip='Operating Systems'>CS240 [CH]</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td class='time'>14.30</td>
-      <td></td>
-      <td class='md303 navy' data-tooltip='Media &amp; Globalisation'>MD303 [CS2]</td>
-      <td class='md313 red' data-tooltip='Special Topic: Multiculturalism &amp; Nationalism'>MD313 [Iontas]</td>
-      <td></td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td class='time'>16.20</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td class='time'>18.10</td>
-      <td></td>
-      <td></td>
-      <td class='cs426 purple' data-tooltip='Computer Graphics'>CS426 [CS2]</td>
-      <td class='cs240 orange' data-tooltip='Operating Systems'>CS240 [TH1]</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td class='time'>20.00</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td class='cs240 orange lab' data-tooltip='Operating Systems'>CS240 [Lab]</td>
-      <td>-</td>
-    </tr>-->
   </table>
 
 </div>
@@ -91,20 +54,44 @@ import axios from 'axios';
       days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       hours:["9.00", "10.50","12.40","14.30", "16.20","18.10","20.00"],
       scheduleTeachers: [],
-      scheduleEntities: [],
+      scheduleTeacherEntities: [],
+      teacherName: [],
+      scheduleStudents: [],
+      scheduleStudentEntities: [],
+      groupNumber: [],
+      isTeacherSchedule: false,
+      isGroupSchedule: false,
       mypath: window.location.href,
     }),
      methods: {
-    // 1 GET METHOD
+    
+    checkWhichSchedule() {
+        if(this.mypath.includes('teachers')) {
+          this.isTeacherSchedule = true;
+        }
+        if(this.mypath.includes('groups')) {
+          this.isGroupSchedule = true;
+        }
+    },
     convertFrontUrlToBackUrl(){
       this.mypath = this.mypath.replace("localhost", "127.0.0.1").replace(8080,5000);
     },
+    // 1 GET METHOD
     getGeneratedClasses() {
       const path = this.mypath;
       axios.get(path)
         .then((res) => {
-          this.scheduleTeachers = res.data.scheduleTeachers
-          this.scheduleEntities = this.scheduleTeachers.scheduleEntities
+          if(this.isTeacherSchedule) {
+            this.scheduleTeachers = res.data.scheduleTeachers
+            this.scheduleTeacherEntities = this.scheduleTeachers.scheduleEntities
+            this.teacherName = this.scheduleTeachers.entity
+          }
+          if(this.isGroupSchedule) {
+            this.scheduleStudents = res.data.scheduleStudents
+            this.scheduleStudentEntities = this.scheduleStudents.scheduleEntities
+            this.groupNumber = this.scheduleStudents.entity
+          }
+          
         })
         .catch((error) => {
           console.error(error);
@@ -113,7 +100,8 @@ import axios from 'axios';
    
   },
   created() {
-        this.convertFrontUrlToBackUrl();
+    this.checkWhichSchedule();
+    this.convertFrontUrlToBackUrl();
     this.getGeneratedClasses();
 
   }
