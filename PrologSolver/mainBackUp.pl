@@ -79,7 +79,7 @@ addManually(CurrentState, event(NewClass, NewClassroom, NewDay, NewGroupsOfStude
 	count_amount_of_students(NewGroupsOfStudents, 0, AmountOfStudents),
 	AmountOfStudents =< NewCapacityOfClassroom,
 	dateIsOk(CurrentState, event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)),
-	teacher_can_work_this_day(NewClass, NewDay, NewClassTime),
+	teacher_can_work_this_day(NewClass, NewDay),
 	limit_of_classes(NewClass, NewGroupsOfStudents, NewDay),
 	append(CurrentState, [event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)], NewState),
 	sort(5, @=<, NewState, SortedState),
@@ -199,7 +199,7 @@ findNeighbors(State, VacantClasses, NewState) :-
 	count_amount_of_students(NewGroupsOfStudents, 0, AmountOfStudents),
 	AmountOfStudents =< NewCapacityOfClassroom,
 	dateIsOk(State, event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)),
-	teacher_can_work_this_day(NewClass, NewDay, NewClassTime),
+	teacher_can_work_this_day(NewClass, NewDay),
 	limit_of_classes(NewClass, NewGroupsOfStudents, NewDay),
 	append(State, [event(NewClass, NewClassroom, NewDay, NewGroupsOfStudents, NewClassTime)], NewState).
 
@@ -450,19 +450,9 @@ check_types_of_class_match(class(_, _, _, X, _, _, _, _), Y) :-
 /*
  * The function checks that the teacher can work on the expected day.
  */
-teacher_can_work_this_day(class(_, _, _, _, Teacher, _, _, _), Day, ClassTime) :-
+teacher_can_work_this_day(class(_, _, _, _, Teacher, _, _, _), Day) :-
 	days_teacher_can_work(Teacher, Days),
-	I is Day,
-	teacher_can_work_this_day2(I, ClassTime, Days).
-
-teacher_can_work_this_day2(1, ClassTime, [Head | _]) :-
-	!,member(ClassTime, Head).
-
-teacher_can_work_this_day2(_, _, []).
-
-teacher_can_work_this_day2(I, ClassTime, [_ | Tail]) :-
-    NewI is I - 1,
-	teacher_can_work_this_day2(NewI, ClassTime, Tail).
+	member(Day, Days).
 
 /*
  * The function checks that the number of pairs of students and teachers is not exceeded.
@@ -564,19 +554,12 @@ sumOfAllDaysTeachersCanWork(Sum, Amount, Min) :-
 
 sumOfAllDaysTeachersCanWork2([], X, Y, Z, Sum, Amount, Min)	:- Sum is X, Amount is Y, Min is Z.
 sumOfAllDaysTeachersCanWork2([days_teacher_can_work(_, DaysList) | Other], X, Y, Z, Sum, Amount, Min) :-
-	sumOfAllDaysTeachersCanWork3(DaysList, 0, Len),
+	lengthList(DaysList, Len),
 	New_X is X + Len,
 	New_Y is Y + 1,
 	((Len < Z, New_Z is Len);
 	(Len >= Z, New_Z is Z)),
 	sumOfAllDaysTeachersCanWork2(Other, New_X, New_Y, New_Z, Sum, Amount, Min).
-
-sumOfAllDaysTeachersCanWork3([], Count, Len) :- Len is Count.
-sumOfAllDaysTeachersCanWork3([Day | Other], Count, Len) :-
-	lengthList(Day, L),
-	((L < 1, New_Count is Count);
-	(L >= 1, New_Count is Count + 1)),
-	sumOfAllDaysTeachersCanWork3(Other, New_Count, Len).
 
 
 /*
@@ -591,19 +574,12 @@ sumOfAllDaysTeachersWantWork(Sum, Amount, Min) :-
 
 sumOfAllDaysTeachersWantWork2([], X, Y, Z, Sum, Amount, Min)	:- Sum is X, Amount is Y, Min is Z.
 sumOfAllDaysTeachersWantWork2([days_teacher_want_work(_, DaysList, _) | Other], X, Y, Z, Sum, Amount, Min) :-
-	sumOfAllDaysTeachersWantWork3(DaysList, 0, Len),
+	lengthList(DaysList, Len),
 	New_X is X + Len,
 	New_Y is Y + 1,
 	((Len < Z, New_Z is Len);
 	(Len >= Z, New_Z is Z)),
 	sumOfAllDaysTeachersWantWork2(Other, New_X, New_Y, New_Z, Sum, Amount, Min).
-
-sumOfAllDaysTeachersWantWork3([], Count, Len) :- Len is Count.
-sumOfAllDaysTeachersWantWork3([Day | Other], Count, Len) :-
-	lengthList(Day, L),
-	((L < 1, New_Count is Count);
-	(L >= 1, New_Count is Count + 1)),
-	sumOfAllDaysTeachersWantWork3(Other, New_Count, Len).
 
 /*
  * �������� ��� ������������ ������.
@@ -653,8 +629,10 @@ cost_last(Events, Cost) :-
 	check_classrooms(LastEvent, Fine1),
 	check_gaps(LastEvent, Fine2),
 	teacher_want_work_this_day(LastEvent, Fine3),
-	teacher_priority_can(LastEvent, Fine4),
-	teacher_priority_want(LastEvent, Fine5),
+	Fine4 is 0,
+	Fine5 is 0,
+	% teacher_priority_can(LastEvent, Fine4),
+	% teacher_priority_want(LastEvent, Fine5),
 	class_in_morning(LastEvent, Fine6),
 	Cost is Fine1 + Fine2 + Fine3 + Fine4 + Fine5 + Fine6.
 
@@ -669,7 +647,7 @@ class_in_morning(event(class(_, _, _, _, _, _, _, _), _, _, _, ClassTime), Fine)
 	(ClassTime =< Coef, Fine is 0)).
 
 /*
- * Некий приоритет по учителям: сперва идут те учителя, которые МОГУТ работать в среднем реже остальных.
+ * ����� ��������� �� ��������: ������ ���� �� �������, ������� ����� �������� � ������� ���� ���������.
  */
 teacher_priority_can(event(class(_, _, _, _, Teacher, _, _, _), _, _, _, _), Fine) :-
 	sumOfDaysTeachersCanWork(Sum, Amount, Min),
@@ -680,7 +658,7 @@ teacher_priority_can(event(class(_, _, _, _, Teacher, _, _, _), _, _, _, _), Fin
 	(Len > Min, Sum < Len * Amount, Fine is 3)).
 
 /*
- * Некий приоритет по учителям: сперва идут те учителя, которые ХОТЯТ работать в среднем реже остальных.
+ * ����� ��������� �� ��������: ������ ���� �� �������, ������� ����� �������� � ������� ���� ���������.
  */
 teacher_priority_want(event(class(_, _, _, _, Teacher, _, _, _), _, _, _, _), Fine) :-
 	sumOfDaysTeachersWantWork(Sum, Amount, Min),
@@ -692,38 +670,22 @@ teacher_priority_want(event(class(_, _, _, _, Teacher, _, _, _), _, _, _, _), Fi
 
 
 /*
- * Проверка того, что учитель в этот день хочет провести занятие. Для занятия-кандидата.
+ * �������� ����, ��� ������� � ���� ���� ����� �������� �������. ��� �������-���������.
  */
-teacher_want_work_this_day(event(class(_, _, _, _, Teacher, _, _, _), _, Day, _, ClassTime), Fine) :-
+teacher_want_work_this_day(event(class(_, _, _, _, Teacher, _, _, _), _, Day, _, _), Fine) :-
 	days_teacher_want_work(Teacher, Days, Weight),
-	teacher_want_work_this_day2(Day, ClassTime, Weight, Days, Fine).
-
-teacher_want_work_this_day2(1, ClassTime, Weight, [Head | _], Fine) :-
-	((not(member(ClassTime, Head)), Fine is Weight);(member(ClassTime, Head), Fine is 0)).
-
-teacher_want_work_this_day2(_, _, Weight, [], Fine) :- Fine is Weight.
-
-teacher_want_work_this_day2(I, ClassTime, Weight, [_ | Tail], Fine) :-
-	NewI is I - 1,
-	teacher_want_work_this_day2(NewI, ClassTime, Weight, Tail, Fine).
+	((not(member(Day, Days)), Fine is Weight);(member(Day, Days), Fine is 0)).
 
 /*
- * Проверка того, что учитель в этот день хочет провести занятие. Для всего расписания.
+ * �������� ����, ��� ������� � ���� ���� ����� �������� �������. ��� ����� ����������.
  */
 teacher_want_work_this_day_WHOLE([], X, Fine) :- Fine is X.
-teacher_want_work_this_day_WHOLE([event(class(_, _, _, _, Teacher, _, _, _), _, Day, _, ClassTime) | Other], X, Fine) :-
+teacher_want_work_this_day_WHOLE([event(class(_, _, _, _, Teacher, _, _, _), _, Day, _, _) | Other], X, Fine) :-
 	days_teacher_want_work(Teacher, Days, Weight),
-	teacher_want_work_this_day_WHOLE2(Day, ClassTime, Weight, Days, New_X),
-	teacher_want_work_this_day_WHOLE(Other, X + New_X, Fine).
-
-teacher_want_work_this_day_WHOLE2(1, ClassTime, Weight, [Head | _], Fine) :-
-	((not(member(ClassTime, Head)), Fine is Weight);(member(ClassTime, Head), Fine is 0)).
-
-teacher_want_work_this_day_WHOLE2(_, _, Weight, [], Fine) :- Fine is Weight.
-
-teacher_want_work_this_day_WHOLE2(I, ClassTime, Weight, [_ | Tail], Fine) :-
-	NewI is I - 1,
-	teacher_want_work_this_day_WHOLE2(NewI, ClassTime, Weight, Tail, Fine).
+	((not(member(Day, Days)), New_X is X + Weight,
+		write(Teacher), write(" ������������ ��� "), write(Days), write(", �� ���� ������� � ���� "), write(Day), write(". ����� - "), writeln(Weight));
+	(member(Day, Days), New_X is X)),
+	teacher_want_work_this_day_WHOLE(Other, New_X, Fine).
 
 /*
  * �������� ����, ��� ����������� ��������� �� ������ ���� ����� ���������. ��� �������-���������.
@@ -803,7 +765,7 @@ check_gaps_WHOLE2([GroupOfStudents | Other], Day, X, Fine) :-
 	Max_gap is Max - 1,
 	((Max_gap - InitMax =< 0, New_X is X);
 	(not(Max_gap - InitMax =< 0), c_gaps(Max_gap, F), New_X is X + F,
-		write("Group "), write(GroupOfStudents), write(" at "), write(Day), write( " day has a (greatest) gap with the size of "), write(Max_gap), write(" class(-es). Fine - "), writeln(F))),
+		write("������ "), write(GroupOfStudents), write(" � "), write(Day), write( " ���� ����� (����������) ���� �������� � "), write(Max_gap), write(" ���(-�). ����� - "), writeln(F))),
 	check_gaps_WHOLE2(Other, Day, New_X, Fine).
 
 check_gaps_WHOLE3(_, [], X, Max) :- Max is X.

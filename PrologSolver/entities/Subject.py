@@ -1,13 +1,15 @@
 class Subject:
-    def __init__(self, specialization, subjectName, semesters,
-                 typeOfClass, frequency, teacher, amountOfGroups):
-        self.specialization = specialization
-        self.subjectName = subjectName
+    def __init__(self, id, specializationId, name, semesters,
+                 typeOfClass, frequency, teacherId, amountOfGroups, generated):
+        self.id = id
+        self.specializationId = specializationId
+        self.name = name
         self.semesters = semesters
         self.typeOfClass = typeOfClass
         self.frequency = frequency
-        self.teacher = teacher
+        self.teacherId = teacherId
         self.amountOfGroups = amountOfGroups
+        self.generated = generated
 
     def getSemesters(self):
         tokens = self.semesters.split(",")

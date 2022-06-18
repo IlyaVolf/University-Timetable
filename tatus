@@ -1,0 +1,277 @@
+[33mcommit 1bd8bbcf35794468f2b478d2b41c2733b7e9c299[m[33m ([m[1;36mHEAD -> [m[1;32mdevelop[m[33m, [m[1;31morigin/develop[m[33m)[m
+Merge: 091e7f7 01044c1
+Author: Ilya Volf <70796651+IlyaVolf@users.noreply.github.com>
+Date:   Sat Jun 18 01:21:52 2022 +0700
+
+    Merge pull request #13 from prokyhouse/feature/users
+    
+    bug fix + comments
+
+[33mcommit 01044c16102b4ff984ca9d5e8b9bb90b2f76f66c[m[33m ([m[1;31morigin/feature/users[m[33m, [m[1;32mfeature/users[m[33m)[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Sat Jun 18 01:21:21 2022 +0700
+
+    bug fix + comments
+
+[33mcommit 091e7f7c634e69f6f745ea182dd449ec7ea58520[m
+Merge: 9702c20 e58e19b
+Author: Ilya Volf <70796651+IlyaVolf@users.noreply.github.com>
+Date:   Fri Jun 17 20:13:28 2022 +0700
+
+    Merge pull request #12 from prokyhouse/feature/users
+    
+    current user method added
+
+[33mcommit e58e19b82b1cc86a699a7f1dcced22476531ec57[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 20:12:58 2022 +0700
+
+    current user method added
+
+[33mcommit 9702c2066003506d31e28d2ccc4c6f7640049a7d[m
+Merge: e06a3bf 4c5ffd3
+Author: Ilya Volf <70796651+IlyaVolf@users.noreply.github.com>
+Date:   Fri Jun 17 20:05:11 2022 +0700
+
+    Merge pull request #11 from prokyhouse/feature/users
+    
+    Feature/users
+
+[33mcommit 4c5ffd376f975014497440d47407020fd9ec88ce[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 20:03:39 2022 +0700
+
+    changed methods for schedule display
+
+[33mcommit 727e0eef3b9055aa14e18ad1d2d4e135bca8eb2a[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 19:31:12 2022 +0700
+
+    current user method added
+
+[33mcommit e06a3bfe1c02e3f6926bd481d176ba3897b88d21[m
+Merge: df7bdce b3cfa3a
+Author: Ilya Volf <70796651+IlyaVolf@users.noreply.github.com>
+Date:   Fri Jun 17 19:16:31 2022 +0700
+
+    Merge pull request #10 from prokyhouse/feature/users
+    
+    Feature/users
+
+[33mcommit b3cfa3a4a6e0ae02f2e1af04e921b15c0eccce7a[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 19:11:39 2022 +0700
+
+    all methods are done
+
+[33mcommit 0f32bc746548351b0f0f5dad83feabde7e1fa085[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 18:13:50 2022 +0700
+
+    generation methods done
+
+[33mcommit df7bdce477dbb02604fc43e3ce75fc9b064adf51[m
+Merge: 9137ba8 70bd0e9
+Author: Ilya Volf <70796651+IlyaVolf@users.noreply.github.com>
+Date:   Fri Jun 17 17:47:24 2022 +0700
+
+    Merge pull request #9 from prokyhouse/feature/users
+    
+    Feature/users
+
+[33mcommit 70bd0e9637d8a42e82a4b6f59841998f94c612b0[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 17:46:48 2022 +0700
+
+    Fixed generation
+
+[33mcommit 676c293d9f541a4e24c4cc632a74fe23c8b6ad58[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 13:34:07 2022 +0700
+
+    initials
+
+[33mcommit 9137ba8fc332d50d3b0ad16b5040dd8f33929c36[m
+Merge: 152fb61 347c32a
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 11:34:57 2022 +0700
+
+    merge
+
+[33mcommit 152fb61a68d5313e0915c81c9d151edce226be3b[m
+Merge: eb66ff6 1e6c767
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 11:29:28 2022 +0700
+
+    merge
+
+[33mcommit eb66ff69f5ed03acfddaec71c6ff217d0f67fa06[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 11:17:40 2022 +0700
+
+    a
+
+[33mcommit 1e6c767d79413eee5a43c94477fe12fed9ef7d0a[m[33m ([m[1;31morigin/feature/prolog[m[33m, [m[1;32mfeature/prolog[m[33m)[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Fri Jun 17 11:09:57 2022 +0700
+
+    a
+
+[33mcommit 5035daca67af4c71e288b73232e702ffa7ea83fe[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Thu Jun 16 23:48:21 2022 +0700
+
+    work on users
+
+[33mcommit 347c32aa43fab428edef8430c29805fedd00b9e7[m[33m ([m[1;32mfeature/flaskServer[m[33m)[m
+Author: Matvey0123 <70741384+Matvey0123@users.noreply.github.com>
+Date:   Thu Jun 16 22:06:32 2022 +0700
+
+    added_instruction_for_Artysh
+
+[33mcommit 9adabfd579550e13b9e9b9308612fad5a3a7ecc3[m
+Author: Matvey0123 <70741384+Matvey0123@users.noreply.github.com>
+Date:   Thu Jun 16 22:04:10 2022 +0700
+
+    added_fresh_db
+
+[33mcommit 0e34fbfac45c69d5d267689277dc933e2e2f39a2[m
+Author: Matvey0123 <70741384+Matvey0123@users.noreply.github.com>
+Date:   Thu Jun 16 22:02:29 2022 +0700
+
+    finished_all_marked_methods
+
+[33mcommit 4e8c87654455c41697f7c628054d8f5ee7d6c267[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Thu Jun 16 20:30:42 2022 +0700
+
+    a
+
+[33mcommit 31b1be62d8739913fd3161d6a3ac63bc5fc93b77[m
+Merge: 49418be 203ccf5
+Author: Matvey0123 <70741384+Matvey0123@users.noreply.github.com>
+Date:   Wed Jun 15 21:11:57 2022 +0700
+
+    Merge branch 'develop' into feature/flaskServer
+
+[33mcommit 203ccf5ade834e697456f5c0a2c245233b317955[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Wed Jun 15 21:05:31 2022 +0700
+
+    comments 2
+
+[33mcommit e9d0faefcb0acf5a88d92c5d88bdf5577ac108b6[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Wed Jun 15 21:03:57 2022 +0700
+
+    comments
+
+[33mcommit e07249f11901915834d0eb6c1381b920d91a5d41[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Wed Jun 15 20:53:56 2022 +0700
+
+    aa
+
+[33mcommit 49418bea900da95473919c760560ee5607be9165[m
+Merge: 7c79802 6823dfe
+Author: Matvey0123 <70741384+Matvey0123@users.noreply.github.com>
+Date:   Wed Jun 15 17:32:16 2022 +0700
+
+    Merge branch 'develop' into feature/flaskServer
+
+[33mcommit 6823dfe746ae3e85a1fca314710cef6c2869b755[m
+Author: caterfly <artyshk5@gmail.com>
+Date:   Wed Jun 15 11:59:24 2022 +0700
+
+    ready for Artysh to import
+
+[33mcommit 7c79802d61d36c7b97ab44b7280e2f208c8cc89b[m
+Author: Matvey0123 <70741384+Matvey0123@users.noreply.github.com>
+Date:   Wed Jun 15 00:39:37 2022 +0700
+
+    added_other_entities
+
+[33mcommit c6128b05da3165aaf77de5aa4a8831e6fc1a065e[m
+Merge: 0add23e e0461b7
+Author: Ilya Volf <70796651+IlyaVolf@users.noreply.github.com>
+Date:   Tue Jun 14 19:35:00 2022 +0700
+
+    Merge pull request #7 from prokyhouse/feature/prolog
+    
+    Feature/prolog
+
+[33mcommit e0461b7b3f83fa2b670ed08a849b8e611174918b[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Tue Jun 14 19:32:39 2022 +0700
+
+    Ensured transactions work well
+
+[33mcommit 264183e6ae7cea3e8f43d7e6823d986aed22d2ac[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Tue Jun 14 19:09:02 2022 +0700
+
+    Simple methods for Users are created
+
+[33mcommit 773b52c0c3dbe105e809b8fde5841861c611b8ec[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Tue Jun 14 18:33:23 2022 +0700
+
+    Users db created
+
+[33mcommit 0add23e0889d4a658b3b9de542e799be36ff874c[m
+Merge: befc6ec 5c9d2dd
+Author: Ilya Volf <70796651+IlyaVolf@users.noreply.github.com>
+Date:   Tue Jun 14 12:33:04 2022 +0700
+
+    Merge pull request #6 from prokyhouse/feature/prolog
+    
+    Feature/prolog
+
+[33mcommit 5c9d2ddc3ee5fdf86372b47a4aa042190a776721[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Tue Jun 14 12:32:38 2022 +0700
+
+    All export methods are marked!
+
+[33mcommit fc7ec4f715c08c8c08e296ab5f62803d69192394[m
+Author: Matvey0123 <70741384+Matvey0123@users.noreply.github.com>
+Date:   Mon Jun 13 20:24:48 2022 +0700
+
+    finished_with_teachers
+
+[33mcommit ee744ab4d6011a49de8ac2930677076789c18c91[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Mon Jun 13 18:00:37 2022 +0700
+
+    teachers id references for namesakes
+
+[33mcommit befc6ec15cd4e7162db65572873942d404020a00[m
+Merge: 1aac741 a252527
+Author: Ilya Volf <70796651+IlyaVolf@users.noreply.github.com>
+Date:   Mon Jun 13 14:41:56 2022 +0700
+
+    Merge pull request #5 from prokyhouse/feature/prolog
+    
+    Feature/prolog
+
+[33mcommit a2525272d2bd53c24daa40d5c7ceb3298261009a[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Mon Jun 13 14:41:26 2022 +0700
+
+    Validation added 2
+
+[33mcommit 43125e092996721918fd44f8b9a35079ad569308[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Mon Jun 13 14:37:39 2022 +0700
+
+    Validation added
+
+[33mcommit 79b70b22703e99482dea5723e1549ba61bb14de8[m
+Author: Ilya Volf <volfilya@gmail.com>
+Date:   Mon Jun 13 14:33:59 2022 +0700
+
+    Teacher now can specifies specific classes when they can and want work
+
+[33mcommit fc0d2cb1a3303975e0bd2224cf538ce83f7eb478[m
+Merge: 407433a 1aac741
+Author: Matvey0123 <70741384+Matvey0123@users.noreply.g

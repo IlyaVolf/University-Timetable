@@ -32,38 +32,36 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 attempts(2). 
-semester(1). 
 
-teacher("Permyakov Ruslan Anatolievich"). 
-teacher("Zlygostev Anton Igorevich"). 
-teacher("Bukshev Ivan Evgenievich"). 
-teacher("Adamansky Anton Valentinovich"). 
-teacher("Sitnov Vladimir Evgenievich"). 
-teacher("Miginsky Dmitry Sergeevich"). 
-teacher("Terentyeva Tatyana Alexandrovna"). 
-teacher("Postovalov Sergey Nikolaevich"). 
-teacher("Balabanov Artem Andreevich"). 
-teacher("Antonets Denis Viktorovich"). 
-teacher("Shvab Irina Vasilievna"). 
-teacher("Avdeev Roman Ruslanovich"). 
-teacher("Gorchakov Konstantin Mikhailovich"). 
-teacher("Puzarenko Vadim Grigorievich"). 
-teacher("Vaskevich Vladimir Leontievich"). 
-teacher("Derzho Marina Anatolievna"). 
+teacher("1"). 
+teacher("2"). 
+teacher("3"). 
+teacher("4"). 
+teacher("5"). 
+teacher("6"). 
+teacher("7"). 
+teacher("8"). 
+teacher("9"). 
+teacher("10"). 
+teacher("11"). 
+teacher("12"). 
+teacher("13"). 
+teacher("14"). 
+teacher("15"). 
+teacher("16"). 
 
 type_of_class("lec"). 
 type_of_class("pr"). 
 
-classroom("t3213", [type_of_class("pr"), type_of_class("lab")], 20). 
+classroom("t3213", [type_of_class("lab,pr")], 20). 
 classroom("402 MB", [type_of_class("lec"), type_of_class("pr")], 200). 
 classroom("t2266", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("2128", [type_of_class("lec"), type_of_class("pr")], 80). 
-classroom("t3220", [type_of_class("lab"), type_of_class("pr")], 20). 
+classroom("t3320", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("1154", [type_of_class("lec"), type_of_class("pr")], 20). 
 classroom("406 MB", [type_of_class("lec"), type_of_class("pr")], 20). 
 classroom("1155", [type_of_class("lec"), type_of_class("pr")], 40). 
 classroom("t2213", [type_of_class("lab"), type_of_class("pr")], 20). 
-classroom("SB", [type_of_class("pe")], 500). 
 classroom("1156", [type_of_class("lec"), type_of_class("pr")], 200). 
 classroom("t2221", [type_of_class("lab"), type_of_class("pr")], 20). 
 
@@ -71,10 +69,10 @@ classroom("t2221", [type_of_class("lab"), type_of_class("pr")], 20).
 % PART TWO - FACS, ED PRS, SPECS % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-faculty("Faculty of Information Technologies"). 
+faculty("Department of Information Technologies"). 
+faculty("My department"). 
 
-ed_program("Faculty of Information Technologies", "BACH, 09.03.01, Computer Science and Engineering"). 
-
+ed_program("Department of Information Technologies", "BACH, 09.03.01, Computer Science and Engineering"). 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Computer Science and Systems Engineering"). 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Software Engineering and Computer Science"). 
 
@@ -87,15 +85,14 @@ getSpecialization(Specialization, EdProgram, Faculty) :-
 % PART THREE - SUBJECTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%% 
 
-subject("Computer Science and Systems Engineering", "Interface design", [5], [[type_of_class("lec"), 1, [[teacher("Derzho Marina Anatolievna"), 2]]]]). 
-subject("Computer Science and Systems Engineering", "Models of Computation", [3,4], [[type_of_class("lec"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 3]]], [type_of_class("pr"), 1, [[teacher("Puzarenko Vadim Grigorievich"), 2], [teacher("Avdeev Roman Ruslanovich"), 1]]]]). 
-subject("Computer Science and Systems Engineering", "Machine learning methods", [5], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2]]], [type_of_class("pr"), 1, [[teacher("Antonets Denis Viktorovich"), 2]]]]). 
-subject("Computer Science and Systems Engineering", "Probability theory and mathematical statistics", [3], [[type_of_class("lec"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 3]]], [type_of_class("pr"), 1, [[teacher("Postovalov Sergey Nikolaevich"), 2], [teacher("Antonets Denis Viktorovich"), 1]]]]). 
-subject("Computer Science and Systems Engineering", "Team development of a multifunctional software and hardware complex", [5], [[type_of_class("lec"), 1, [[teacher("Adamansky Anton Valentinovich"), 2]]], [type_of_class("pr"), 2, [[teacher("Adamansky Anton Valentinovich"), 2]]]]). 
-subject("Software Engineering and Computer Science", "Electrical engineering and Electronics", [5], [[type_of_class("lec"), 1, [[teacher("Gorchakov Konstantin Mikhailovich"), 12]]], [type_of_class("pr"), 1, [[teacher("Gorchakov Konstantin Mikhailovich"), 4], [teacher("Gorchakov Konstantin Mikhailovich"), 4], [teacher("Gorchakov Konstantin Mikhailovich"), 4]]]]). 
-subject("Computer Science and Systems Engineering", "Differential equations and the theory of functions of a complex variable", [3], [[type_of_class("lec"), 1, [[teacher("Vaskevich Vladimir Leontievich"), 3]]], [type_of_class("pr"), 1, [[teacher("Vaskevich Vladimir Leontievich"), 2], [teacher("Shvab Irina Vasilievna"), 1]]]]). 
-subject("Computer Science and Systems Engineering", "Computational Mathematics", [5], [[type_of_class("pr"), 1, [[teacher("Shvab Irina Vasilievna"), 1], [teacher("Vaskevich Vladimir Leontievich"), 1]]], [type_of_class("lec"), 1, [[teacher("Vaskevich Vladimir Leontievich"), 2]]]]). 
-subject("Computer Science and Systems Engineering", "Electrical engineering and Electronics", [3,4], [[type_of_class("lec"), 1, [[teacher("Gorchakov Konstantin Mikhailovich"), 3]]], [type_of_class("pr"), 1, [[teacher("Gorchakov Konstantin Mikhailovich"), 3]]]]). 
+subject("Computer Science and Systems Engineering", "Models of Computation", [3,4], [[type_of_class("lec"), 1, [[teacher("14"), 3]]], [type_of_class("pr"), 1, [[teacher("14"), 2], [teacher("12"), 1]]]]). 
+subject("Computer Science and Systems Engineering", "Machine learning methods", [5], [[type_of_class("lec"), 1, [[teacher("8"), 2]]], [type_of_class("pr"), 1, [[teacher("10"), 2]]]]). 
+subject("Computer Science and Systems Engineering", "Probability theory and mathematical statistics", [3], [[type_of_class("lec"), 1, [[teacher("8"), 3]]], [type_of_class("pr"), 1, [[teacher("8"), 2], [teacher("10"), 1]]]]). 
+subject("Computer Science and Systems Engineering", "Team development of a multifunctional software and hardware complex", [5], [[type_of_class("lec"), 1, [[teacher("4"), 2]]], [type_of_class("pr"), 2, [[teacher("4"), 2]]]]). 
+subject("Software Engineering and Computer Science", "Electrical engineering and Electronics", [5], [[type_of_class("lec"), 1, [[teacher("13"), 12]]], [type_of_class("pr"), 1, [[teacher("13"), 4], [teacher("13"), 4], [teacher("13"), 4]]]]). 
+subject("Computer Science and Systems Engineering", "Differential equations and the theory of functions of a complex variable", [3], [[type_of_class("lec"), 1, [[teacher("15"), 3]]], [type_of_class("pr"), 1, [[teacher("15"), 2], [teacher("11"), 1]]]]). 
+subject("Computer Science and Systems Engineering", "Computational Mathematics", [5], [[type_of_class("pr"), 1, [[teacher("11"), 1], [teacher("15"), 1]]], [type_of_class("lec"), 1, [[teacher("15"), 2]]]]). 
+subject("Computer Science and Systems Engineering", "Electrical engineering and Electronics", [3,4], [[type_of_class("lec"), 1, [[teacher("13"), 3]]], [type_of_class("pr"), 1, [[teacher("13"), 3]]]]). 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -147,6 +144,7 @@ list_groups_of_students("Software Engineering and Computer Science", 3, ["19201"
 % PART FIVE - HARD CONSTRAINTS % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
+semester(1). 
 first_class_starts(9,0). 
 class_duration(90). 
 short_brake_duration(5). 
@@ -158,22 +156,22 @@ classes_in_day(7).
 classes_in_day_students(3). 
 classes_in_day_teachers(3). 
 
-days_teacher_can_work(teacher("Permyakov Ruslan Anatolievich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Zlygostev Anton Igorevich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Bukshev Ivan Evgenievich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Adamansky Anton Valentinovich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Sitnov Vladimir Evgenievich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Miginsky Dmitry Sergeevich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Terentyeva Tatyana Alexandrovna"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Postovalov Sergey Nikolaevich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Balabanov Artem Andreevich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Antonets Denis Viktorovich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Shvab Irina Vasilievna"), [1,2,3]). 
-days_teacher_can_work(teacher("Avdeev Roman Ruslanovich"), [1]). 
-days_teacher_can_work(teacher("Gorchakov Konstantin Mikhailovich"), [1,2,3,4,5,6]). 
-days_teacher_can_work(teacher("Puzarenko Vadim Grigorievich"), [4,5,6]). 
-days_teacher_can_work(teacher("Vaskevich Vladimir Leontievich"), [3,4,5,6]). 
-days_teacher_can_work(teacher("Derzho Marina Anatolievna"), [1,2,3,4,5,6]). 
+days_teacher_can_work(teacher("1"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("2"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("3"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("4"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("5"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("6"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("7"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("8"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("9"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("10"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("11"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[],[],[]]). 
+days_teacher_can_work(teacher("12"), [[1,2],[],[],[],[],[]]). 
+days_teacher_can_work(teacher("13"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("14"), [[],[],[],[5,6],[5,6],[5,6]]). 
+days_teacher_can_work(teacher("15"), [[],[],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
+days_teacher_can_work(teacher("16"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]). 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -195,20 +193,20 @@ c_gaps(3,9).
 c_gaps(Amount_of_gaps, 10) :- Amount_of_gaps > 3. 
 classroom_fillness(0, 10, 10). 
 
-days_teacher_want_work(teacher("Permyakov Ruslan Anatolievich"), [1,3,5], 5). 
-days_teacher_want_work(teacher("Zlygostev Anton Igorevich"), [1,2,3,4,5], 2). 
-days_teacher_want_work(teacher("Bukshev Ivan Evgenievich"), [1,2,3,4,5], 5). 
-days_teacher_want_work(teacher("Adamansky Anton Valentinovich"), [3,4,6], 4). 
-days_teacher_want_work(teacher("Sitnov Vladimir Evgenievich"), [1,2,3,4,5], 2). 
-days_teacher_want_work(teacher("Miginsky Dmitry Sergeevich"), [1,2,3,4,5,6], 0). 
-days_teacher_want_work(teacher("Terentyeva Tatyana Alexandrovna"), [3,5], 5). 
-days_teacher_want_work(teacher("Postovalov Sergey Nikolaevich"), [1,2,3,4,5], 2). 
-days_teacher_want_work(teacher("Balabanov Artem Andreevich"), [1,2,3,4,5], 1). 
-days_teacher_want_work(teacher("Antonets Denis Viktorovich"), [1,2,3,4,5], 3). 
-days_teacher_want_work(teacher("Shvab Irina Vasilievna"), [1,2,3], 1). 
-days_teacher_want_work(teacher("Avdeev Roman Ruslanovich"), [1], 10). 
-days_teacher_want_work(teacher("Gorchakov Konstantin Mikhailovich"), [1,2,3,4,5,6], 0). 
-days_teacher_want_work(teacher("Puzarenko Vadim Grigorievich"), [4,5,6], 10). 
-days_teacher_want_work(teacher("Vaskevich Vladimir Leontievich"), [3,4,5,6], 10). 
-days_teacher_want_work(teacher("Derzho Marina Anatolievna"), [1,2,3], 5). 
+days_teacher_want_work(teacher("1"), [[1,2,3,4,5,6,7],[],[1,2,3,4,5,6,7],[],[1,2,3,4,5,6,7],[]], 5). 
+days_teacher_want_work(teacher("2"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 2). 
+days_teacher_want_work(teacher("3"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 5). 
+days_teacher_want_work(teacher("4"), [[],[],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[],[1,2,3,4,5,6,7]], 4). 
+days_teacher_want_work(teacher("5"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 2). 
+days_teacher_want_work(teacher("6"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]], 0). 
+days_teacher_want_work(teacher("7"), [[],[],[1,2,3,4,5,6,7],[],[1,2,3,4,5,6,7],[]], 5). 
+days_teacher_want_work(teacher("8"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 2). 
+days_teacher_want_work(teacher("9"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 1). 
+days_teacher_want_work(teacher("10"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[]], 3). 
+days_teacher_want_work(teacher("11"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[],[],[]], 1). 
+days_teacher_want_work(teacher("12"), [[1,2],[],[],[],[],[]], 10). 
+days_teacher_want_work(teacher("13"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]], 0). 
+days_teacher_want_work(teacher("14"), [[],[],[],[5],[5],[5]], 10). 
+days_teacher_want_work(teacher("15"), [[],[],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]], 10). 
+days_teacher_want_work(teacher("16"), [[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[1,2,3,4,5,6,7],[],[],[]], 5). 
 

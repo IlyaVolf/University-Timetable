@@ -2,7 +2,7 @@ class Constraints:
     def __init__(self, firstClassStarts, classDuration, shortBrakeDuration,
                  largeBrakeDuration, studyDaysInWeek, studyDaysInWeekForStudents,
                  studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
-                 classesPerDayTeachers, lunchBrake, gaps, classroomFillness):
+                 classesPerDayTeachers, lunchBrake, gaps, classroomFillness, semester):
         self.firstClassStarts = firstClassStarts
         self.classDuration = classDuration
         self.shortBrakeDuration = shortBrakeDuration
@@ -16,3 +16,4 @@ class Constraints:
         self.lunchBrake = lunchBrake
         self.gaps = gaps
         self.classroomFillness = classroomFillness
+        self.semester = semester
