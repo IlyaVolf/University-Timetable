@@ -1,1 +1,0 @@
-const constraints={template:`<h1>This is Constraints page</h1>`}
