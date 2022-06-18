@@ -202,6 +202,10 @@ export default {
   },
   message:'',
 methods: {
+
+    showAlert: (error) => {
+      this.$alert(error);
+    },
     // 1 GET METHOD
     getTeachers() {
       const path = 'http://127.0.0.1:5000/teachers';
@@ -228,6 +232,7 @@ methods: {
   
         })
         .catch((error) => {
+          this.showAlert(error);
           console.log(error);
           this.getTeachers();
         });
