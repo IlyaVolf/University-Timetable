@@ -25,7 +25,7 @@
             <!-- tr: table row -->
             <tr v-for="(group, index) in groupsForSchedule" :key="index">
                 <td>
-                    <a :href="'groups/' + group.id" >{{group.name}}</a> 
+                    <a :href="'/schedule/groups/' + group.name" >{{group.name}}</a> 
                 </td>
                       
             </tr>
