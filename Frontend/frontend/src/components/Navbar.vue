@@ -88,30 +88,6 @@
 </template>
 <script>
 export default {
-   data() {
-    return {
-      currentuser: [],
-      userRole: [],
-    };
-  },
-  message:'',
-methods: {
-    // 1 GET METHOD
-    getCurrentUser() {
-      const path = 'http://localhost:5000/currentuser';
-      axios.get(path)
-        .then((res) => {
-          this.currentuser = res.data.currentuser;
-            this.userRole = this.currentuser.role;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
-    created() {
-      this.getCurrentUser(); 
-    },
   name: 'NavbarMain'
-}
 }
 </script>
