@@ -76,7 +76,7 @@ GetAll: curl -X GET "http://127.0.0.1:5000/groups"
 ---- Subject ----
 Доступ для диспетчера
 
-Add: curl -X POST "http://127.0.0.1:5000/subjects?specializationId=1&name=Methods+of+deep+throat&semesters=5_6&typeOfClass=lec&frequency=1&teacherId=8&amountOfGroups=2"
+Add: curl -X POST "http://127.0.0.1:5000/subjects?specializationId=1&name=Interface design&semesters=5&typeOfClass=lec&frequency=1&teacherId=16&amountOfGroups=2"
 
 Delete: curl -X DELETE "http://127.0.0.1:5000/subjects/23"
 
@@ -168,6 +168,23 @@ Put constraints for logged-in teacher: curl -X PUT "http://127.0.0.1:5000/teache
 Удаление занятия curl -X GET "http://127.0.0.1:5000/removeman/2"
 
 Добавление занятия вручную curl -X GET "http://127.0.0.1:5000/addman/faculty=Department+of+IT&educationalProgram=BACH_09-03-01_CS&specializationNoviy+potok&subject=MMO&semester=1&teacher=Permyakov Ruslan Anatolievich&typeOfClass=pr&auditory=1155&groups=[19213,19214]&day=4&classNumber=2&teacherId=1"
+Working example for Ilya:
+    clazz = GeneratedClass(
+        a.id,
+        a.faculty,
+        a.educationalProgram,
+        "Computer Science and Systems Engineering",
+        "Interface design",
+        5,
+        "Derzho Marina Anatolievna",
+        "lec",
+        "1156",
+        "[19213,19214]",
+        6,
+        4,
+        16
+    )
+
 
 
 ---- Login ----
