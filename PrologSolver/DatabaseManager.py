@@ -37,7 +37,6 @@ class DatabaseManager:
     def __init__(self, dbFileName='timetable.sqlite'):
         try:
             self.sqlite_connection = sqlite3.connect(dbFileName, check_same_thread=False)
-            print("successful")
         except sqlite3.Error as error:
             print("Ошибка при подключении к sqlite", error)
 
@@ -1284,7 +1283,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-        return Schedule(0, 'null', dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
+        return Schedule(0, groupName, dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
                         schedule)
 
     # Формат - объект класса Schedule, который содержит:

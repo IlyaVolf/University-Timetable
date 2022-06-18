@@ -10,7 +10,8 @@ from entities import GeneratedClass, User
 from EntitySerializer import serialiseTeacher, serialiseUser, serialiseClassroom, serialiseEducationalProgram, serialiseFaculty, serialiseGroup, serialiseSubject,serialiseSpecialization, serialiseConstraints, serialiseGeneratedClass, serialiseSchedule, serialiseGeneratedClass
 from DatabaseManager import DatabaseManager
 
-import uuid
+import random
+import string
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -812,6 +813,7 @@ def currentUser():
     response_object['currentuser'] = serialiseUser(user)
     return jsonify(response_object)
 
+import random
 @app.route('/users', methods=['POST','GET'])
 def addUser():
     #if (current_user.is_authenticated):
@@ -831,7 +833,7 @@ def addUser():
             teacherId = int(teacherId)
         if name is not None and email is not None and role is not None:
             dbManager = DatabaseManager()
-            password = str(uuid.uuid4())
+            password = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(12))
             passwordHash = generate_password_hash(password)
             try:
                 dbManager.addUser(name, email, passwordHash, role, teacherId)

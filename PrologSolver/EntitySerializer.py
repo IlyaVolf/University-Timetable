@@ -140,7 +140,7 @@ def serialiseSchedule(schedule: Schedule):
     entities = [[serialiseScheduleEntity(schedule.scheduleEntities[i][j]) for i in range(schedule.studyDaysInWeek)] for j in range(schedule.classesPerDay)]
     return {
         'type': schedule.type,
-        'teacher': schedule.teacher,
+        'entity': schedule.entity,
         'classesPerDay': schedule.classesPerDay,
         'studyDaysInWeek': schedule.studyDaysInWeek,
         'scheduleEntities': entities
