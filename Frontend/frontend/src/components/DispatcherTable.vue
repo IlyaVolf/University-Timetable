@@ -83,7 +83,10 @@ export default {
           this.generatedClasses = res.data.generatedClasses;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     generate(payload) {
@@ -100,7 +103,10 @@ export default {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getGeneratedClasses();
         });
     },
@@ -118,7 +124,10 @@ export default {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getGeneratedClasses();
         });
     },

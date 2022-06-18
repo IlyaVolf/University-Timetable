@@ -288,7 +288,10 @@ methods: {
           this.subjects = res.data.subjects;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Faculty Button
@@ -306,7 +309,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getSubjects();
         });
     },
@@ -381,7 +387,10 @@ methods: {
         this.showMessage =  true;
       })
       .catch((error) => {
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getSubjects();
       });
   },
@@ -407,7 +416,10 @@ methods: {
       })
       .catch((error) => {
         // eslint-disable-next-line
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getSubjects();
       });
   },

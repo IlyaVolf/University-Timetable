@@ -82,7 +82,10 @@ export default {
           this.constraints = res.data.constraints;
         })
         .catch((err) => {
-          console.error(err);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
       },
     },

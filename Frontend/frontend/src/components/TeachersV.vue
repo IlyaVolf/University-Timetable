@@ -214,7 +214,10 @@ methods: {
           this.teachers = res.data.teachers;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Teacher Button
@@ -232,8 +235,10 @@ methods: {
   
         })
         .catch((error) => {
-          this.showAlert(error);
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getTeachers();
         });
     },
@@ -294,7 +299,10 @@ updateTeacher(id, payload) {
       this.showMessage =  true;
     })
     .catch((error) => {
-      console.error(error);
+      if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
       this.getTeachers();
     });
 },
@@ -320,7 +328,10 @@ removeTeacher(id) {
     })
     .catch((error) => {
       // eslint-disable-next-line
-      console.error(error);
+      if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
       this.getTeachers();
     });
 },

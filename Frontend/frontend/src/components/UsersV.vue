@@ -238,7 +238,10 @@ methods: {
           this.users = res.data.users;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Faculty Button
@@ -256,7 +259,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getUsers();
         });
     },
@@ -323,7 +329,10 @@ methods: {
         this.showMessage =  true;
       })
       .catch((error) => {
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getUserps();
       });
   },
@@ -349,7 +358,10 @@ methods: {
       })
       .catch((error) => {
         // eslint-disable-next-line
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getUsers();
       });
   },
