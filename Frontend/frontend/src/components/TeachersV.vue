@@ -214,12 +214,15 @@ methods: {
           this.teachers = res.data.teachers;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Teacher Button
     addTeacher(payload) {
-      const path = 'http://localhost:5000/teachers/';
+      const path = 'http://127.0.0.1:5000/teachers/';
       axios.post(path, payload)
         .then(() => {
           this.getTeachers();
@@ -232,8 +235,10 @@ methods: {
   
         })
         .catch((error) => {
-          this.showAlert(error);
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getTeachers();
         });
     },
@@ -286,7 +291,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
 updateTeacher(id, payload) {
-  const path = `http://localhost:5000/teachers/${id}?name=${payload.name}&daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
+  const path = `http://127.0.0.1:5000/teachers/${id}?name=${payload.name}&daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
   axios.put(path, payload)    
     .then(() => {
       this.getTeachers();
@@ -294,7 +299,10 @@ updateTeacher(id, payload) {
       this.showMessage =  true;
     })
     .catch((error) => {
-      console.error(error);
+      if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
       this.getTeachers();
     });
 },
@@ -311,7 +319,7 @@ onResetUpdate(e) {
 },
 // Remove teacher [ Delete Button ]
 removeTeacher(id) {
-  const path = `http://localhost:5000/teachers/${id}`;
+  const path = `http://127.0.0.1:5000/teachers/${id}`;
   axios.delete(path)
     .then(() => {
       this.getTeachers();
@@ -320,7 +328,10 @@ removeTeacher(id) {
     })
     .catch((error) => {
       // eslint-disable-next-line
-      console.error(error);
+      if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
       this.getTeachers();
     });
 },

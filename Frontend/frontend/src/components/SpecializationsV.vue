@@ -166,28 +166,34 @@ export default {
 methods: {
     // 1 GET METHOD
     getSpecializations() {
-      const path = 'http://localhost:5000/specializations';
+      const path = 'http://127.0.0.1:5000/specializations';
       axios.get(path)
         .then((res) => {
           this.specializations = res.data.specializations;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     getEducationalPrograms() {
-      const path = 'http://localhost:5000/educationalPrograms';
+      const path = 'http://127.0.0.1:5000/educationalPrograms';
       axios.get(path)
         .then((res) => {
           this.educationalPrograms = res.data.educationalPrograms;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Teacher Button
     addSpecialization(payload) {
-      const path = 'http://localhost:5000/pecializations';
+      const path = 'http://127.0.0.1:5000/pecializations';
       axios.post(path, payload)
         .then(() => {
           this.getSpecialization();
@@ -200,7 +206,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getSpecializations();
         });
     },
@@ -244,7 +253,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
 updateSpecialization(payload, id) {
-  const path = `http://localhost:5000/specializations/${id}`;
+  const path = `http://127.0.0.1:5000/specializations/${id}`;
   axios.put(path, payload)    
     .then(() => {
       this.getSpecializations();
@@ -252,7 +261,10 @@ updateSpecialization(payload, id) {
       this.showMessage =  true;
     })
     .catch((error) => {
-      console.error(error);
+      if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
       this.getSpecializations();
     });
 },
@@ -269,7 +281,7 @@ onResetUpdate(e) {
 },
 // Remove teacher [ Delete Button ]
 removeSpecialization(id) {
-  const path = `http://localhost:5000/specializations/${id}`;
+  const path = `http://127.0.0.1:5000/specializations/${id}`;
   axios.delete(path)
     .then(() => {
       this.getSpecializations();
@@ -278,7 +290,10 @@ removeSpecialization(id) {
     })
     .catch((error) => {
       // eslint-disable-next-line
-      console.error(error);
+      if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
       this.getSpecializations();
     });
 },

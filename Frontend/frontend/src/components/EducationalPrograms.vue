@@ -181,28 +181,34 @@ export default {
 methods: {
     // 1 GET METHOD
     getEducationalPrograms() {
-      const path = 'http://localhost:5000/educationalPrograms';
+      const path = 'http://127.0.0.1:5000/educationalPrograms';
       axios.get(path)
         .then((res) => {
           this.educationalPrograms = res.data.educationalPrograms;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     getFaculties() {
-      const path = 'http://localhost:5000/faculties';
+      const path = 'http://127.0.0.1:5000/faculties';
       axios.get(path)
         .then((res) => {
           this.faculties = res.data.faculties;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Teacher Button
     addEducationalProgram(payload) {
-      const path = `http://localhost:5000/educationalPrograms?facultyId=${payload.facultyId}&name=${payload.name}`;
+      const path = `http://127.0.0.1:5000/educationalPrograms?facultyId=${payload.facultyId}&name=${payload.name}`;
       axios.post(path, payload)
         .then(() => {
           this.getEducationalPrograms();
@@ -216,7 +222,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getEducationalPrograms();
           this.getFaculties();
         });
@@ -270,7 +279,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
 updateEducationalProgram(payload, id) {
-  const path = `http://localhost:5000/educationalPrograms/${id}?facultyId=${payload.facultyId}&name=${payload.name}`;
+  const path = `http://127.0.0.1:5000/educationalPrograms/${id}?facultyId=${payload.facultyId}&name=${payload.name}`;
   axios.put(path, payload)    
     .then(() => {
       this.getEducationalPrograms();
@@ -278,7 +287,10 @@ updateEducationalProgram(payload, id) {
       this.showMessage =  true;
     })
     .catch((error) => {
-      console.error(error);
+      if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
       this.getEducationalPrograms();
     });
 },
@@ -295,7 +307,7 @@ onResetUpdate(e) {
 },
 // Remove teacher [ Delete Button ]
 removeEducationalProgram(id) {
-  const path = `http://localhost:5000/educationalPrograms/${id}`;
+  const path = `http://127.0.0.1:5000/educationalPrograms/${id}`;
   axios.delete(path)
     .then(() => {
       this.getEducationalPrograms();
@@ -304,7 +316,10 @@ removeEducationalProgram(id) {
     })
     .catch((error) => {
       // eslint-disable-next-line
-      console.error(error);
+      if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
       this.getEducationalPrograms();
     });
 },

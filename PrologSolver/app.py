@@ -1,7 +1,6 @@
 from operator import ge
 import os
 from webbrowser import get
-#from PrologSolver.entities.GeneratedClass import GeneratedClass
 from flask import Flask, jsonify, make_response, request
 from flask_cors import CORS
 import generator
@@ -62,7 +61,7 @@ def teacher(id):
         try:
             teacher = dbManager.getTeacher(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['teacher'] = serialiseTeacher(teacher)
         return jsonify(response_object)
@@ -81,7 +80,7 @@ def teacher(id):
             try:
                 dbManager.updateTeacher(id, name, daysCanWork, daysWantWork, int(weight))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -91,6 +90,10 @@ def teacher(id):
 def addTeacher():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/feature/flaskServer
     #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'POST':
@@ -103,7 +106,7 @@ def addTeacher():
             try:
                 dbManager.addTeacher(name, daysCanWork, daysWantWork, int(weight))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -118,6 +121,10 @@ def addTeacher():
 def teacher_constraints():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 2):
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/feature/flaskServer
     #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'GET':
@@ -153,7 +160,7 @@ def classroom(id):
         try:
             classroom = dbManager.getClassroom(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['classroom'] = serialiseClassroom(classroom)
         return jsonify(response_object)
@@ -171,7 +178,7 @@ def classroom(id):
             try:
                 dbManager.updateClassroom(id, number, typesOfClass, int(capacity))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -192,7 +199,7 @@ def addClassroom():
             try:
                 dbManager.addClassroom(number, typesOfClass, int(capacity))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -214,7 +221,7 @@ def faculty(id):
         try:
             faculty = dbManager.getFaculty(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['faculty'] = serialiseFaculty(faculty)
         return jsonify(response_object)
@@ -230,7 +237,7 @@ def faculty(id):
             try:
                 dbManager.updateFaculty(id, name)
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -249,7 +256,7 @@ def addFaculty():
             try:
                 dbManager.addFaculty(name)
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -270,7 +277,7 @@ def educationalProgram(id):
         try:
             educationalProgram = dbManager.getEducationalProgram(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['educationalProgram'] = serialiseEducationalProgram(educationalProgram)
         return jsonify(response_object)
@@ -287,7 +294,7 @@ def educationalProgram(id):
             try:
                 dbManager.updateEducationalProgram(id, facultyId, name)
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -307,7 +314,7 @@ def addEducationalProgram():
             try:
                 dbManager.addEducationalProgram(facultyId, name)
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -328,7 +335,7 @@ def group(id):
         try:
             group = dbManager.getGroup(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['group'] = serialiseGroup(group)
         return jsonify(response_object)
@@ -347,7 +354,7 @@ def group(id):
             try:
                 dbManager.updateGroup(id, specializationId, name, int(amountOfStudents), int(yearOfStudy))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -370,7 +377,7 @@ def addGroup():
             try:
                 dbManager.addGroup(specializationId, name, int(amountOfStudents), int(yearOfStudy))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -391,7 +398,7 @@ def subject(id):
         try:
             subject = dbManager.getSubject(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['subject'] = serialiseSubject(subject)
         return jsonify(response_object)
@@ -416,7 +423,7 @@ def subject(id):
                 dbManager.updateSubject(id, specializationId, name, semesters, typeOfClass,
                     int(frequency), teacherId, int(amountOfGroups))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -444,7 +451,7 @@ def addSubject():
                 dbManager.addSubject(specializationId, name, semesters, typeOfClass,
                     int(frequency), teacherId, int(amountOfGroups))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -465,7 +472,7 @@ def specialization(id):
         try:
             specialization = dbManager.getSpecialization(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['specialization'] = serialiseSpecialization(specialization)
         return jsonify(response_object)
@@ -482,7 +489,7 @@ def specialization(id):
             try:
                 dbManager.updateSpecialization(id, educationalProgramId, name)
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -502,7 +509,7 @@ def addSpecialization():
             try:
                 dbManager.addSpecialization(educationalProgramId, name)
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -512,12 +519,16 @@ def addSpecialization():
         try:
             specializations = dbManager.getAllSpecializationByEdProgram(educationalProgramId)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         return jsonify(list(map(lambda x: serialiseSpecialization(x), specializations)))
     dbManager = DatabaseManager()
     specializations = dbManager.getAllSpecialization()
     dbManager.close()
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/feature/flaskServer
     response_object['specializations'] = list(map(lambda x: serialiseSpecialization(x), specializations))
     return jsonify(response_object)
 
@@ -532,7 +543,7 @@ def constraints():
         try:
             constraints = dbManager.getConstraints()
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['constraints'] = serialiseConstraints(constraints)
         return jsonify(response_object)
@@ -571,7 +582,7 @@ def constraints():
                     classesPerDay, classesPerDayStudents, classesPerDayTeachers,
                     lunchBrake, gaps, classroomFillness, semester)
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
         if request.method == 'POST':
             try:
                 dbManager.addConstraints(firstClassStarts, int(classDuration),
@@ -580,7 +591,7 @@ def constraints():
                     int(classesPerDay), int(classesPerDayStudents), int(classesPerDayTeachers),
                     int(lunchBrake), int(gaps), int(classroomFillness), int(semester))
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
         dbManager.close()
         return jsonify({'response': 'success'})
     return jsonify({'response': 'failure'})
@@ -775,7 +786,7 @@ def user(id):
         try:
             user = dbManager.getUser(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         response_object['user'] = serialiseUser(user)
         return jsonify(response_object)
@@ -784,7 +795,7 @@ def user(id):
         try:
             dbManager.removeUser(id)
         except ValueError as e:
-            return jsonify({'error': str(e)})
+            return jsonify(error = str(e)), 400
         dbManager.close()
         return jsonify({'response': 'success'})
     if request.method == 'PUT':
@@ -838,10 +849,10 @@ def addUser():
             try:
                 dbManager.addUser(name, email, passwordHash, role, teacherId)
                 msg = Message("NSU Timetable Membership", recipients=[email])
-                msg.body = "Dear " + name + "!\n\nYou are now a member of NSU Timetable.\nYour role is: " + roleString + "\n\nYour automatically generated password is:\n" + password + "\nYou can change it later"
+                msg.body = "Dear " + name + "!\n\nYou are now a member of NSU Timetable.\nYour role is: " + roleString + "\n\nYour automatically generated password is:\n" + password + "\nYou can change it later."
                 mail.send(msg)
             except ValueError as e:
-                return jsonify({'error': str(e)})
+                return jsonify(error = str(e)), 400
             dbManager.close()
             return jsonify({'response': 'success'})
         return jsonify({'response': 'failure'})
@@ -849,7 +860,7 @@ def addUser():
     try:
         users = dbManager.getAllUser()
     except ValueError as e:
-            return jsonify({'error': str(e)})
+        return jsonify(error = str(e)), 400
     dbManager.close()
     response_object['users'] = list(map(lambda x: serialiseUser(x), users))
     return jsonify(response_object)
@@ -881,7 +892,7 @@ def login():
     try:
         user = dbManager.getUserByEmail(email)
     except ValueError as e:
-            return jsonify({'error': str(e)})
+        return jsonify(error = str(e)), 400
     dbManager.close()
 
     if not user.checkPassword(password):

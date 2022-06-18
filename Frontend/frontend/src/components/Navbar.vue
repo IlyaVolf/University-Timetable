@@ -15,7 +15,17 @@
              home
             </router-link>
           </li>
-          <li class="nav-item">
+          <template v-if="userRole == 2">
+          <!--
+            teacher constrains
+            <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'TeacherConstraints'}">
+             teacherConstraints
+            </router-link>
+            </li>-->
+          </template>
+          <template v-if="userRole == 0 || userRole == 1">
+            <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'FacultiesV'}">
              faculties
             </router-link>
@@ -40,12 +50,6 @@
              Subjects
             </router-link>
           </li>
-          <!--
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'ConstraintsV'}">
-             constraints
-            </router-link>
-          </li>-->
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'EducationalPrograms'}">
              Educational programs
@@ -54,11 +58,6 @@
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'SpecializationsV'}">
              Specializations
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'TableTwo'}">
-             Table
             </router-link>
           </li>
           <li class="nav-item">
@@ -71,14 +70,30 @@
              Users
             </router-link>
           </li>
-          
+          <!--
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'ConstraintsV'}">
+             constraints
+            </router-link>
+          </li>-->
+          </template>
+
         </ul>
         <ul class="navbar-nav">
+          <template v-if="userRole == 3">
             <li class="nav-item">
               <router-link class="nav-link" :to="{name: 'LoginForm'}">
               Login
               </router-link>
             </li>
+          </template>
+          <!-- <template v-if="userRole != 3">
+            <li class="nav-item">
+              <router-link class="nav-link" :to="{name: 'LogoutForm'}">
+              Logout
+              </router-link>
+            </li>
+          </template> -->
         </ul>
       </b-collapse>
     </div>
@@ -87,31 +102,33 @@
   
 </template>
 <script>
+import axios from 'axios';
 export default {
-   data() {
+  name: 'NavbarMain',
+  data() {
     return {
       currentuser: [],
       userRole: [],
     };
   },
   message:'',
-methods: {
+  methods: {
     // 1 GET METHOD
     getCurrentUser() {
-      const path = 'http://localhost:5000/currentuser';
-      axios.get(path)
-        .then((res) => {
-          this.currentuser = res.data.currentuser;
-            this.userRole = this.currentuser.role;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
-    created() {
-      this.getCurrentUser(); 
-    },
-  name: 'NavbarMain'
-}
+    const path = 'http://127.0.0.1:5000/currentuser';
+    axios.get(path)
+    .then((res) => {
+      this.currentuser = res.data.currentuser;
+      this.userRole = this.currentuser.role;
+      console.log(this.userRole);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+  },
+},
+created() {
+  this.getCurrentUser();
+  },
 }
 </script>

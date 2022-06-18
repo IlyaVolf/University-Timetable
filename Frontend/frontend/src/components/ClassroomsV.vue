@@ -178,18 +178,21 @@ export default {
 methods: {
     // 1 GET METHOD
     getClassrooms() {
-      const path = 'http://localhost:5000/classrooms';
+      const path = 'http://127.0.0.1:5000/classrooms';
       axios.get(path)
         .then((res) => {
           this.classrooms = res.data.classrooms;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Faculty Button
     addClassroom(payload) {
-      const path = `http://localhost:5000/classrooms?number=${payload.number}&capacity=${payload.capacity}&typesOfClass=${payload.typesOfClass}`;
+      const path = `http://127.0.0.1:5000/classrooms?number=${payload.number}&capacity=${payload.capacity}&typesOfClass=${payload.typesOfClass}`;
       axios.post(path, payload)
         .then(() => {
           this.getClassrooms();
@@ -202,7 +205,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getClassrooms();
         });
     },
@@ -251,7 +257,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
   updateClassroom(id, payload) {
-    const path = `http://localhost:5000/classrooms/${id}?number=${payload.number}&capacity=${payload.capacity}&typesOfClass=${payload.typesOfClass}`;
+    const path = `http://127.0.0.1:5000/classrooms/${id}?number=${payload.number}&capacity=${payload.capacity}&typesOfClass=${payload.typesOfClass}`;
     axios.put(path, payload, {
       
     })    
@@ -261,7 +267,10 @@ methods: {
         this.showMessage =  true;
       })
       .catch((error) => {
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getClassrooms();
       });
   },
@@ -278,7 +287,7 @@ methods: {
   },
   // Remove teacher [ Delete Button ]
   removeClassroom(id) {
-    const path = `http://localhost:5000/classrooms/${id}`;
+    const path = `http://127.0.0.1:5000/classrooms/${id}`;
     axios.delete(path)
       .then(() => {
         this.getClassrooms();
@@ -287,7 +296,10 @@ methods: {
       })
       .catch((error) => {
         // eslint-disable-next-line
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getClassrooms();
       });
   },

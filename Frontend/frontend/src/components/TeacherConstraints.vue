@@ -128,7 +128,10 @@ export default {
                 this.teacher = res.data.teacher;
                 })
                 .catch((error) => {
-                console.error(error);
+                  if(error.response.data.error != null) {
+                    alert("Error: " + error.response.data.error)
+                    console.error(error);
+                  }
                 });
         },
         // 5 initForm - add ediForm after the update method
@@ -163,7 +166,10 @@ export default {
             this.showMessage =  true;
             })
             .catch((error) => {
-            console.error(error);
+              if(error.response.data.error != null) {
+                alert("Error: " + error.response.data.error)
+                console.error(error);
+              }
             this.getTeachers();
             });
         },

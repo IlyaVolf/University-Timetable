@@ -55,7 +55,7 @@ export default {
     methods: {
         // 1 GET METHOD
         getFaculties() {
-        const path = 'http://localhost:5000/schedule/faculties';
+        const path = 'http://127.0.0.1:5000/schedule/faculties';
         axios.get(path)
             .then((res) => {
             this.facultiesForSchedule = res.data.facultiesForSchedule;

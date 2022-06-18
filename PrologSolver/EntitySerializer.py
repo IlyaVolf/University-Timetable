@@ -110,7 +110,9 @@ def serialiseGeneratedClass(generatedClass: GeneratedClass):
         'typeOfClass': generatedClass.typeOfClass,
         'auditory': generatedClass.auditory,
         'groups': generatedClass.groups,
+        'groupsStr': generatedClass.groupsStr,
         'day': generatedClass.day,
+        'dayStr': generatedClass.dayStr,
         'classNumber': generatedClass.classNumber,
         'teacherId': generatedClass.teacherId
     }

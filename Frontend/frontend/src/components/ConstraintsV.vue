@@ -76,13 +76,16 @@ export default {
 
     methods:{
       getConstraints() {
-        const path = 'http://localhost:5000/constraints';
+        const path = 'http://127.0.0.1:5000/constraints';
         axios.get(path)
         .then((res) => {
           this.constraints = res.data.constraints;
         })
         .catch((err) => {
-          console.error(err);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
       },
     },

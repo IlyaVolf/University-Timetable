@@ -208,18 +208,21 @@ export default {
 methods: {
     // 1 GET METHOD
     getGroups() {
-      const path = 'http://localhost:5000/groups';
+      const path = 'http://127.0.0.1:5000/groups';
       axios.get(path)
         .then((res) => {
           this.groups = res.data.groups;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Faculty Button
     addGroup(payload) {
-      const path = 'http://localhost:5000/groups';
+      const path = 'http://127.0.0.1:5000/groups';
       axios.post(path, payload)
         .then(() => {
           this.getGroups();
@@ -232,7 +235,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getGroups();
         });
     },
@@ -250,7 +256,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getGroups();
         });
     },
@@ -268,7 +277,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getGroups();
         });
     },
@@ -321,7 +333,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
   updateGroup(id, payload) {
-    const path = `http://localhost:5000/groups/${id}?specializationId=${payload.specializationId}&name=${payload.name}&amountOfStudents=${payload.amountOfStudents}&yearOfStudy=${payload.yearOfStudy}`;
+    const path = `http://127.0.0.1:5000/groups/${id}?specializationId=${payload.specializationId}&name=${payload.name}&amountOfStudents=${payload.amountOfStudents}&yearOfStudy=${payload.yearOfStudy}`;
     axios.put(path, payload, {
       
     })    
@@ -331,7 +343,10 @@ methods: {
         this.showMessage =  true;
       })
       .catch((error) => {
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getGroups();
       });
   },
@@ -348,7 +363,7 @@ methods: {
   },
   // Remove teacher [ Delete Button ]
   removeGroup(id) {
-    const path = `http://localhost:5000/groups/${id}`;
+    const path = `http://127.0.0.1:5000/groups/${id}`;
     axios.delete(path)
       .then(() => {
         this.getGroups();
@@ -357,7 +372,10 @@ methods: {
       })
       .catch((error) => {
         // eslint-disable-next-line
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getGroups();
       });
   },

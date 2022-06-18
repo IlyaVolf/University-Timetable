@@ -232,18 +232,21 @@ export default {
 methods: {
     // 1 GET METHOD
     getUsers() {
-      const path = 'http://localhost:5000/users';
+      const path = 'http://127.0.0.1:5000/users';
       axios.get(path)
         .then((res) => {
           this.users = res.data.users;
         })
         .catch((error) => {
-          console.error(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         });
     },
     // 2 Add Faculty Button
     addUser(payload) {
-      const path = 'http://localhost:5000/users?name=${payload.name}&email=${payload.email}&role=${payload.role}';
+      const path = 'http://127.0.0.1:5000/users?name=${payload.name}&email=${payload.email}&role=${payload.role}';
       axios.post(path, payload)
         .then(() => {
           this.getUsers();
@@ -256,7 +259,10 @@ methods: {
   
         })
         .catch((error) => {
-          console.log(error);
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
           this.getUsers();
         });
     },
@@ -313,7 +319,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
   updateUser(id, payload) {
-    const path = `http://localhost:5000/users/${id}?name=${payload.name}&email=${payload.email}&role=${payload.role}`;
+    const path = `http://127.0.0.1:5000/users/${id}?name=${payload.name}&email=${payload.email}&role=${payload.role}`;
     axios.put(path, payload, {
       
     })    
@@ -323,7 +329,10 @@ methods: {
         this.showMessage =  true;
       })
       .catch((error) => {
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getUserps();
       });
   },
@@ -340,7 +349,7 @@ methods: {
   },
   // Remove teacher [ Delete Button ]
   removeUser(id) {
-    const path = `http://localhost:5000/users/${id}`;
+    const path = `http://127.0.0.1:5000/users/${id}`;
     axios.delete(path)
       .then(() => {
         this.getUsers();
@@ -349,7 +358,10 @@ methods: {
       })
       .catch((error) => {
         // eslint-disable-next-line
-        console.error(error);
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+          }
         this.getUsers();
       });
   },
