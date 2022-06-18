@@ -1284,7 +1284,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-        return Schedule(0, dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
+        return Schedule(0, 'null', dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
                         schedule)
 
     # Формат - объект класса Schedule, который содержит:
@@ -1317,13 +1317,23 @@ class DatabaseManager:
             else:
                 m = str(minutes)
             time = h + ":" + m
-            schedule[row[10] - 1][row[11] - 1] = ScheduleEntity(row[4], row[7], row[6], row[8], row[9], row[11], time)
+
+            sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+            cursor.execute(sqliteQuery, (teacherId,))
+            row2 = cursor.fetchall()[0]
+            teacher = Teacher(row2[0], row2[1], row2[2], row2[3], row2[4])
+
+            schedule[row[10] - 1][row[11] - 1] = ScheduleEntity(row[4], row[7], teacher.shortName, row[8], row[9], row[11], time)
 
         self.sqlite_connection.commit()
+
+        sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+        cursor.execute(sqliteQuery, (teacherId,))
+        row2 = cursor.fetchall()[0]
+
         cursor.close()
 
-        return Schedule(1, dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
-                        schedule)
+        return Schedule(1, row2[1], dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek, schedule)
 
     ####################################################################################################################
 
