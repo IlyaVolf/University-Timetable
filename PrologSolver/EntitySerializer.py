@@ -117,7 +117,7 @@ def serialiseGeneratedClass(generatedClass: GeneratedClass):
 
 def serialiseScheduleEntity(scheduleEntity):
     if scheduleEntity is not None:
-        return {
+        return [{
             'subject': scheduleEntity.subject,
             'typeOfClass': scheduleEntity.typeOfClass,
             'teacher': scheduleEntity.teacher,
@@ -125,8 +125,8 @@ def serialiseScheduleEntity(scheduleEntity):
             'groups': scheduleEntity.groups,
             'classNumber': scheduleEntity.classNumber,
             'time': scheduleEntity.time
-        }
-    return {
+        }]
+    return [{
             'subject': 'null',
             'typeOfClass': 'null',
             'teacher': 'null',
@@ -134,9 +134,18 @@ def serialiseScheduleEntity(scheduleEntity):
             'groups': 'null',
             'classNumber': 'null',
             'time': 'null'
-        }
+        }]
 
 def serialiseSchedule(schedule: Schedule):
+    entities = [[serialiseScheduleEntity(schedule.scheduleEntities[i][j]) for i in range(schedule.studyDaysInWeek)] for j in range(schedule.classesPerDay)]
+    return {
+        'type': schedule.type,
+        'classesPerDay': schedule.classesPerDay,
+        'studyDaysInWeek': schedule.studyDaysInWeek,
+        'scheduleEntities': entities
+    }
+
+def serialiseSchedule2(schedule: Schedule):
     entities = [[serialiseScheduleEntity(schedule.scheduleEntities[i][j]) for i in range(schedule.studyDaysInWeek)] for j in range(schedule.classesPerDay)]
     return {
         'type': schedule.type,
