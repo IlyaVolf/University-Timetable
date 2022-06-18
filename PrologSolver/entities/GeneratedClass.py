@@ -1,6 +1,8 @@
 class GeneratedClass:
     def __init__(self, id, faculty, educationalProgram, specialization, subject, semester, teacher, typeOfClass,
                  auditory, groups, day, classNumber, teacherId):
+        mapp = {1: "Mon", 2: "Tue", 3: "Wen", 4: "Thu", 5: "Fri", 6: "Sat"}
+
         self.id = id
         self.faculty = faculty
         self.educationalProgram = educationalProgram
@@ -11,7 +13,9 @@ class GeneratedClass:
         self.typeOfClass = typeOfClass
         self.auditory = auditory
         self.groups = disassemblePrologList(groups)
+        self.groupsStr = groups.replace('[','').replace(']','')
         self.day = day
+        self.dayStr = mapp[day]
         self.classNumber = classNumber
         self.teacherId = teacherId
 
