@@ -838,7 +838,7 @@ def addUser():
             try:
                 dbManager.addUser(name, email, passwordHash, role, teacherId)
                 msg = Message("NSU Timetable Membership", recipients=[email])
-                msg.body = "Dear " + name + "!\n\nYou are now a member of NSU Timetable.\nYour role is: " + roleString + "\n\nYour automatically generated password is:\n" + password + "\n You can change it later"
+                msg.body = "Dear " + name + "!\n\nYou are now a member of NSU Timetable.\nYour role is: " + roleString + "\n\nYour automatically generated password is:\n" + password + "\nYou can change it later"
                 mail.send(msg)
             except ValueError as e:
                 return jsonify({'error': str(e)})
