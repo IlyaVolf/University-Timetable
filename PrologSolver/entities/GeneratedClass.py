@@ -1,9 +1,9 @@
 class GeneratedClass:
-    def __init__(self, classId, faculty, edProgram, specialization, subject, semester, teacher, typeOfClass, auditory, groups,
-                 day, classNumber):
-        self.classId = classId
+    def __init__(self, id, faculty, educationalProgram, specialization, subject, semester, teacher, typeOfClass,
+                 auditory, groups, day, classNumber, teacherId):
+        self.id = id
         self.faculty = faculty
-        self.edProgram = edProgram
+        self.educationalProgram = educationalProgram
         self.specialization = specialization
         self.subject = subject
         self.semester = semester
@@ -13,15 +13,18 @@ class GeneratedClass:
         self.groups = disassemblePrologList(groups)
         self.day = day
         self.classNumber = classNumber
+        self.teacherId = teacherId
 
-    def getGroups(self):
+    # ПОЛУЧИТЬ ГРУППЫ МОЖНОИ НАЧЕ, ЧЕРЕЗ: dbManager.getAllGroupsOfClass(id)
+
+    def getGroupsAsString(self):
         return self.groups
 
     def getAmountOfGroups(self):
         if self.groups == "[]":
             return 0
 
-        tokens = self.getGroups()
+        tokens = self.getGroupsAsString()
 
         return len(tokens)
 

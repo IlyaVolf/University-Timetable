@@ -23,3 +23,19 @@ top right corner - login ->
 TODO in code:
 Teachers dayscanwork - chose from list
 
+Мапку в ролях
+Убрать [] у групп в schedule for dispatcher - process
+Кнопочки shift years - done
+Day мапка в расписании
+Ещё нужно разобраться с ошибками
+Типа Матаец теперь возвращает текст ошибки
+Нужно как-то подсвечивать его
+Затем нужно будет прикрутить вход в систему, чтобы можно было роли на фронте сделать
+таблицу констреинтов для препода? - in process - waiting for currentuser
+
+changed - TablesTwo,GroupsV, added TeacherConstraints
+
+subject
+заменить id на имена
+login/logout
+teacherconstraints

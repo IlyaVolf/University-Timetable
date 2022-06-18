@@ -37,6 +37,7 @@ class DatabaseManager:
     def __init__(self, dbFileName='timetable.sqlite'):
         try:
             self.sqlite_connection = sqlite3.connect(dbFileName, check_same_thread=False)
+            print("successful")
         except sqlite3.Error as error:
             print("Ошибка при подключении к sqlite", error)
 
@@ -893,7 +894,8 @@ class DatabaseManager:
         cursor.execute(sqliteQuery, (id,))
         rows = cursor.fetchall()
         if len(rows) < 1:
-            raise ValueError("No such teacher id!")
+            return
+            # raise ValueError("No such teacher id!")
         row = rows[0]
         cursor.close()
 
@@ -1283,7 +1285,7 @@ class DatabaseManager:
         self.sqlite_connection.commit()
         cursor.close()
 
-        return Schedule(0, groupName, dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
+        return Schedule(0, dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
                         schedule)
 
     # Формат - объект класса Schedule, который содержит:
@@ -1316,23 +1318,13 @@ class DatabaseManager:
             else:
                 m = str(minutes)
             time = h + ":" + m
-
-            sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
-            cursor.execute(sqliteQuery, (teacherId,))
-            row2 = cursor.fetchall()[0]
-            teacher = Teacher(row2[0], row2[1], row2[2], row2[3], row2[4])
-
-            schedule[row[10] - 1][row[11] - 1] = ScheduleEntity(row[4], row[7], teacher.shortName, row[8], row[9], row[11], time)
+            schedule[row[10] - 1][row[11] - 1] = ScheduleEntity(row[4], row[7], row[6], row[8], row[9], row[11], time)
 
         self.sqlite_connection.commit()
-
-        sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
-        cursor.execute(sqliteQuery, (teacherId,))
-        row2 = cursor.fetchall()[0]
-
         cursor.close()
 
-        return Schedule(1, row2[1], dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek, schedule)
+        return Schedule(1, dbManager.getConstraints().classesPerDay, dbManager.getConstraints().studyDaysInWeek,
+                        schedule)
 
     ####################################################################################################################
 
@@ -1432,7 +1424,7 @@ class DatabaseManager:
 
     # TODO Матвей
     # Добавляем юзера, возвращаем добавленного юзера
-    def addUser(self, name, email, passwordHash, role, teacherId=None):
+    def addUser(self, name, email, role, teacherId=None):
         if role == 0:
             raise ValueError("chief dispatcher can be only one!")
 
@@ -1456,15 +1448,15 @@ class DatabaseManager:
             sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Users WHERE Email = ?); '
             cursor.execute(sqliteQuery, (email,))
             rows = cursor.fetchall()
-            for row in rows: 
+            for row in rows:
                 if row[0] == 1:
                     raise ValueError('A user with this email already exists!')
 
-        sqliteQuery = 'INSERT INTO Users(`Name`, `Email`, `PasswordHash`, `Role`, `TeacherId`, `Status`, `UpdatedDate`,' \
+        sqliteQuery = 'INSERT INTO Users(`Name`, `Email`, `Role`, `TeacherId`, `Status`, `UpdatedDate`,' \
                       '`CreatedDate`) ' \
-                      'VALUES(?, ?, ?, ?, ?, ?, ?, ?)'
+                      'VALUES(?, ?, ?, ?, ?, ?, ?)'
         date = datetime.datetime.now()
-        cursor.execute(sqliteQuery, (name, email, passwordHash,role, teacherId, 0, date, date))
+        cursor.execute(sqliteQuery, (name, email, role, teacherId, 0, date, date))
 
         sqliteQuery = 'SELECT MAX(id) FROM Users'
         cursor.execute(sqliteQuery)
@@ -1566,7 +1558,6 @@ class DatabaseManager:
 
         return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
-    """
     # когда через почту подтверждает свое участие:
     # TODO МАТВЕЙ
     def signUpUser(self, id, password):
@@ -1577,11 +1568,10 @@ class DatabaseManager:
         cursor.execute(sqliteQuery, (passwordHash, date, date, id))
         self.sqlite_connection.commit()
         cursor.close()
-    """
 
-    # Email уникальный. Получить пользователя по email
+    # Email уникальный. После успешной сверки пароля мы по email возвращаем id пользователя
     # TODO МАТВЕЙ
-    def getUserByEmail(self, email):
+    def signInUser(self, email):
         cursor = self.sqlite_connection.cursor()
         sqliteQuery = 'SELECT * FROM Users WHERE email = ?'
         cursor.execute(sqliteQuery, (email,))
@@ -1591,20 +1581,7 @@ class DatabaseManager:
         cursor.close()
         row = rows[0]
 
-        date = row[9]
-        if row[9] is None:
-            date = datetime.datetime.now()
-
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], 1, row[7], row[8], date)
-
-    # Поменять пароль
-    # TODO МАТВЕЙ
-    def changePassword(self, id, passwordHash):
-        cursor = self.sqlite_connection.cursor()
-        sqliteQuery = 'UPDATE Users SET PasswordHash = ? WHERE id = ?'
-        cursor.execute(sqliteQuery, (passwordHash, id))
-        self.sqlite_connection.commit()
-        cursor.close()
+        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
 
     # во время входа: для сверки, которая происходит у Матвея, нужно вернуть хеш пароля. По уникальной почте
     # TODO МАТВЕЙ
@@ -1616,7 +1593,9 @@ class DatabaseManager:
         rows = cursor.fetchall()
         if len(rows) < 1:
             raise ValueError("No account with this email!")
+
         cursor.close()
+
         return rows[0][0]
     """
 
@@ -1673,4 +1652,3 @@ def disassemblePrologList(groupsList):
 def shortenName(name):
     token = name.split(" ")
     return token[0] + token[1][0] + ". " + token[2][0] + "."
-    
