@@ -62,12 +62,11 @@
                   label="EducationalProgramId:"
                   label-for="form-educationalProgram-input">
                   
-         <b-form-select
+         <b-form-input
           id="form-educationalProgramId-input"
           v-model="addSpecializationForm.educationalProgramId"
-          :options="educationalPrograms"
           required
-        ></b-form-select>
+        ></b-form-input>
      <!---- <b-form-select id="form-facultyId-input"
                     type="text"
                     v-model="addEducationalProgramForm.facultyId"
@@ -87,7 +86,7 @@
                   
       <b-form-input id="form-specialization-input"
                     type="text"
-                    v-model="addSpecializationForm.specialization"
+                    v-model="addSpecializationForm.name"
                     required
                     placeholder="Enter Name">
       </b-form-input>
@@ -202,7 +201,7 @@ methods: {
       const path = `http://127.0.0.1:5000/specializations?educationalProgramId=${payload.educationalProgramId}&name=${payload.name}`;
       axios.post(path, payload)
         .then(() => {
-          this.getSpecialization();
+          this.getSpecializations();
           
           // for message alert
           this.message = 'Specialization added !';

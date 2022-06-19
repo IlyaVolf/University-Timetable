@@ -53,7 +53,7 @@ teacher("16").
 type_of_class("lec"). 
 type_of_class("pr"). 
 
-classroom("t3213", [type_of_class("lab,pr")], 20). 
+classroom("t3213", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("402 MB", [type_of_class("lec"), type_of_class("pr")], 200). 
 classroom("t2266", [type_of_class("lab"), type_of_class("pr")], 20). 
 classroom("2128", [type_of_class("lec"), type_of_class("pr")], 80). 
@@ -70,7 +70,6 @@ classroom("t2221", [type_of_class("lab"), type_of_class("pr")], 20).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 faculty("Department of Information Technologies"). 
-faculty("My department"). 
 
 ed_program("Department of Information Technologies", "BACH, 09.03.01, Computer Science and Engineering"). 
 specialization("BACH, 09.03.01, Computer Science and Engineering", "Computer Science and Systems Engineering"). 

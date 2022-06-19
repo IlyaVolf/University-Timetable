@@ -1,7 +1,9 @@
 class GeneratedClass:
     def __init__(self, id, faculty, educationalProgram, specialization, subject, semester, teacher, typeOfClass,
                  auditory, groups, day, classNumber, teacherId):
-        mapp = {1: "Mon", 2: "Tue", 3: "Wen", 4: "Thu", 5: "Fri", 6: "Sat"}
+        mapp = {"1": "Mon", "2": "Tue", "3": "Wen", "4": "Thu", "5": "Fri", "6": "Sat",
+        1: "Mon", 2: "Tue", 3: "Wen", 4: "Thu", 5: "Fri", 6: "Sat"
+        }
 
         self.id = id
         self.faculty = faculty

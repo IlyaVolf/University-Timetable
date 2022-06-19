@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark" width="100%">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/yeti/bootstrap.min.css"
       integrity="sha384-mLBxp+1RMvmQmXOjBzRjqqr0dP9VHU2tb3FK6VB0fJN/AOu7/y+CAeYeWJZ4b3ii" crossorigin="anonymous">
     <div class="container-fluid">
@@ -12,40 +12,20 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'schedule'}">
-             home
+             Home
             </router-link>
           </li>
           <template v-if="userRole == 2">
             <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'TeacherConstraints'}">
-             teacherConstraints
+             Teacher Constraints
             </router-link>
             </li>
           </template>
           <template v-if="userRole == 0 || userRole == 1">
             <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'FacultiesV'}">
-             faculties
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'TeachersV'}">
-             teachers
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'GroupsV'}">
-             groups
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'ClassroomsV'}">
-             classrooms
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'SubjectsV'}">
-             Subjects
+             Faculties
             </router-link>
           </li>
           <li class="nav-item">
@@ -59,6 +39,32 @@
             </router-link>
           </li>
           <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'TeachersV'}">
+             Teachers
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'ClassroomsV'}">
+             Classrooms
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'GroupsV'}">
+             Groups
+            </router-link>
+          </li>
+          
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'SubjectsV'}">
+             Subjects
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'ConstraintsV'}">
+             Constraints
+            </router-link>
+          </li>
+          <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'DispatcherTable'}">
              Dispatcher Table
             </router-link>
@@ -68,12 +74,7 @@
              Users
             </router-link>
           </li>
-          <!--
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'ConstraintsV'}">
-             constraints
-            </router-link>
-          </li>-->
+          
           </template>
 
         </ul>

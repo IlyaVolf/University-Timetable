@@ -1,4 +1,4 @@
-<template>
+ <template>
 <div class="jumbotron vertical-center">
   <div class="container">
     <!-- Bootswatch -->
@@ -403,6 +403,7 @@ methods: {
         this.getSubjects();
       });
   },
+  
   // Handle Update Button 
   editSubject(subject) {
     this.editForm = subject;

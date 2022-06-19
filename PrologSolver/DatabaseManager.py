@@ -1187,7 +1187,95 @@ class DatabaseManager:
                           studyDaysInWeek,
                           studyDaysInWeekForStudents, studyDaysInWeekForTeachers, classesPerDay, classesPerDayStudents,
                           classesPerDayTeachers, lunchBrake, gaps, classroomFillness, semester):
+        if not (type(classDuration) is int):
+            raise ValueError("class duration field must be a number")
+
+        if not (type(classesPerDay) is int):
+            raise ValueError("classes per day field must be a number")
+
+        if not (1 <= classDuration <= ((24 * 60) / classesPerDay)):
+            raise ValueError("class duration field must be within 1..", ((24 * 60) / classesPerDay))
+
+        if not (type(shortBrakeDuration) is int):
+            raise ValueError("short brake duration field must be a number")
+
+        if not (0 <= shortBrakeDuration <= ((24 * 60) / classesPerDay)):
+            raise ValueError("short brake duration field must be within 1..", ((24 * 60) / classesPerDay))
+
+        if not (type(largeBrakeDuration) is int):
+            raise ValueError("large brake duration field must be a number")
+
+        if not (0 <= largeBrakeDuration <= ((24 * 60) / classesPerDay)):
+            raise ValueError("large brake duration field must be within 1..", ((24 * 60) / classesPerDay))
+
+        if not (type(studyDaysInWeek) is int):
+            raise ValueError("study days in week field must be a number")
+
+        if not (1 <= studyDaysInWeek <= 7):
+            raise ValueError("study days in week field must be within 1..7")
+
+        if not (type(studyDaysInWeekForStudents) is int):
+            raise ValueError("study days in week for students field must be a number")
+
+        if not (studyDaysInWeekForStudents <= studyDaysInWeek):
+            raise ValueError("study days in week for students field must be less than study days in week field")
+
+        if not (1 <= studyDaysInWeekForStudents <= 7):
+            raise ValueError("study days in week for students field must be within 1..7")
+
+        if not (type(studyDaysInWeekForTeachers) is int):
+            raise ValueError("study days in week for teachers field must be a number")
+
+        if not (studyDaysInWeekForTeachers <= studyDaysInWeek):
+            raise ValueError("study days in week for teachers field must be less than study days in week field")
+
+        if not (1 <= studyDaysInWeekForTeachers <= 7):
+            raise ValueError("study days in week for teachers field must be within 1..7")
+
+        if not (type(classesPerDayTeachers) is int):
+            raise ValueError("classes per day for teachers field must be a number")
+
+        if not (classesPerDayTeachers <= classesPerDay):
+            raise ValueError("classes per day for teachers field must be less than classes per day field")
+
+        if not (1 <= classesPerDayTeachers <= ((24 * 60) / classDuration)):
+            raise ValueError("study days in week for teachers field must be within 1..", ((24 * 60) / classDuration))
+
+        if not (type(classesPerDayStudents) is int):
+            raise ValueError("classes per day for students field must be a number")
+
+        if not (classesPerDayStudents <= classesPerDay):
+            raise ValueError("classes per day for students field must be less than classes per day field")
+
+        if not (1 <= classesPerDayStudents <= ((24 * 60) / classDuration)):
+            raise ValueError("study days in week for students field must be within 1..", ((24 * 60) / classDuration))
+
+        if not (type(lunchBrake) is int):
+            raise ValueError("lunch brake duration field must be a number")
+
+        if not (0 <= lunchBrake <= ((24 * 60) / classesPerDay)):
+            raise ValueError("lunch brake duration field must be within 0..", ((24 * 60) / classesPerDay))
+
+        if not (type(gaps) is int):
+            raise ValueError("gaps field must be a number")
+
+        if not (0 <= gaps <= 10):
+            raise ValueError("gaps field must be within 0..10")
+
+        if not (type(classroomFillness) is int):
+            raise ValueError("lunch brake duration field must be a number")
+
+        if not (0 <= classroomFillness <= 10):
+            raise ValueError("lunch brake duration field must be within 0..10")
+
+        if not (type(semester) is int):
+            raise ValueError("semester field must be a number")
+
+        if not (1 <= semester <= 2):
+            raise ValueError("semester field must be 1 or 2")
+            
         cursor = self.sqlite_connection.cursor()
+
         sqliteQuery = 'UPDATE Constraints SET FirstClassStarts = ?, ClassDuration = ?, ShortBrakeDuration = ?,' \
                       'LargeBrakeDuration = ?, StudyDaysInWeek = ?, StudyDaysInWeekForStudents = ?, ' \
                       'StudyDaysInWeekForTeachers = ?, ClassesPerDay = ?, ClassesPerDayStudents = ?,' \
