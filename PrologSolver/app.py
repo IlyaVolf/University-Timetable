@@ -57,9 +57,6 @@ def teacher(id):
         return jsonify(error = str("Only dispatcher has access")), 401
 
     response_object = {'response': 'success'}
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return jsonify(error = str("Only dispatcher has access")), 401
 
     if request.method == 'GET':
         dbManager = DatabaseManager()

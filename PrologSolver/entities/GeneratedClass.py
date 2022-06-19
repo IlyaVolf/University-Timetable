@@ -13,7 +13,7 @@ class GeneratedClass:
         self.typeOfClass = typeOfClass
         self.auditory = auditory
         self.groups = disassemblePrologList(groups)
-        self.groupsStr = groups.replace('[','').replace(']','')
+        self.groupsStr = groups.replace('[','').replace(']','').replace(",", ", ")
         self.day = day
         self.dayStr = mapp[day]
         self.classNumber = classNumber

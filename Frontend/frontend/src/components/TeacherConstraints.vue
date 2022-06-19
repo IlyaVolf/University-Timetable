@@ -20,16 +20,16 @@
               <!-- table header cells -->
               <th scope="col">Days can Work</th>
               <th scope="col">Days want Work</th>
-              <th scope="col">Weight</th>
+              <!--<th scope="col">Weight</th> -->
             </tr>
           </thead>
           <tbody>
             <!-- tr: table row -->
             <tr>
               <!-- td : table data -->
-              <td>{{teacher.daysCanWork}}</td>
-              <td>{{teacher.daysWantWork}}</td>
-              <td>{{teacher.weight}}</td>
+              <td>{{teacher.daysCanWorkStr}}</td>
+              <td>{{teacher.daysWantWorkStr}}</td>
+              <!--<td>{{teacher.weight}}</td> -->
               <td>
               </td>
               <td>

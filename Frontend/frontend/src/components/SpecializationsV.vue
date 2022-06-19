@@ -20,7 +20,7 @@
           <thead>
             <tr>
               <!-- table header cells -->
-              <th scope="col">educationalProgramId</th>
+              <th scope="col">Educational Program</th>
               <th scope="col">Name</th>
             </tr>
           </thead>
@@ -28,7 +28,7 @@
             <!-- tr: table row -->
             <tr v-for="(specialization, index) in specializations" :key="index">
               <!-- td : table data -->
-              <td>{{specialization.educationalProgramId}}</td>
+              <td>{{specialization.educationalProgram}}</td>
               <td>{{specialization.specialization}}</td>
               <td>
                 <div class="btn-group" role="group">
@@ -199,7 +199,7 @@ methods: {
     },
     // 2 Add Teacher Button
     addSpecialization(payload) {
-      const path = 'http://127.0.0.1:5000/pecializations';
+      const path = `http://127.0.0.1:5000/specializations?educationalProgramId=${payload.educationalProgramId}&name=${payload.name}`;
       axios.post(path, payload)
         .then(() => {
           this.getSpecialization();
@@ -262,7 +262,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
 updateSpecialization(payload, id) {
-  const path = `http://127.0.0.1:5000/specializations/${id}`;
+  const path = `http://127.0.0.1:5000/specializations/${id}?educationalProgramId=${payload.educationalProgramId}&name=${payload.name}`;
   axios.put(path, payload)    
     .then(() => {
       this.getSpecializations();

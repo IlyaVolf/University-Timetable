@@ -20,25 +20,25 @@
           <thead>
             <tr>
               <!-- table header cells -->
-              <th scope="col">SpecializationId</th>
+              <th scope="col">Specialization</th>
               <th scope="col">Name</th>
               <th scope="col">Semesters</th>
-              <th scope="col">type of class</th>
-              <th scope="col">frequency</th>
-              <th scope="col">teacherId</th>
-              <th scope="col">amount of groups</th>
+              <th scope="col">Type of class</th>
+              <th scope="col">Frequency</th>
+              <th scope="col">Teacher</th>
+              <th scope="col">Amount of groups</th>
             </tr>
           </thead>
           <tbody>
             <!-- tr: table row -->
             <tr v-for="(subject, index) in subjects" :key="index">
               <!-- td : table data -->
-              <td>{{subject.specializationId}}</td>
+              <td>{{subject.specialization}}</td>
               <td>{{subject.name}}</td>
               <td>{{subject.semesters}}</td>
               <td>{{subject.typeOfClass}}</td>
               <td>{{subject.frequency}}</td>
-              <td>{{subject.teacherId}}</td>
+              <td>{{subject.teacher}}</td>
               <td>{{subject.amountOfGroups}}</td>
               <td>
                 <div class="btn-group" role="group">
@@ -299,7 +299,7 @@ methods: {
     },
     // 2 Add Faculty Button
     addSubjects(payload) {
-      const path = 'http://127.0.0.1:5000/subjects';
+      const path = `http://127.0.0.1:5000/subjects?specializationId=${payload.specializationId}&name=${payload.name}&semesters=${payload.semesters}&typeOfClass=${payload.typeOfClass}&frequency=${payload.frequency}&teacherId=${payload.teacherId}&amountOfGroups=${payload.amountOfGroups}`;
       axios.post(path, payload)
         .then(() => {
           this.getSubjects();
@@ -344,7 +344,7 @@ methods: {
     // 3 Submit form validator in the template @submit="onSubmit"  
     onSubmit(e) {
       e.preventDefault();
-      this.$refs.addSubjectsModal.hide();
+      this.$refs.addSubjectModal.hide();
       const payload = {
         specializationId: this.addSubjectForm.specializationId,
         name: this.addSubjectForm.name,
@@ -436,7 +436,7 @@ methods: {
       });
   },
   // Handle Delete Button
-  deletSubject(subject) {
+  deleteSubject(subject) {
     this.removeSubject(subject.id);
   },
     },

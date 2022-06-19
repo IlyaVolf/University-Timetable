@@ -31,8 +31,8 @@
               <th scope="col">Auditory</th>
               <th scope="col">Groups</th>
               <th scope="col">Day</th>
-              <th scope="col">ClassNumber</th>
-              <th scope="col">TeacherId</th>
+              <th scope="col">№</th>
+              <!--<th scope="col">TeacherId</th> -->
             </tr>
           </thead>
           <tbody>
@@ -47,10 +47,10 @@
               <td>{{generatedClass.teacher}}</td>
               <td>{{generatedClass.typeOfClass}}</td>
               <td>{{generatedClass.auditory}}</td>
-              <td>{{generatedClass.groups}}</td>
-              <td>{{generatedClass.day}}</td>
+              <td>{{generatedClass.groupsStr}}</td>
+              <td>{{generatedClass.dayStr}}</td>
               <td>{{generatedClass.classNumber}}</td>
-              <td>{{generatedClass.teacherId}}</td>
+              <!--<td>{{generatedClass.teacherId}}</td> -->
             </tr>
           </tbody>
         </table>
