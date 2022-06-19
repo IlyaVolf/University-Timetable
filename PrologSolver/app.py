@@ -924,7 +924,6 @@ def logout():
     if not currentUser.role != 3 :
             return make_response(jsonify({'response': 'failure'}), 401)
         
-    print(current_user.name)
     logout_user()
     currentUser = User.User(role=3)
 
