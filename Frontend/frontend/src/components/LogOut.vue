@@ -1,3 +1,6 @@
+<template>
+    <div></div>
+</template>
 <script>
 import axios from 'axios';
     export default {
@@ -6,15 +9,19 @@ import axios from 'axios';
 			const path = `http://127.0.0.1:5000/logout`;
 			axios.post(path)
 				.then(() => {
-					this.$route = '/'; 
+					window.location = 'http://127.0.0.1:8080';
 				})
 				.catch((error) => {
+                    window.location = 'http://127.0.0.1:8080';
 					if(error.response.data.error != null) {
 						alert("Error: " + error.response.data.error)
 						console.error(error);
 					}
 				});
 		},
-    }
+    },
+    created() {
+        this.logout();
+    },
   }
 </script>

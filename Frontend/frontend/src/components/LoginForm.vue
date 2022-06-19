@@ -45,6 +45,7 @@ import axios from 'axios';
           email: '',
           password: '',
         },
+		userRole: '',
         show: true
       }
     },
@@ -53,7 +54,10 @@ import axios from 'axios';
 			const path = `http://127.0.0.1:5000/login?email=${payload.email}&password=${payload.password}`;
 			axios.post(path, payload)
 				.then(() => {
-					this.$route = '/'; 
+					console.log('Successful');
+
+					this.getCurrentUser();
+					window.location = 'http://127.0.0.1:8080';
 				})
 				.catch((error) => {
 					if(error.response.data.error != null) {
@@ -62,6 +66,20 @@ import axios from 'axios';
 					}
 				});
 		},
+		getCurrentUser() {
+			const path = 'http://127.0.0.1:5000/currentuser';
+			axios.get(path)
+			.then((res) => {
+				console.log('Matvey');
+				this.currentuser = res.data.currentuser;
+				this.userRole = this.currentuser.role;
+				console.log(res.data.currentuser);
+			})
+			.catch((error) => {
+				console.log('Igorr');
+				console.error(error);
+		});
+  },
     // 3 Submit form validator in the template @submit="onSubmit"  
       onSubmit(event) {
         event.preventDefault()
@@ -70,6 +88,7 @@ import axios from 'axios';
 			password: this.form.password
 		};
 		this.sendLogin(payload);
+		//this.getCurrentUser();
         //alert(JSON.stringify(this.form))
       },
       onReset(event) {
