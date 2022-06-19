@@ -21,6 +21,7 @@ import FacultiesSchedule from "../components/schedule/FacultiesSchedule.vue"
 import GroupsForSchedule from "../components/schedule/GroupsForSchedule"
 
 Vue.use(VueRouter);
+
 /* eslint-disable */
 const routes = [
   {
