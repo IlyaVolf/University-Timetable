@@ -809,6 +809,9 @@ def user(id):
 @app.route('/currentuser', methods=['GET'])
 def current_user():
     response_object = {'response': 'success'}
+    if (currentUser.role != 3):
+        response_object['currentuser'] = serialiseUser(currentUser)
+        return jsonify(response_object)
     user = User.User(role = 3)
     response_object['currentuser'] = serialiseUser(user)
     return jsonify(response_object)
@@ -874,8 +877,7 @@ def signUpUser():
 
 @app.route('/login', methods=['POST'])
 def login():
-    if (currentUser.role != 0 and currentUser.role != 1):
-        return jsonify(error = str("Already logged in")), 401
+    global currentUser
 
     email = request.args.get('email')
     password = request.args.get('password')
@@ -891,7 +893,6 @@ def login():
         return jsonify(error = "wrong password"), 400
 
     login_user(user, remember=remember)
-    global currentUser
     currentUser = user
 
     return jsonify({'response': 'success'})
