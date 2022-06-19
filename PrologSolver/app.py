@@ -53,6 +53,9 @@ def load_user(user_id):
 
 @app.route('/teachers/<id>', methods=['GET','DELETE','PUT'])
 def teacher(id):
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if (currentUser.role != 3):
         if (currentUser.role == 0 or currentUser.role == 1):
@@ -120,8 +123,9 @@ def addTeacher():
 # только интересуют вес и даты
 @app.route('/teacherconstraints', methods=['GET','PUT'])
 def teacher_constraints():
-    if (currentUser.role == 2):
-        return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 2):
+        return jsonify(error = str("Only teacher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -148,7 +152,7 @@ def teacher_constraints():
 @app.route('/classrooms/<id>', methods=['GET','DELETE','PUT'])
 def classroom(id):
     if (currentUser.role != 0 and currentUser.role != 1):
-        return make_response(jsonify({'response': 'failure'}), 401)
+        return jsonify(error = str("Only dispatcher has access")), 401
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -181,9 +185,9 @@ def classroom(id):
 
 @app.route('/classrooms', methods=['POST','GET'])
 def addClassroom():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'POST':
         number = request.args.get('number')
@@ -206,8 +210,8 @@ def addClassroom():
 
 @app.route('/faculties/<id>', methods=['GET','DELETE','PUT'])
 def faculty(id):
-    if (currentUser.role != 0 and current_user.role != 1):
-        return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
 
     response_object = {'response': 'success'}
     if request.method == 'GET':
@@ -239,9 +243,9 @@ def faculty(id):
 
 @app.route('/faculties', methods=['POST','GET'])
 def addFaculty():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
@@ -262,9 +266,9 @@ def addFaculty():
 
 @app.route('/educationalPrograms/<id>', methods=['GET','DELETE','PUT'])
 def educationalProgram(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -296,9 +300,9 @@ def educationalProgram(id):
 
 @app.route('/educationalPrograms', methods=['POST','GET'])
 def addEducationalProgram():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'POST':
         facultyId = request.args.get('facultyId')
@@ -320,9 +324,9 @@ def addEducationalProgram():
 
 @app.route('/groups/<id>', methods=['GET','DELETE','PUT'])
 def group(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -356,9 +360,9 @@ def group(id):
 
 @app.route('/groups', methods=['POST','GET'])
 def addGroup():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401 
+
     response_object = {'response': 'success'}
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
@@ -383,9 +387,9 @@ def addGroup():
 
 @app.route('/subjects/<id>', methods=['GET','DELETE','PUT'])
 def subject(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -425,9 +429,9 @@ def subject(id):
 
 @app.route('/subjects', methods=['POST','GET'])
 def addSubject():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'POST':
         specializationId = request.args.get('specializationId')
@@ -457,9 +461,9 @@ def addSubject():
 
 @app.route('/specializations/<id>', methods=['GET','DELETE','PUT'])
 def specialization(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -491,9 +495,9 @@ def specialization(id):
 
 @app.route('/specializations', methods=['POST','GET'])
 def addSpecialization():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'POST':
         educationalProgramId = request.args.get('educationalProgramId')
@@ -524,9 +528,9 @@ def addSpecialization():
 
 @app.route('/constraints', methods=['GET','DELETE','PUT', 'POST'])
 def constraints():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -588,9 +592,9 @@ def constraints():
 
 @app.route('/generatedClasses', methods=['GET'])
 def generatedClasses():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generatedClasses = dbManager.getAllGeneratedClass()
@@ -600,9 +604,9 @@ def generatedClasses():
 
 @app.route('/generatedClasses/<id>', methods=['GET'])
 def generatedClass(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}    
     dbManager = DatabaseManager()
     generatedClass = dbManager.getGeneratedClass(id)
@@ -612,9 +616,9 @@ def generatedClass(id):
 
 @app.route('/groupsOfClass/<id>', methods=['GET'])
 def groupsOfClass(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)        
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     groupsOfClass = dbManager.getAllGroupsOfClass(id)
@@ -674,9 +678,8 @@ def scheduleTeachers(teacherId):
 
 @app.route('/yearShiftRight', methods=['PUT'])
 def doYearShiftRight():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)        
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401    
     
     dbManager = DatabaseManager()
     dbManager.yearShiftRight()
@@ -685,9 +688,8 @@ def doYearShiftRight():
 
 @app.route('/yearShiftLeft', methods=['PUT'])
 def doYearShiftLeft():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)        
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401  
     
     dbManager = DatabaseManager()
     dbManager.yearShiftLeft()
@@ -696,9 +698,9 @@ def doYearShiftLeft():
 
 @app.route('/generate', methods=['GET'])
 def generate():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}    
     dbManager = DatabaseManager()
     generator.generate()
@@ -710,9 +712,9 @@ def generate():
 
 @app.route('/overgenerate', methods=['GET'])
 def overgenerate():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)        
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401    
+
     response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generator.overgenerate()
@@ -725,9 +727,9 @@ def overgenerate():
 # id не надо!
 @app.route('/addman', methods=['GET'])
 def add_man():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     faculty = request.args.get('faculty')
     educationalProgram = request.args.get('educationalProgram')
@@ -752,9 +754,9 @@ def add_man():
 
 @app.route('/removeman/<id>', methods=['GET'])
 def remove_man(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)        
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401     
+
     response_object = {'response': 'success'}
     dbManager = DatabaseManager()
     generator.remove_man(id)
@@ -767,9 +769,9 @@ def remove_man(id):
 
 @app.route('/users/<id>', methods=['GET','DELETE','PUT'])
 def user(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)    
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+        
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -807,9 +809,6 @@ def user(id):
 @app.route('/currentuser', methods=['GET'])
 def current_user():
     response_object = {'response': 'success'}
-    if (currentUser.role != 3):
-        response_object['currentuser'] = serialiseUser(currentUser)
-        return jsonify(response_object)
     user = User.User(role = 3)
     response_object['currentuser'] = serialiseUser(user)
     return jsonify(response_object)
@@ -817,9 +816,9 @@ def current_user():
 import random
 @app.route('/users', methods=['POST','GET'])
 def addUser():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
+
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
@@ -875,6 +874,9 @@ def signUpUser():
 
 @app.route('/login', methods=['POST'])
 def login():
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Already logged in")), 401
+
     email = request.args.get('email')
     password = request.args.get('password')
     remember = True
@@ -896,8 +898,8 @@ def login():
 
 @app.route('/changePassword', methods=['POST'])
 def changePassword():
-    if not currentUser.role != 3:
-        return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role == 3):
+        return jsonify(error = str("You need to log in first")), 401
 
     oldPassword = request.args.get('oldPassword')
     newPassword = request.args.get('newPassword')
@@ -916,8 +918,8 @@ def changePassword():
 def logout():
     global currentUser
 
-    if not currentUser.role != 3 :
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role == 3):
+        return jsonify(error = str("You need to log in first")), 401
         
     logout_user()
     currentUser = User.User(role=3)
