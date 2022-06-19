@@ -132,15 +132,15 @@
 
   <!-- Start of Modal 2 -->
   <b-modal ref="editUserModal"
-         id="group-update-modal"
+         id="user-update-modal"
          title="Update" hide-backdrop
          hide-footer>
   <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
     
-  <b-form-group id="form-name-group"
+  <b-form-group id="form-name-edit-group"
                   label="name:"
-                  label-for="form-name-input">
-          <b-form-input id="form-name-input"
+                  label-for="form-nam-eedit-input">
+          <b-form-input id="form-name-edit-input"
                         type="text"
                         v-model="editForm.name"
                         required
@@ -148,32 +148,21 @@
         </b-form-input>
       </b-form-group>
 
-    <b-form-group id="form-email-group"
+    <b-form-group id="form-email-edit-group"
                   label="email:"
-                  label-for="form-email-input">
-      <b-form-input id="form-email-input"
+                  label-for="form-email-edit-input">
+      <b-form-input id="form-email-edit-input"
                     type="text"
                     v-model="editForm.email"
                     required
                     placeholder="Enter email">
       </b-form-input>
     </b-form-group>
-      
-    <b-form-group id="form-passwordHash-group"
-                  label="passwordHash:"
-                  label-for="form-passwordHash-input">
-          <b-form-input id="form-passwordHash-input"
-                        type="text"
-                        v-model="editForm.passwordHash"
-                        required
-                        placeholder="Enter passwordHash">
-        </b-form-input>
-      </b-form-group>
 
-      <b-form-group id="form-role-group"
+      <b-form-group id="form-role-edit-group"
                   label="role:"
-                  label-for="form-role-input">
-          <b-form-input id="form-role-input"
+                  label-for="form-role-edit-input">
+          <b-form-input id="form-role-edit-input"
                         type="text"
                         v-model="editForm.role"
                         required
@@ -181,10 +170,10 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-teacherId-group"
+      <b-form-group id="form-teacherId-edit-group"
                   label="teacherId:"
-                  label-for="form-teacherId-input">
-          <b-form-input id="form-teacherId-input"
+                  label-for="form-teacherId-edit-input">
+          <b-form-input id="form-teacherId-edit-input"
                         type="text"
                         v-model="editForm.teacherId"
                         required
