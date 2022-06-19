@@ -1,0 +1,41 @@
+1. edprog - list vipadaushiy
+2. spec - faculty -> edprog  - list vipadaushiy
+3. classrooms - typeofclass - galo4ki 
+4. groups - faculty -> edprog -> spec - list vipadaushiy
+5. dayscanwork - for each day - galo4ki
+6. subj - faculty -> edprog -> spec - list vipadaushiy, typeofclass - (galo4ki?) list vipadaushiy, teacherid - list vipadaushiy, generated no need
+7. constraints - hours and minutes - 2 lists vipadaushiy, return "h,m"
+8. users - name, email, password?, role (0 - main dispetcher, 1 - just dispetcher, 2 - teacher, 3 - unauthorized)
+9. generated schedule - dispetcher can delete a class(zanyatie), can add new one (parameters: text or can chose from list vipadaushiy?
+                                                                            faculty, edprog, spec, subj, semester, teacher, typeofclass, auditory, groups, days, classnumber, teacherid - text!)
+    2 buttons - generate (generate method), overgenerate (add method)
+Homepage is like table.nsu.ru for all roles
+teacher can chose days he can and want work (only days and weights)
+    2 buttons - shift year left and right (year of study decrease or increase)
+    shortName IS not needed
+
+1: password created by dispetcher 
+2: change password (enter current and think of new one)
+3: email (create password - by generated link)
+top right corner - login ->  
+
+
+TODO in code:
+Teachers dayscanwork - chose from list
+
+Мапку в ролях
+Убрать [] у групп в schedule for dispatcher - process
+Кнопочки shift years - done
+Day мапка в расписании
+Ещё нужно разобраться с ошибками
+Типа Матаец теперь возвращает текст ошибки
+Нужно как-то подсвечивать его
+Затем нужно будет прикрутить вход в систему, чтобы можно было роли на фронте сделать
+таблицу констреинтов для препода? - in process - waiting for currentuser
+
+changed - TablesTwo,GroupsV, added TeacherConstraints
+
+subject
+заменить id на имена
+login/logout
+teacherconstraints
