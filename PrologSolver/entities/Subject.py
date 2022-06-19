@@ -1,8 +1,9 @@
 class Subject:
-    def __init__(self, id, specializationId, name, semesters,
+    def __init__(self, id, specializationId, specialization, name, semesters,
                  typeOfClass, frequency, teacherId, amountOfGroups, generated):
         self.id = id
         self.specializationId = specializationId
+        self.specialization = specialization
         self.name = name
         self.semesters = semesters
         self.typeOfClass = typeOfClass

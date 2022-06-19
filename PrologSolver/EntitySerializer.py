@@ -16,6 +16,8 @@ def serialiseTeacher(teacher: Teacher):
         'name': teacher.name,
         'daysCanWork': teacher.daysCanWork,
         'daysWantWork': teacher.daysWantWork,
+        'daysCanWorkStr': teacher.daysCanWorkStr,
+        'daysWantWorkStr': teacher.daysWantWorkStr,
         'weight': teacher.weight
     }
 
@@ -66,6 +68,7 @@ def serialiseSubject(subject: Subject):
     return {
         'id': subject.id,
         'specializationId': subject.specializationId,
+        'specialization': subject.specialization,
         'name': subject.name,
         'semesters': subject.semesters,
         'typeOfClass': subject.typeOfClass,

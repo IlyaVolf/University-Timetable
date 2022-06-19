@@ -38,6 +38,8 @@ app.config['MAIL_USE_SSL'] = True
 # enable CORS
 CORS(app)
 
+currentUser = User.User(role=3)
+
 mail = Mail(app)
 
 login_manager = LoginManager()
@@ -76,6 +78,8 @@ def teacher(id):
         daysCanWork = request.args.get('daysCanWork').replace(" ", ",").replace("_", ";")
         daysWantWork = request.args.get('daysWantWork').replace(" ", ",").replace("_", ";")
         weight = request.args.get('weight')
+        if weight is None:
+            weight = 5
         if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
             dbManager = DatabaseManager()
             try:
@@ -98,6 +102,8 @@ def addTeacher():
         daysCanWork = request.args.get('daysCanWork').replace(" ", ",").replace("_", ";")
         daysWantWork = request.args.get('daysWantWork').replace(" ", ",").replace("_", ";")
         weight = request.args.get('weight')
+        if weight is None:
+            weight = 5
         if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
             dbManager = DatabaseManager()
             try:
@@ -804,10 +810,10 @@ def user(id):
     return jsonify({'response': 'failure'})
 
 @app.route('/currentuser', methods=['GET'])
-def currentUser():
+def current_user():
     response_object = {'response': 'success'}
-    if (current_user.is_authenticated):
-        response_object = serialiseUser(current_user)
+    if (currentUser.role != 3):
+        response_object['currentuser'] = serialiseUser(currentUser)
         return jsonify(response_object)
     user = User.User(role = 3)
     response_object['currentuser'] = serialiseUser(user)
@@ -888,6 +894,8 @@ def login():
         return jsonify(error = "wrong password"), 400
 
     login_user(user, remember=remember)
+    global currentUser
+    currentUser = user
 
     return jsonify({'response': 'success'})
 
@@ -899,7 +907,8 @@ def changePassword():
     oldPassword = request.args.get('oldPassword')
     newPassword = request.args.get('newPassword')
     newPasswordHash = generate_password_hash(newPassword)
-    user = current_user
+    #user = current_user
+    user = currentUser
     dbManager = DatabaseManager()
 
     if not user.checkPassword(oldPassword):
@@ -911,11 +920,14 @@ def changePassword():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    if not current_user.is_authenticated:
+    global currentUser
+
+    if not currentUser.role != 3 :
             return make_response(jsonify({'response': 'failure'}), 401)
         
     print(current_user.name)
     logout_user()
+    currentUser = User.User(role=3)
 
     return jsonify({'response': 'success'})
     

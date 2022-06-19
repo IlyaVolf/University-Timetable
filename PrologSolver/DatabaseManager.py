@@ -442,7 +442,6 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Specializations WHERE EducationalProgramId = ?'
         cursor.execute(sqliteQuery, (educationalProgramId,))
         rows = cursor.fetchall()
-        cursor.close()
 
         lst = []
         for row in rows:
@@ -730,11 +729,16 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Subjects'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
-        cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
+            sqliteQuery = 'SELECT * FROM Specializations WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[1],))
+            row2 = cursor.fetchall()[0]
+
+            lst.append(Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
+        
+        cursor.close()
         return lst
 
     # TODO МАТВЕЙ
@@ -743,9 +747,14 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Subjects WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
         row = cursor.fetchall()[0]
+
+        sqliteQuery = 'SELECT * FROM Specializations WHERE id = ?'
+        cursor.execute(sqliteQuery, (row[1],))
+        row2 = cursor.fetchall()[0]
+
         cursor.close()
 
-        return Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
+        return Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
 
     # for prolog
     def getAllSubjectsDistinct(self):
@@ -814,11 +823,16 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Subjects WHERE Generated = 0'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
-        cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(Subject(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
+            sqliteQuery = 'SELECT * FROM Specializations WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[1],))
+            row2 = cursor.fetchall()[0]
+
+            lst.append(Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
+        
+        cursor.close()
         return lst
 
     ####################################################################################################################
