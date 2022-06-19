@@ -146,7 +146,7 @@ export default {
     // 4 Update Alert Message 
     // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
         updateTeacher(id, payload) {
-        const path = `http://127.0.0.1:5000/teacherconstraints/?daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}`;
+        const path = `http://127.0.0.1:5000/teacherconstraints?daysCanWork=${payload.daysCanWork.replaceAll("[]", "[0]").replaceAll("],[", "_").replaceAll(",", "+").replace("[", "").replace("]", "")}&daysWantWork=${payload.daysWantWork.replaceAll("[]", "[0]").replaceAll("],[", "_").replaceAll(",", "+").replace("[", "").replace("]", "")}`;
         axios.put(path, payload)    
             .then(() => {
             this.getTeachers();

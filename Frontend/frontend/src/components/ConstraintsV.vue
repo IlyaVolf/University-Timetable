@@ -13,7 +13,6 @@
         
          <!-- Alert -->
         <!-- Add Teacher button -->
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.constraint-modal>Add Constraint</button>
         <br><br>
         <!-- Add a bootstrap table -->
         <table class="table table-hover">
@@ -26,6 +25,7 @@
                 <th scope="col">Large Brake Duration</th>
                 <th scope="col">Study Days in Week</th>
                 <th scope="col">Study Days in Week for Students</th>
+                <th scope="col">Study Days in Week for Teachers</th>
                 <th scope="col">Classess per Day</th>
                 <th scope="col">Classess per Day Students</th>
                 <th scope="col">Classess per Day Teachers</th>
@@ -42,12 +42,12 @@
               <td>{{constraints.firstClassStarts}}</td>
               <td>{{constraints.classDuration}}</td>
               <td>{{constraints.shortBrakeDuration}}</td>
-              <td>{{constraints.largeBrakeDuratiion}}</td>
+              <td>{{constraints.largeBrakeDuration}}</td>
               <td>{{constraints.studyDaysInWeek}}</td>
               <td>{{constraints.studyDaysInWeekForStudents}}</td>
               <td>{{constraints.studyDaysInWeekForTeachers}}</td>
               <td>{{constraints.classesPerDay}}</td>
-              <td>{{constraints.classesPerDaySrudents}}</td>
+              <td>{{constraints.classesPerDayStudents}}</td>
               <td>{{constraints.classesPerDayTeachers}}</td>
               <td>{{constraints.lunchBrake}}</td>
               <td>{{constraints.gaps}}</td>
@@ -73,174 +73,6 @@
 
       </div>
     </div>
-
-    <!-- Start of Modal 1 -->
-    <b-modal ref="addConstraintModal"
-         id="constraint-modal"
-         title="Add a new constraint" hide-backdrop
-         hide-footer
-         >
-    <b-form @submit="onSubmit" @reset="onReset" class="w-100">
-    <b-form-group id="form-firstClassStarts-constraint"
-                  label="firstClassStarts:"
-                  label-for="form-firstClassStarts-input">
-      <b-form-input id="form-firstClassStarts-input"
-                    type="text"
-                    v-model="addConstraintForm.firstClassStarts"
-                    required
-                    placeholder="Enter firstClassStarts">
-      </b-form-input>
-    </b-form-group>
-
-    <b-form-group id="form-classDuration-constraint"
-                  label="classDuration:"
-                  label-for="form-classDuration-input">
-          <b-form-input id="form-classDuration-input"
-                        type="text"
-                        v-model="addConstraintForm.classDuration"
-                        required
-                        placeholder="Enter classDuration">
-        </b-form-input>
-      </b-form-group>
-      
-    <b-form-group id="form-shortBrakeDuration-constraint"
-                  label="shortBrakeDuration:"
-                  label-for="form-shortBrakeDuration-input">
-          <b-form-input id="form-shortBrakeDuration-input"
-                        type="text"
-                        v-model="addConstraintForm.shortBrakeDuration"
-                        required
-                        placeholder="Enter shortBrakeDuration">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-largeBrakeDuration-constraint"
-                  label="largeBrakeDuration:"
-                  label-for="form-largeBrakeDuration-input">
-          <b-form-input id="form-largeBrakeDuration-input"
-                        type="text"
-                        v-model="addConstraintForm.largeBrakeDuration"
-                        required
-                        placeholder="Enter largeBrakeDuration">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-studyDaysInWeek-constraint"
-                  label="studyDaysInWeek:"
-                  label-for="form-studyDaysInWeek-input">
-          <b-form-input id="form-studyDaysInWeek-input"
-                        type="text"
-                        v-model="addConstraintForm.studyDaysInWeek"
-                        required
-                        placeholder="Enter studyDaysInWeek">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-studyDaysInWeekForStudents-constraint"
-                  label="studyDaysInWeekForStudents:"
-                  label-for="form-studyDaysInWeekForStudents-input">
-          <b-form-input id="form-studyDaysInWeekForStudents-input"
-                        type="text"
-                        v-model="addConstraintForm.studyDaysInWeekForStudents"
-                        required
-                        placeholder="Enter studyDaysInWeekForStudents">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-studyDaysInWeekForTeachers-constraint"
-                  label="studyDaysInWeekForTeachers:"
-                  label-for="form-studyDaysInWeekForTeachers-input">
-          <b-form-input id="form-studyDaysInWeekForTeachers-input"
-                        type="text"
-                        v-model="addConstraintForm.studyDaysInWeekForTeachers"
-                        required
-                        placeholder="Enter studyDaysInWeekForTeachers">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-classesPerDay-constraint"
-                  label="classesPerDay:"
-                  label-for="form-classesPerDay-input">
-          <b-form-input id="form-classesPerDay-input"
-                        type="text"
-                        v-model="addConstraintForm.classesPerDay"
-                        required
-                        placeholder="Enter classesPerDay">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-classesPerDayStudents-constraint"
-                  label="classesPerDayStudents:"
-                  label-for="form-classesPerDayStudents-input">
-          <b-form-input id="form-classesPerDayStudents-input"
-                        type="text"
-                        v-model="addConstraintForm.classesPerDayStudents"
-                        required
-                        placeholder="Enter classesPerDayStudents">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-classesPerDayTeachers-constraint"
-                  label="classesPerDayTeachers:"
-                  label-for="form-classesPerDayTeachers-input">
-          <b-form-input id="form-classesPerDayTeachers-input"
-                        type="text"
-                        v-model="addConstraintForm.classesPerDayTeachers"
-                        required
-                        placeholder="Enter classesPerDayTeachers">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-lunchBrake-constraint"
-                  label="lunchBrake:"
-                  label-for="form-lunchBrake-input">
-          <b-form-input id="form-lunchBrake-input"
-                        type="text"
-                        v-model="addConstraintForm.lunchBrake"
-                        required
-                        placeholder="Enter lunchBrake">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-gaps-constraint"
-                  label="gaps:"
-                  label-for="form-gaps-input">
-          <b-form-input id="form-gaps-input"
-                        type="text"
-                        v-model="addConstraintForm.gaps"
-                        required
-                        placeholder="Enter gaps">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-classroomFillness-constraint"
-                  label="classroomFillness:"
-                  label-for="form-classroomFillness-input">
-          <b-form-input id="form-classroomFillness-input"
-                        type="text"
-                        v-model="addConstraintForm.classroomFillness"
-                        required
-                        placeholder="Enter classroomFillness">
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group id="form-semester-constraint"
-                  label="semester:"
-                  label-for="form-semester-input">
-          <b-form-input id="form-semester-input"
-                        type="text"
-                        v-model="addConstraintForm.semester"
-                        required
-                        placeholder="Enter semester">
-        </b-form-input>
-      </b-form-group>
-
-      <b-button type="submit" variant="outline-info">Submit</b-button>
-      <b-button type="reset" variant="outline-danger">Reset</b-button>
-    </b-form>
-  </b-modal>
-  <!-- End of modal 1 -->
-
 
   <!-- Start of Modal 2 -->
   <b-modal ref="editConstraintModal"
@@ -479,31 +311,6 @@ methods: {
           }
         });
     },
-    // 2 Add Faculty Button
-    addConstraints(payload) {
-      const path = `http://127.0.0.1:5000/constraints?firstClassStarts=${payload.firstClassStarts}&classDuration=${payload.classDuration}&shortBrakeDuration=${payload.shortBrakeDuration}&largeBrakeDuration=${payload.largeBrakeDuration}&studyDaysInWeek=${payload.studyDaysInWeek}&studyDaysInWeekForStudents=${payload.studyDaysInWeekForStudents}&studyDaysInWeekForTeachers=${payload.studyDaysInWeekForTeachers}&classesPerDay=${payload.classesPerDay}&classesPerDayStudents=${payload.classesPerDayStudents}&classesPerDayTeachers=${payload.classesPerDayTeachers}&lunchBrake=${payload.lunchBrake}&gaps=${payload.gaps}&classroomFillness=${payload.classroomFillness}&semester=${payload.semester}`;
-      axios.post(path, payload)
-        .then(() => {
-          this.getConstraints();
-          
-          // for message alert
-          this.message = 'Faculty added !';
-          
-          // to show message when faculty is added
-          this.showMessage = true;
-  
-        })
-        .catch((error) => {
-          if(error.response.data.error != null) {
-            alert("Error: " + error.response.data.error)
-            console.error(error);
-            if(error.response.status == 401) {
-              window.location = 'http://127.0.0.1:8080/login';
-            }
-          }
-          this.getConstraints();
-        });
-    },
      // 5 initForm - add ediForm after the update method
      initForm() {
         this.addConstraintForm.firstClassStarts = '';
@@ -538,28 +345,6 @@ methods: {
         
       }, 
     // 3 Submit form validator in the template @submit="onSubmit"  
-    onSubmit(e) {
-      e.preventDefault();
-      this.$refs.addConstraintModal.hide();
-      const payload = {
-        firstClassStarts: this.addConstraintForm.firstClassStarts,
-        classDuration: this.addConstraintForm.classDuration,
-        shortBrakeDuration: this.addConstraintForm.shortBrakeDuration,
-        largeBrakeDuration: this.addConstraintForm.largeBrakeDuration,
-        studyDaysInWeek: this.addConstraintForm.studyDaysInWeek,
-        studyDaysInWeekForStudents: this.addConstraintForm.studyDaysInWeekForStudents,
-        studyDaysInWeekForTeachers: this.addConstraintForm.studyDaysInWeekForTeachers,
-        classesPerDay: this.addConstraintForm.classesPerDay,
-        classesPerDayStudents: this.addConstraintForm.classesPerDayStudents,
-        classesPerDayTeachers: this.addConstraintForm.classesPerDayTeachers,
-        lunchBrake: this.addConstraintForm.lunchBrake,
-        gaps: this.addConstraintForm.gaps,
-        classroomFillness: this.addConstraintForm.classroomFillness,
-        semester: this.addConstraintForm.semester,
-      };
-      this.addConstraints(payload);
-      this.initForm();
-    },
     
   // MODAL 2
   // a- Handle the form Submit after updating

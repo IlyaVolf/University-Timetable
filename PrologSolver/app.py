@@ -136,6 +136,8 @@ def teacher_constraints():
         daysCanWork = request.args.get('daysCanWork').replace(" ", ",").replace("_", ";")
         daysWantWork = request.args.get('daysWantWork').replace(" ", ",").replace("_", ";")
         weight = request.args.get('weight')
+        if weight is None:
+            weight = 5
         if name is not None and daysCanWork is not None and daysWantWork is not None and weight is not None:
             dbManager = DatabaseManager()
             dbManager.updateTeacher(currentUser.teacherId, name, daysCanWork, daysWantWork, int(weight))
@@ -740,9 +742,9 @@ def add_man():
     day = request.args.get('day')
     classNumber = request.args.get('classNumber')
     teacherId = request.args.get('teacherId')
-
+    print(faculty)
     dbManager = DatabaseManager()
-    generator.add_man(GeneratedClass(0, faculty, educationalProgram, specialization, subject, semester, teacher, typeOfClass, auditory, groups, day, classNumber, teacherId))
+    generator.add_man(GeneratedClass.GeneratedClass(0, faculty, educationalProgram, specialization, subject, semester, teacher, typeOfClass, auditory, groups, day, classNumber, teacherId))
     res = dbManager.getAllGeneratedClass()
 
     dbManager.close()

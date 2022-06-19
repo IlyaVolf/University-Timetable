@@ -51,11 +51,10 @@
               <td>{{generatedClass.groupsStr}}</td>
               <td>{{generatedClass.dayStr}}</td>
               <td>{{generatedClass.classNumber}}</td>
-              <td>{{generatedClass.teacherId}}</td>
            <td>
                 <div class="btn-group" role="group">
                    <!-- 2 Handle update button click -->
-                  <button type="button" class="btn btn-danger btn-sm" @click="deleteGenereatedClass(genereatedClass)">Delete</button>
+                  <button type="button" class="btn btn-danger btn-sm" @click="deleteGeneratedClass(generatedClass)">Delete</button>
                 </div>
               </td>
             </tr>
@@ -70,12 +69,12 @@
 
     <!-- Start of Modal 1 -->
     <b-modal ref="addGeneratedClassModal"
-         id="genereatedClass-modal"
-         title="Add a new genereatedClass" hide-backdrop
+         id="generatedClass-modal"
+         title="Add a new generated class" hide-backdrop
          hide-footer
          >
     <b-form @submit="onSubmit" @reset="onReset" class="w-100">
-    <b-form-group id="form-faculty-genereatedClass"
+    <b-form-group id="form-faculty-generatedClass"
                   label="faculty:"
                   label-for="form-faculty-input">
       <b-form-input id="form-faculty-input"
@@ -86,7 +85,7 @@
       </b-form-input>
     </b-form-group>
 
-    <b-form-group id="form-educationalProgram-genereatedClass"
+    <b-form-group id="form-educationalProgram-generatedClass"
                   label="educationalProgram:"
                   label-for="form-educationalProgram-input">
           <b-form-input id="form-educationalProgram-input"
@@ -97,7 +96,7 @@
         </b-form-input>
       </b-form-group>
       
-    <b-form-group id="form-specialization-genereatedClass"
+    <b-form-group id="form-specialization-generatedClass"
                   label="specialization:"
                   label-for="form-specialization-input">
           <b-form-input id="form-specialization-input"
@@ -108,7 +107,7 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-subject-genereatedClass"
+      <b-form-group id="form-subject-generatedClass"
                   label="subject:"
                   label-for="form-subject-input">
           <b-form-input id="form-subject-input"
@@ -119,7 +118,7 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-semester-genereatedClass"
+      <b-form-group id="form-semester-generatedClass"
                   label="semester:"
                   label-for="form-semester-input">
           <b-form-input id="form-semester-input"
@@ -130,7 +129,7 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-teacher-genereatedClass"
+      <b-form-group id="form-teacher-generatedClass"
                   label="teacher:"
                   label-for="form-teacher-input">
           <b-form-input id="form-teacher-input"
@@ -141,7 +140,7 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-typeOfClass-genereatedClass"
+      <b-form-group id="form-typeOfClass-generatedClass"
                   label="typeOfClass:"
                   label-for="form-typeOfClass-input">
           <b-form-input id="form-typeOfClass-input"
@@ -152,7 +151,7 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-auditory-genereatedClass"
+      <b-form-group id="form-auditory-generatedClass"
                   label="auditory:"
                   label-for="form-auditory-input">
           <b-form-input id="form-auditory-input"
@@ -163,7 +162,7 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-groups-genereatedClass"
+      <b-form-group id="form-groups-generatedClass"
                   label="groups:"
                   label-for="form-groups-input">
           <b-form-input id="form-groups-input"
@@ -261,11 +260,11 @@ export default {
 
 
     addGeneratedClasses(payload) {
-      const path = `http://127.0.0.1:5000/addman/faculty=${payload.faculty}&educationalProgram=${payload.educationalProgram}&specialization=${payload.specialization}&subject=${payload.subject}&semester=${payload.semester}&teacher=${payload.teacher}&typeOfClass=${payload.typeOfClass}&auditory=${payload.auditory}&groups=${payload.groups}&day=${payload.day}&classNumber=${payload.classNumber}&teacherId=${payload.teacherId}`;
-      axios.post(path, payload)
+      const path = `http://127.0.0.1:5000/addman?faculty=${payload.faculty.replaceAll(' ','+')}&educationalProgram=${payload.educationalProgram.replaceAll(' ','+')}&specialization=${payload.specialization.replaceAll(' ','+')}&subject=${payload.subject.replaceAll(' ','+')}&semester=${payload.semester}&teacher=${payload.teacher.replaceAll(' ','+')}&typeOfClass=${payload.typeOfClass}&auditory=${payload.auditory}&groups=${payload.groups}&day=${payload.day}&classNumber=${payload.classNumber}&teacherId=${payload.teacherId}`;
+      axios.get(path, payload)
         .then(() => {
           this.getSubjects();
-          
+          alert("Successfully added" )
           // for message alert
           this.message = 'Faculty added !';
           
@@ -388,6 +387,31 @@ export default {
           this.getGeneratedClasses();
         });
     },
+
+    removeGeneratedClass(id) {
+    const path = `http://127.0.0.1:5000/removeman/${id}`;
+    axios.get(path)
+      .then(() => {
+        this.getGeneratedClasses();
+        this.message = 'Info Removed 🗑️!';
+        this.showMessage = true;
+      })
+      .catch((error) => {
+        // eslint-disable-next-line
+        if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
+          }
+        this.getSubjects();
+      });
+  },
+  // Handle Delete Button
+  deleteGeneratedClass(generatedClass) {
+    this.removeGeneratedClass(generatedClass.id);
+  },
    
   },
   created() {

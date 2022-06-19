@@ -29,13 +29,18 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'TeachersV'}">
-             Teachers
+            <router-link class="nav-link" :to="{name: 'EducationalPrograms'}">
+             Educational programs
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'GroupsV'}">
-             Groups
+            <router-link class="nav-link" :to="{name: 'SpecializationsV'}">
+             Specializations
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'TeachersV'}">
+             Teachers
             </router-link>
           </li>
           <li class="nav-item">
@@ -44,18 +49,19 @@
             </router-link>
           </li>
           <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'GroupsV'}">
+             Groups
+            </router-link>
+          </li>
+          
+          <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'SubjectsV'}">
              Subjects
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'EducationalPrograms'}">
-             Educational programs
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'SpecializationsV'}">
-             Specializations
+            <router-link class="nav-link" :to="{name: 'ConstraintsV'}">
+             Constraints
             </router-link>
           </li>
           <li class="nav-item">
@@ -68,11 +74,7 @@
              Users
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'ConstraintsV'}">
-             Constraints
-            </router-link>
-          </li>
+          
           </template>
 
         </ul>

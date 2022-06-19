@@ -64,12 +64,11 @@
                   label="FacultyId:"
                   label-for="form-facultyId-input">
                   
-          <b-form-select
+          <b-form-input
             id="form-facultyId-input"
-            v-model="form.foods"
-            :options="foods"
+            v-model="addEducationalProgramForm.facultyId"
             required>
-          </b-form-select>
+          </b-form-input>
      <!---- <b-form-select id="form-facultyId-input"
                     type="text"
                     v-model="addEducationalProgramForm.facultyId"
@@ -89,7 +88,7 @@
                   
       <b-form-input id="form-educationalProgram-input"
                     type="text"
-                    v-model="addEducationalProgramForm.educationalProgram"
+                    v-model="addEducationalProgramForm.name"
                     required
                     placeholder="Enter Name">
       </b-form-input>
