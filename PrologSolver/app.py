@@ -876,6 +876,8 @@ def signUpUser():
 
 @app.route('/login', methods=['POST'])
 def login():
+    global currentUser
+    
     if (currentUser.role != 0 and currentUser.role != 1):
         return jsonify(error = str("Already logged in")), 401
 
@@ -893,7 +895,6 @@ def login():
         return jsonify(error = "wrong password"), 400
 
     login_user(user, remember=remember)
-    global currentUser
     currentUser = user
 
     return jsonify({'response': 'success'})
