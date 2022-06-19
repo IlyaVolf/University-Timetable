@@ -1554,9 +1554,8 @@ class DatabaseManager:
         cursor = self.sqlite_connection.cursor()
 
         if email is not None:
-            # Проверка на то, что такая образовательная программа уже не существует в таблице
-            sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Users WHERE Email = ?); '
-            cursor.execute(sqliteQuery, (email,))
+            sqliteQuery = 'SELECT EXISTS(SELECT 1 FROM Users WHERE Email = ? AND id <> ?);'
+            cursor.execute(sqliteQuery, (email, id))
             rows = cursor.fetchall()
             for row in rows:
                 if row[0] == 1:

@@ -122,6 +122,9 @@ export default {
     })
     .catch((error) => {
         console.error(error);
+        if(error.response.status == 401) {
+          window.location = 'http://127.0.0.1:8080/login';
+        }
     });
   },
 },

@@ -39,5 +39,4 @@ def daysToWorkBeautify(daysToWork):
 
         string = string + "; "
 
-    print(string)
     return string
