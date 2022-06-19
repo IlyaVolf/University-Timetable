@@ -20,7 +20,7 @@
           <thead>
             <tr>
               <!-- table header cells -->
-              <th scope="col">FacultyId</th>
+              <th scope="col">Faculty</th>
               <th scope="col">Name</th>
             </tr>
           </thead>
@@ -28,7 +28,7 @@
             <!-- tr: table row -->
             <tr v-for="(educationalProgram, index) in educationalPrograms" :key="index">
               <!-- td : table data -->
-              <td>{{educationalProgram.facultyId}}</td>
+              <td>{{educationalProgram.faculty}}</td>
               <td>{{educationalProgram.educationalProgram}}</td>
               <td>
               </td>
@@ -190,6 +190,9 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         });
     },
@@ -203,6 +206,9 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         });
     },
@@ -225,6 +231,9 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
           this.getEducationalPrograms();
           this.getFaculties();
@@ -290,6 +299,9 @@ updateEducationalProgram(payload, id) {
       if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
       this.getEducationalPrograms();
     });
@@ -319,6 +331,9 @@ removeEducationalProgram(id) {
       if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
       this.getEducationalPrograms();
     });

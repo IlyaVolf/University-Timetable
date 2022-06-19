@@ -57,9 +57,6 @@ def teacher(id):
         return jsonify(error = str("Only dispatcher has access")), 401
 
     response_object = {'response': 'success'}
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -97,7 +94,6 @@ def teacher(id):
 def addTeacher():
     if (currentUser.role != 0 and currentUser.role != 1):
         return jsonify(error = str("Only dispatcher has access")), 401
-
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
@@ -154,7 +150,6 @@ def teacher_constraints():
 def classroom(id):
     if (currentUser.role != 0 and currentUser.role != 1):
         return jsonify(error = str("Only dispatcher has access")), 401
-
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -878,6 +873,8 @@ def signUpUser():
 
 @app.route('/login', methods=['POST'])
 def login():
+    global currentUser
+
     email = request.args.get('email')
     password = request.args.get('password')
     remember = True
@@ -892,7 +889,6 @@ def login():
         return jsonify(error = "wrong password"), 400
 
     login_user(user, remember=remember)
-    global currentUser
     currentUser = user
 
     return jsonify({'response': 'success'})

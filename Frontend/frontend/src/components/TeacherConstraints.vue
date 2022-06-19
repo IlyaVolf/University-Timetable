@@ -20,16 +20,16 @@
               <!-- table header cells -->
               <th scope="col">Days can Work</th>
               <th scope="col">Days want Work</th>
-              <th scope="col">Weight</th>
+              <!--<th scope="col">Weight</th> -->
             </tr>
           </thead>
           <tbody>
             <!-- tr: table row -->
             <tr>
               <!-- td : table data -->
-              <td>{{teacher.daysCanWork}}</td>
-              <td>{{teacher.daysWantWork}}</td>
-              <td>{{teacher.weight}}</td>
+              <td>{{teacher.daysCanWorkStr}}</td>
+              <td>{{teacher.daysWantWorkStr}}</td>
+              <!--<td>{{teacher.weight}}</td> -->
               <td>
               </td>
               <td>
@@ -122,7 +122,7 @@ export default {
     methods: {
         // 1 GET METHOD
         getTeachers() {
-            const path = 'http://localhost:5000/teacherconstraints';
+            const path = 'http://127.0.0.1:5000/teacherconstraints';
             axios.get(path)
                 .then((res) => {
                 this.teacher = res.data.teacher;
@@ -131,6 +131,9 @@ export default {
                   if(error.response.data.error != null) {
                     alert("Error: " + error.response.data.error)
                     console.error(error);
+                    if(error.response.status == 401) {
+                      window.location = 'http://127.0.0.1:8080/login';
+                    }
                   }
                 });
         },
@@ -158,7 +161,7 @@ export default {
     // 4 Update Alert Message 
     // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
         updateTeacher(id, payload) {
-        const path = `http://localhost:5000/teacherconstraints/?daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
+        const path = `http://127.0.0.1:5000/teacherconstraints/?daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
         axios.put(path, payload)    
             .then(() => {
             this.getTeachers();
@@ -169,6 +172,9 @@ export default {
               if(error.response.data.error != null) {
                 alert("Error: " + error.response.data.error)
                 console.error(error);
+                if(error.response.status == 401) {
+                  window.location = 'http://127.0.0.1:8080/login';
+                }
               }
             this.getTeachers();
             });

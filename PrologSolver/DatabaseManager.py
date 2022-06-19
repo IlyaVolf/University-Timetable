@@ -736,7 +736,11 @@ class DatabaseManager:
             cursor.execute(sqliteQuery, (row[1],))
             row2 = cursor.fetchall()[0]
 
-            lst.append(Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
+            sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[6],))
+            row3 = cursor.fetchall()[0]
+
+            lst.append(Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row3[1], row[7], row[8]))
         
         cursor.close()
         return lst
@@ -752,9 +756,13 @@ class DatabaseManager:
         cursor.execute(sqliteQuery, (row[1],))
         row2 = cursor.fetchall()[0]
 
+        sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+        cursor.execute(sqliteQuery, (row[6],))
+        row3 = cursor.fetchall()[0]
+
         cursor.close()
 
-        return Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
+        return Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row3[1], row[7], row[8])
 
     # for prolog
     def getAllSubjectsDistinct(self):
@@ -830,7 +838,11 @@ class DatabaseManager:
             cursor.execute(sqliteQuery, (row[1],))
             row2 = cursor.fetchall()[0]
 
-            lst.append(Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
+            sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[6],))
+            row3 = cursor.fetchall()[0]
+
+            lst.append(Subject(row[0], row[1], row2[2], row[2], row[3], row[4], row[5], row[6], row3[1], row[7], row[8]))
         
         cursor.close()
         return lst
@@ -876,7 +888,7 @@ class DatabaseManager:
             for j in range(len(wantTokens)):
                 if (int(wantTokens[j]) > constraints.classesPerDay) or (int(canTokens[j]) > constraints.classesPerDay):
                     raise ValueError('Пар в день может быть меньше, чем одно из указанных значений')
-                if not (wantTokens[j] in canTokens) and wantTokens[j] != '':
+                if not (wantTokens[j] in canTokens) and wantTokens[j] != '' and wantTokens[j] != '0' and wantTokens[j] != 0:
                     raise ValueError('Хочет работать в тот день, в который не может работать!')
         
 
@@ -907,7 +919,7 @@ class DatabaseManager:
             canTokens = canDays[i].split(",")
             wantTokens = wantDays[i].split(",")
             for want in wantTokens:
-                if not (want in canTokens) and want != '':
+                if not (want in canTokens) and want != '' and want != '0' and want != 0:
                     raise ValueError('Хочет работать в тот день, в который не может работать!')
 
         cursor = self.sqlite_connection.cursor()
@@ -1528,10 +1540,17 @@ class DatabaseManager:
         cursor.execute(sqliteQuery, (id,))
         row = cursor.fetchall()[0]
 
+        teacherName = None
+        if teacherId is not None:
+            sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[5],))
+            row2 = cursor.fetchall()[0]
+            teacherName = row2[1]
+
         self.sqlite_connection.commit()
         cursor.close()
 
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+        return User(row[0], row[1], row[2], row[3], row[4], row[5], teacherName, row[6], row[7], row[8], row[9])
 
     # TODO Матвей
     def updateUser(self, id, name, email, role, teacherId=None):
@@ -1573,10 +1592,17 @@ class DatabaseManager:
         cursor.execute(sqliteQuery, (id,))
         row = cursor.fetchall()[0]
 
+        teacherName = None
+        if teacherId is not None:
+            sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[5],))
+            row2 = cursor.fetchall()[0]
+            teacherName = row2[1]
+
         self.sqlite_connection.commit()
         cursor.close()
 
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+        return User(row[0], row[1], row[2], row[3], row[4], row[5], teacherName, row[6], row[7], row[8], row[9])
 
     # TODO Матвей
     def removeUser(self, id):
@@ -1596,11 +1622,18 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Users'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
-        cursor.close()
+        
 
         lst = []
         for row in rows:
-            lst.append(User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]))
+            teacherName = None
+            if row[5] is not None:
+                sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+                cursor.execute(sqliteQuery, (row[5],))
+                row2 = cursor.fetchall()[0]
+                teacherName = row2[1]
+            lst.append(User(row[0], row[1], row[2], row[3], row[4], row[5], teacherName, row[6], row[7], row[8], row[9]))
+        cursor.close()
         return lst
 
     # TODO МАТВЕЙ
@@ -1610,14 +1643,20 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Users WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
         rows = cursor.fetchall()
-        cursor.close()
+        
 
         if len(rows) < 1:
             return None
 
         row = rows[0]
-
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+        teacherName = None
+        if row[5] is not None:
+                sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+                cursor.execute(sqliteQuery, (row[5],))
+                row2 = cursor.fetchall()[0]
+                teacherName = row2[1]
+        cursor.close()
+        return User(row[0], row[1], row[2], row[3], row[4], row[5], teacherName, row[6], row[7], row[8], row[9])
 
     """
     # когда через почту подтверждает свое участие:
@@ -1641,14 +1680,20 @@ class DatabaseManager:
         rows = cursor.fetchall()
         if len(rows) < 1:
             raise ValueError("No account with this email!")
-        cursor.close()
+        
         row = rows[0]
 
         date = row[9]
         if row[9] is None:
             date = datetime.datetime.now()
-
-        return User(row[0], row[1], row[2], row[3], row[4], row[5], 1, row[7], row[8], date)
+        teacherName = None
+        if row[5] is not None:
+                sqliteQuery = 'SELECT * FROM Teachers WHERE id = ?'
+                cursor.execute(sqliteQuery, (row[5],))
+                row2 = cursor.fetchall()[0]
+                teacherName = row2[1]
+        cursor.close()
+        return User(row[0], row[1], row[2], row[3], row[4], row[5], teacherName, 1, row[7], row[8], date)
 
     # Поменять пароль
     # TODO МАТВЕЙ

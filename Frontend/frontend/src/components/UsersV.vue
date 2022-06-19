@@ -24,7 +24,7 @@
               <th scope="col">Email</th>
              <!-- <th scope="col">Password hash</th>-->
               <th scope="col">Role</th>
-              <th scope="col">TeacherId</th>
+              <!-- <th scope="col">Teacher</th> -->
             </tr>
           </thead>
           <tbody>
@@ -35,8 +35,8 @@
               <td>{{user.name}}</td>
               <td>{{user.email}}</td>
               <!--<td>{{user.passwordHash}}</td>-->
-              <td>{{user.role}}</td>
-              <td>{{user.teacherId}}</td>
+              <td>{{user.roleStr}}</td>
+              <!-- <td>{{user.teacher}}</td> -->
               <td>
               </td>
               <td>
@@ -89,17 +89,6 @@
                     placeholder="Enter email">
       </b-form-input>
     </b-form-group>
-      
-    <b-form-group id="form-passwordHash-group"
-                  label="passwordHash:"
-                  label-for="form-passwordHash-input">
-          <b-form-input id="form-passwordHash-input"
-                        type="text"
-                        v-model="addUserForm.passwordHash"
-                        required
-                        placeholder="Enter passwordHash">
-        </b-form-input>
-      </b-form-group>
 
       <b-form-group id="form-role-group"
                   label="role:"
@@ -118,7 +107,6 @@
           <b-form-input id="form-teacherId-input"
                         type="text"
                         v-model="addUserForm.teacherId"
-                        required
                         placeholder="Enter teacherId">
         </b-form-input>
       </b-form-group>
@@ -132,15 +120,15 @@
 
   <!-- Start of Modal 2 -->
   <b-modal ref="editUserModal"
-         id="group-update-modal"
+         id="user-update-modal"
          title="Update" hide-backdrop
          hide-footer>
   <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
     
-  <b-form-group id="form-name-group"
+  <b-form-group id="form-name-edit-group"
                   label="name:"
-                  label-for="form-name-input">
-          <b-form-input id="form-name-input"
+                  label-for="form-nam-eedit-input">
+          <b-form-input id="form-name-edit-input"
                         type="text"
                         v-model="editForm.name"
                         required
@@ -148,32 +136,21 @@
         </b-form-input>
       </b-form-group>
 
-    <b-form-group id="form-email-group"
+    <b-form-group id="form-email-edit-group"
                   label="email:"
-                  label-for="form-email-input">
-      <b-form-input id="form-email-input"
+                  label-for="form-email-edit-input">
+      <b-form-input id="form-email-edit-input"
                     type="text"
                     v-model="editForm.email"
                     required
                     placeholder="Enter email">
       </b-form-input>
     </b-form-group>
-      
-    <b-form-group id="form-passwordHash-group"
-                  label="passwordHash:"
-                  label-for="form-passwordHash-input">
-          <b-form-input id="form-passwordHash-input"
-                        type="text"
-                        v-model="editForm.passwordHash"
-                        required
-                        placeholder="Enter passwordHash">
-        </b-form-input>
-      </b-form-group>
 
-      <b-form-group id="form-role-group"
+      <b-form-group id="form-role-edit-group"
                   label="role:"
-                  label-for="form-role-input">
-          <b-form-input id="form-role-input"
+                  label-for="form-role-edit-input">
+          <b-form-input id="form-role-edit-input"
                         type="text"
                         v-model="editForm.role"
                         required
@@ -181,13 +158,12 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-teacherId-group"
+      <b-form-group id="form-teacherId-edit-group"
                   label="teacherId:"
-                  label-for="form-teacherId-input">
-          <b-form-input id="form-teacherId-input"
+                  label-for="form-teacherId-edit-input">
+          <b-form-input id="form-teacherId-edit-input"
                         type="text"
                         v-model="editForm.teacherId"
-                        required
                         placeholder="Enter teacherId">
         </b-form-input>
       </b-form-group>
@@ -241,12 +217,15 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         });
     },
     // 2 Add Faculty Button
     addUser(payload) {
-      const path = 'http://127.0.0.1:5000/users?name=${payload.name}&email=${payload.email}&role=${payload.role}';
+      const path = `http://127.0.0.1:5000/users?name=${payload.name}&email=${payload.email}&role=${payload.role}`;
       axios.post(path, payload)
         .then(() => {
           this.getUsers();
@@ -262,6 +241,9 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
           this.getUsers();
         });
@@ -287,7 +269,7 @@ methods: {
       this.$refs.addUserModal.hide();
       const payload = {
         name: this.addUserForm.name,
-        email: this.addUserForm.name,
+        email: this.addUserForm.email,
         passwordHash: this.addUserForm.passwordHash,
         role: this.addUserForm.role,
         teacherId:this.addUserForm.teacherId,
@@ -303,7 +285,7 @@ methods: {
     this.$refs.editUserModal.hide();
     const payload = {
         sname: this.editForm.name,
-        email: this.editForm.name,
+        email: this.editForm.email,
         passwordHash: this.editForm.passwordHash,
         role: this.editForm.role,
         teacherId:this.editForm.teacherId,
@@ -332,6 +314,9 @@ methods: {
         if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         this.getUserps();
       });
@@ -361,6 +346,9 @@ methods: {
         if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         this.getUsers();
       });

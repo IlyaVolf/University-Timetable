@@ -23,7 +23,7 @@
               <th scope="col">Name</th>
               <th scope="col">Days can Work</th>
               <th scope="col">Days want Work</th>
-              <th scope="col">Weight</th>
+              <!--<th scope="col">Weight</th> -->
             </tr>
           </thead>
           <tbody>
@@ -31,9 +31,9 @@
             <tr v-for="(teacher, index) in teachers" :key="index">
               <!-- td : table data -->
               <td>{{teacher.name}}</td>
-              <td>{{teacher.daysCanWork}}</td>
-              <td>{{teacher.daysWantWork}}</td>
-              <td>{{teacher.weight}}</td>
+              <td>{{teacher.daysCanWorkStr}}</td>
+              <td>{{teacher.daysWantWorkStr}}</td>
+              <!--<td>{{teacher.weight}}</td> -->
               <td>
               </td>
               <td>
@@ -97,17 +97,6 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-weight-group"
-                  label="Weight:"
-                  label-for="form-weight-input">
-          <b-form-input id="form-weight-input"
-                        type="text"
-                        v-model="addTeacherForm.weight"
-                        required
-                        placeholder="Enter weight">
-        </b-form-input>
-      </b-form-group>
-
       <b-button type="submit" variant="outline-info">Submit</b-button>
       <b-button type="reset" variant="outline-danger">Reset</b-button>
     </b-form>
@@ -155,17 +144,6 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-weight-edit-group"
-                  label="Weight:"
-                  label-for="form-weight-edit-input">
-        <b-form-input id="form-weight-edit-input"
-                      type="text"
-                      v-model="editForm.weight"
-                      required
-                      placeholder="Enter weight">
-        </b-form-input>
-      </b-form-group>
-
     <b-button-group>
       <b-button type="submit" variant="outline-info">Update</b-button>
       <b-button type="reset" variant="outline-danger">Cancel</b-button>
@@ -183,6 +161,7 @@
 import axios from 'axios';
 export default {
   data() {
+    //daysCanWork: ""
     return {
       teachers: [],
       addTeacherForm: {
@@ -217,12 +196,16 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         });
     },
     // 2 Add Teacher Button
     addTeacher(payload) {
-      const path = 'http://127.0.0.1:5000/teachers/';
+      //daysCanWork = payload.daysCanWork.replaceAll(",", "+").replaceAll("[]", "[0]").replaceAll("],[", "_")
+      const path = `http://127.0.0.1:5000/teachers?name=${payload.name.replaceAll(" ", "+")}&daysCanWork=${payload.daysCanWork.replaceAll("[]", "[0]").replaceAll("],[", "_").replaceAll(",", "+").replace("[", "").replace("]", "")}&daysWantWork=${payload.daysWantWork.replaceAll("[]", "[0]").replaceAll("],[", "_").replaceAll(",", "+").replace("[", "").replace("]", "")}`;
       axios.post(path, payload)
         .then(() => {
           this.getTeachers();
@@ -238,6 +221,9 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
           this.getTeachers();
         });
@@ -247,13 +233,10 @@ methods: {
         this.addTeacherForm.name = '';
         this.addTeacherForm.daysCanWork = '';
         this.addTeacherForm.daysWantWork = '';
-        this.addTeacherForm.weight = '';
         this.editForm.id = '';
         this.editForm.name = '';
         this.editForm.daysCanWork = '';
         this.editForm.daysWantWork = '';
-        this.editForm.weight = '';
-        
       }, 
     // 3 Submit form validator in the template @submit="onSubmit"  
     onSubmit(e) {
@@ -263,7 +246,6 @@ methods: {
         name: this.addTeacherForm.name,
         daysCanWork: this.addTeacherForm.daysCanWork,
         daysWantWork: this.addTeacherForm.daysWantWork,
-        weight: this.addTeacherForm.weight,
       };
       this.addTeacher(payload);
       this.initForm();
@@ -278,7 +260,6 @@ methods: {
       name: this.editForm.name,
         daysCanWork: this.editForm.daysCanWork,
         daysWantWork: this.editForm.daysWantWork,
-        weight: this.editForm.weight,
     };
     this.updateTeacher(this.editForm.id, payload);
   },
@@ -291,7 +272,7 @@ methods: {
 // 4 Update Alert Message 
 // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
 updateTeacher(id, payload) {
-  const path = `http://127.0.0.1:5000/teachers/${id}?name=${payload.name}&daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
+  const path = `http://127.0.0.1:5000/teachers/${id}?name=${payload.name.replaceAll(" ", "+")}&daysCanWork=${payload.daysCanWork.replaceAll("[]", "[0]").replaceAll("],[", "_").replaceAll(",", "+").replace("[", "").replace("]", "")}&daysWantWork=${payload.daysWantWork.replaceAll("[]", "[0]").replaceAll("],[", "_").replaceAll(",", "+").replace("[", "").replace("]", "")}`;
   axios.put(path, payload)    
     .then(() => {
       this.getTeachers();
@@ -302,6 +283,9 @@ updateTeacher(id, payload) {
       if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
       this.getTeachers();
     });
@@ -331,6 +315,9 @@ removeTeacher(id) {
       if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
       this.getTeachers();
     });

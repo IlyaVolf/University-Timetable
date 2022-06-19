@@ -13,7 +13,7 @@
         
          <!-- Alert -->
         <!-- Add Teacher button -->
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.teacher-modal>Add Group</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.group-modal>Add Group</button>
         <button type="button" class="btn btn-success btn-sm" @click="yearShiftLeft()">Shift left</button>
         <button type="button" class="btn btn-success btn-sm" @click="yearShiftRight()">Shift right</button>
         <br><br>
@@ -22,7 +22,7 @@
           <thead>
             <tr>
               <!-- table header cells -->
-              <th scope="col">SpecializationId</th>
+              <th scope="col">Specialization</th>
               <th scope="col">Name</th>
               <th scope="col">amount of students</th>
               <th scope="col">Year of Study</th>
@@ -32,7 +32,7 @@
             <!-- tr: table row -->
             <tr v-for="(group, index) in groups" :key="index">
               <!-- td : table data -->
-              <td>{{group.specializationId}}</td>
+              <td>{{group.specialization}}</td>
               <td>{{group.name}}</td>
               <td>{{group.amountOfStudents}}</td>
               <td>{{group.yearOfStudy}}</td>
@@ -217,12 +217,15 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         });
     },
     // 2 Add Faculty Button
     addGroup(payload) {
-      const path = 'http://127.0.0.1:5000/groups';
+      const path = `http://127.0.0.1:5000/groups?specializationId=${payload.specializationId}&name=${payload.name}&amountOfStudents=${payload.amountOfStudents}&yearOfStudy=${payload.yearOfStudy}`;
       axios.post(path, payload)
         .then(() => {
           this.getGroups();
@@ -238,12 +241,15 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
           this.getGroups();
         });
     },
     yearShiftLeft(payload) {
-      const path = 'http://localhost:5000/yearShiftLeft';
+      const path = 'http://127.0.0.1:5000/yearShiftLeft';
       axios.put(path, payload)
         .then(() => {
           this.getGroups();
@@ -259,12 +265,15 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
           this.getGroups();
         });
     },
     yearShiftRight(payload) {
-      const path = 'http://localhost:5000/yearShiftRight';
+      const path = 'http://127.0.0.1:5000/yearShiftRight';
       axios.put(path, payload)
         .then(() => {
           this.getGroups();
@@ -280,6 +289,9 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
           this.getGroups();
         });
@@ -346,6 +358,9 @@ methods: {
         if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         this.getGroups();
       });
@@ -375,6 +390,9 @@ methods: {
         if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         this.getGroups();
       });
