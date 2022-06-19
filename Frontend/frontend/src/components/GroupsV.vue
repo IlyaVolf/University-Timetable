@@ -13,7 +13,7 @@
         
          <!-- Alert -->
         <!-- Add Teacher button -->
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.teacher-modal>Add Group</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.group-modal>Add Group</button>
         <button type="button" class="btn btn-success btn-sm" @click="yearShiftLeft()">Shift left</button>
         <button type="button" class="btn btn-success btn-sm" @click="yearShiftRight()">Shift right</button>
         <br><br>

@@ -19,11 +19,18 @@ import TeachersSchedule from "../components/schedule/TeachersSchedule.vue"
 import TestV from "../components/TestV.vue"
 import FacultiesSchedule from "../components/schedule/FacultiesSchedule.vue"
 import GroupsForSchedule from "../components/schedule/GroupsForSchedule"
+import TeacherConstraints from "../components/TeacherConstraints"
 
 Vue.use(VueRouter);
 
 /* eslint-disable */
 const routes = [
+  
+  {
+    path : '/teacherconstraints',
+    name : 'TeacherConstraints',
+    component : TeacherConstraints, 
+  },
   {
     path : '/testv',
     name : 'TestV',
