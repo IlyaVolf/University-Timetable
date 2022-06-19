@@ -11,6 +11,7 @@ import TableTwo from "../components/Tables/TableTwo.vue";
 import EducationalPrograms from "../components/EducationalPrograms.vue";
 import SpecializationsV from "../components/SpecializationsV.vue";
 import LoginForm from "../components/LoginForm.vue";
+import LogOut from "../components/LogOut.vue";
 import UsersV from "../components/UsersV.vue"
 import SubjectsV from "../components/SubjectsV.vue"
 import DispatcherTable from "../components/DispatcherTable.vue"
@@ -26,6 +27,11 @@ const routes = [
     path : '/testv',
     name : 'TestV',
     component : TestV, 
+  },
+  {
+    path : '/logout',
+    name : 'LogOut',
+    component : LogOut, 
   },
   {
     path : '/schedule/teachers/:id',

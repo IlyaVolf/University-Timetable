@@ -90,10 +90,6 @@ def teacher(id):
 def addTeacher():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 0 or current_user.role == 1):
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/feature/flaskServer
     #        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'POST':
@@ -121,10 +117,6 @@ def addTeacher():
 def teacher_constraints():
     #if (current_user.is_authenticated):
     #    if (current_user.role == 2):
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/feature/flaskServer
     #        return make_response(jsonify({'response': 'failure'}), 401)    
     response_object = {'response': 'success'}
     if request.method == 'GET':
@@ -525,10 +517,6 @@ def addSpecialization():
     dbManager = DatabaseManager()
     specializations = dbManager.getAllSpecialization()
     dbManager.close()
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/feature/flaskServer
     response_object['specializations'] = list(map(lambda x: serialiseSpecialization(x), specializations))
     return jsonify(response_object)
 

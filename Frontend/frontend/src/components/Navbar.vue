@@ -87,13 +87,13 @@
               </router-link>
             </li>
           </template>
-          <!-- <template v-if="userRole != 3">
+          <template v-if="userRole != 3">
             <li class="nav-item">
-              <router-link class="nav-link" :to="{name: 'LogoutForm'}">
+              <router-link class="nav-link" :to="{name: 'LogOut'}">
               Logout
               </router-link>
             </li>
-          </template> -->
+          </template>
         </ul>
       </b-collapse>
     </div>

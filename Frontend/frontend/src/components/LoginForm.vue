@@ -1,9 +1,100 @@
 <template>
+  <div>
+    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+      <b-form-group
+        id="input-group-1"
+        label="Email address:"
+        label-for="input-1"
+        description="We'll never share your email with anyone else."
+      >
+        <b-form-input
+          id="input-1"
+          v-model="form.email"
+          type="email"
+          placeholder="Enter email"
+          required
+        ></b-form-input>
+      </b-form-group>
+
+    <b-form-group
+		id="input-group-2" 
+		label="Your Password:" 
+		label-for="input-2"
+		description=" Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.">
+        <b-form-input 
+			id="input-2"
+			v-model="form.password"
+			type = "text"
+			placeholder="Enter password:"
+			required
+        ></b-form-input>
+      </b-form-group>
+
+      <b-button type="submit" variant="primary">Log In</b-button>
+      <b-button type="reset" variant="danger">Reset</b-button>
+    </b-form>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+  export default {
+    data() {
+      return {
+        form: {
+          email: '',
+          password: '',
+        },
+        show: true
+      }
+    },
+    methods: {
+		sendLogin(payload) {
+			const path = `http://127.0.0.1:5000/login?email=${payload.email}&password=${payload.password}`;
+			axios.post(path, payload)
+				.then(() => {
+					this.$route = '/'; 
+				})
+				.catch((error) => {
+					if(error.response.data.error != null) {
+						alert("Error: " + error.response.data.error)
+						console.error(error);
+					}
+				});
+		},
+    // 3 Submit form validator in the template @submit="onSubmit"  
+      onSubmit(event) {
+        event.preventDefault()
+		const payload = {
+			email: this.form.email,
+			password: this.form.password
+		};
+		this.sendLogin(payload);
+        //alert(JSON.stringify(this.form))
+      },
+      onReset(event) {
+        event.preventDefault()
+        // Reset our form values
+        this.form.email = ''
+        this.form.password = ''
+        // Trick to reset/clear native browser form validation state
+        this.show = false
+        this.$nextTick(() => {
+          this.show = true
+        })
+      }
+    }
+  }
+</script>
+
+
+
+<!--<template>
     <div class=e641_2070>
          <span  class="e641_2071">Вход</span>
          <div class=e641_2072>
             <span  class="e642_2097">Логин</span>
-            <input  class="e642_2096">
+			<input  class="e642_2096">
          </div>
          <div class=e642_2098>
             <span  class="e642_2099">Пароль</span>
@@ -130,4 +221,4 @@
 	line-height:px;
 }
 
-</style>
+</style>-->
