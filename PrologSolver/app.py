@@ -56,7 +56,7 @@ def teacher(id):
     response_object = {'response': 'success'}
     if (currentUser.role != 3):
         if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+            return jsonify(error = str("Only dispatcher has access")), 401
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -92,9 +92,8 @@ def teacher(id):
 
 @app.route('/teachers', methods=['POST','GET'])
 def addTeacher():
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return jsonify(error = str("Only dispatcher has access")), 401
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
@@ -148,9 +147,8 @@ def teacher_constraints():
 
 @app.route('/classrooms/<id>', methods=['GET','DELETE','PUT'])
 def classroom(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and currentUser.role != 1):
+        return make_response(jsonify({'response': 'failure'}), 401)
     response_object = {'response': 'success'}
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -208,9 +206,8 @@ def addClassroom():
 
 @app.route('/faculties/<id>', methods=['GET','DELETE','PUT'])
 def faculty(id):
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return make_response(jsonify({'response': 'failure'}), 401)
+    if (currentUser.role != 0 and current_user.role != 1):
+        return make_response(jsonify({'response': 'failure'}), 401)
 
     response_object = {'response': 'success'}
     if request.method == 'GET':

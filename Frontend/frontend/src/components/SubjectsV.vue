@@ -291,6 +291,9 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         });
     },
@@ -312,6 +315,9 @@ methods: {
           if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
           this.getSubjects();
         });
@@ -390,6 +396,9 @@ methods: {
         if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         this.getSubjects();
       });
@@ -419,6 +428,9 @@ methods: {
         if(error.response.data.error != null) {
             alert("Error: " + error.response.data.error)
             console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
           }
         this.getSubjects();
       });
