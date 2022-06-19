@@ -37,6 +37,7 @@ def serialiseEducationalProgram(educationalProgram: EducationalProgram):
     return {
         'id': educationalProgram.id,
         'facultyId': educationalProgram.facultyId,
+        'faculty': educationalProgram.faculty,
         'educationalProgram': educationalProgram.educationalProgram
     }
 
@@ -44,6 +45,7 @@ def serialiseGroup(group: Group):
     return {
         'id': group.id,
         'specializationId': group.specializationId,
+        'specialization': group.specialization,
         'name': group.name,
         'amountOfStudents': group.amountOfStudents,
         'yearOfStudy': group.yearOfStudy
@@ -77,6 +79,7 @@ def serialiseSpecialization(specialization: Specialization):
     return {
         'id': specialization.id,
         'educationalProgramId': specialization.educationalProgramId,
+        'educationalProgram': specialization.educationalProgram,
         'specialization': specialization.specialization 
     }
 

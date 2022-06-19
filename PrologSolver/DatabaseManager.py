@@ -251,11 +251,16 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM EducationalPrograms'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
-        cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(EducationalProgram(row[0], row[1], row[2]))
+            sqliteQuery = 'SELECT * FROM Faculties WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[1],))
+            row2 = cursor.fetchall()[0]
+
+            lst.append(EducationalProgram(row[0], row[1], row2[1], row[2]))
+        
+        cursor.close()
         return lst
 
     # Получить образовательную программу
@@ -265,9 +270,13 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
         row = cursor.fetchall()[0]
+
+        sqliteQuery = 'SELECT * FROM Faculties WHERE id = ?'
+        cursor.execute(sqliteQuery, (row[1],))
+        row2 = cursor.fetchall()[0]
         cursor.close()
 
-        return EducationalProgram(row[0], row[1], row[2])
+        return EducationalProgram(row[0], row[1], row2[1], row[2])
 
     # Получить образовательную программу
     # TODO МАТВЕЙ
@@ -276,11 +285,16 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE FacultyId = ?'
         cursor.execute(sqliteQuery, (facultyId,))
         rows = cursor.fetchall()
-        cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(EducationalProgram(row[0], row[1], row[2]))
+            sqliteQuery = 'SELECT * FROM Faculties WHERE id = ?'
+            cursor.execute(sqliteQuery, (facultyId,))
+            row2 = cursor.fetchall()[0]
+
+            lst.append(EducationalProgram(row[0], row[1], row2[1], row[2]))
+
+        cursor.close()
         return lst
 
     ####################################################################################################################
@@ -396,11 +410,15 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Specializations'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
-        cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(Specialization(row[0], row[1], row[2]))
+            sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[1],))
+            row2 = cursor.fetchall()[0]
+            lst.append(Specialization(row[0], row[1], row2[2], row[2]))
+
+        cursor.close()
         return lst
 
     # Получить специализацию
@@ -410,9 +428,12 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Specializations WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
         row = cursor.fetchall()[0]
+        
+        sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE id = ?'
+        cursor.execute(sqliteQuery, (row[1],))
+        row2 = cursor.fetchall()[0]
         cursor.close()
-
-        return Specialization(row[0], row[1], row[2])
+        return Specialization(row[0], row[1], row2[2], row[2])
 
     # Получить все специализации
     # TODO МАТВЕЙ
@@ -425,7 +446,13 @@ class DatabaseManager:
 
         lst = []
         for row in rows:
-            lst.append(Specialization(row[0], row[1], row[2]))
+            sqliteQuery = 'SELECT * FROM EducationalPrograms WHERE id = ?'
+            cursor.execute(sqliteQuery, (educationalProgramId,))
+            row2 = cursor.fetchall()[0]
+
+            lst.append(Specialization(row[0], row[1], row2[2], row[2]))
+
+        cursor.close()
         return lst
 
     # for prolog
@@ -553,11 +580,16 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Groups'
         cursor.execute(sqliteQuery)
         rows = cursor.fetchall()
-        cursor.close()
 
         lst = []
         for row in rows:
-            lst.append(Group(row[0], row[1], row[2], row[3], row[4]))
+            sqliteQuery = 'SELECT * FROM Specializations WHERE id = ?'
+            cursor.execute(sqliteQuery, (row[1],))
+            row2 = cursor.fetchall()[0]
+
+            lst.append(Group(row[0], row[1], row2[2], row[2], row[3], row[4]))
+
+        cursor.close()
         return lst
 
     # TODO МАТВЕЙ
@@ -566,9 +598,13 @@ class DatabaseManager:
         sqliteQuery = 'SELECT * FROM Groups WHERE id = ?'
         cursor.execute(sqliteQuery, (id,))
         row = cursor.fetchall()[0]
-        cursor.close()
 
-        return Group(row[0], row[1], row[2], row[3], row[4])
+        sqliteQuery = 'SELECT * FROM Specializations WHERE id = ?'
+        cursor.execute(sqliteQuery, (row[1],))
+        row2 = cursor.fetchall()[0]
+
+        cursor.close()
+        return Group(row[0], row[1], row2[2], row[2], row[3], row[4])
 
     # TODO МАТВЕЙ
     def getAllGroupByFaculty(self, facultyId):
@@ -587,7 +623,11 @@ class DatabaseManager:
                 cursor.execute(sqliteQuery, (row2[0],))
                 rows3 = cursor.fetchall()
                 for row3 in rows3:
-                    lst.append(Group(row3[0], row3[1], row3[2], row3[3], row3[4]))
+                    sqliteQuery = 'SELECT * FROM Specializations WHERE id = ?'
+                    cursor.execute(sqliteQuery, (row[1],))
+                    row4 = cursor.fetchall()[0]
+
+                    lst.append(Group(row3[0], row3[1], row4[2], row3[2], row3[3], row3[4]))
 
         cursor.close()
 
