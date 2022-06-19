@@ -16,7 +16,6 @@
             </router-link>
           </li>
           <template v-if="userRole == 2">
-            teacher constrains
             <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'TeacherConstraints'}">
              teacherConstraints

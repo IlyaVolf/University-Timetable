@@ -10,7 +10,7 @@
         <b-form-input
           id="input-1"
           v-model="form.email"
-          type="email"
+          type="text"
           placeholder="Enter email"
           required
         ></b-form-input>
@@ -24,7 +24,7 @@
         <b-form-input 
 			id="input-2"
 			v-model="form.password"
-			type = "text"
+			type = "password"
 			placeholder="Enter password:"
 			required
         ></b-form-input>
