@@ -811,6 +811,9 @@ def user(id):
 @app.route('/currentuser', methods=['GET'])
 def current_user():
     response_object = {'response': 'success'}
+    if (currentUser.role != 3):
+        response_object['currentuser'] = serialiseUser(currentUser)
+        return jsonify(response_object)
     user = User.User(role = 3)
     response_object['currentuser'] = serialiseUser(user)
     return jsonify(response_object)
@@ -820,7 +823,6 @@ import random
 def addUser():
     if (currentUser.role != 0 and currentUser.role != 1):
         return jsonify(error = str("Only dispatcher has access")), 401
-
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
@@ -876,11 +878,6 @@ def signUpUser():
 
 @app.route('/login', methods=['POST'])
 def login():
-    global currentUser
-
-    if (currentUser.role != 3):
-        return jsonify(error = str("Already logged in")), 401
-
     email = request.args.get('email')
     password = request.args.get('password')
     remember = True
@@ -895,6 +892,7 @@ def login():
         return jsonify(error = "wrong password"), 400
 
     login_user(user, remember=remember)
+    global currentUser
     currentUser = user
 
     return jsonify({'response': 'success'})
@@ -902,7 +900,7 @@ def login():
 @app.route('/changePassword', methods=['POST'])
 def changePassword():
     if (currentUser.role == 3):
-        return jsonify(error = str("You need to log in first")), 401
+        return jsonify(error = str("You need to login first")), 401
 
     oldPassword = request.args.get('oldPassword')
     newPassword = request.args.get('newPassword')
@@ -922,7 +920,7 @@ def logout():
     global currentUser
 
     if (currentUser.role == 3):
-        return jsonify(error = str("You need to log in first")), 401
+        return jsonify(error = str("You need to login first")), 401
         
     logout_user()
     currentUser = User.User(role=3)
