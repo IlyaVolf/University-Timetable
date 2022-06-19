@@ -1,5 +1,5 @@
 <template>
-  <b-container id="app">
+  <div id="app">
     <b-row>
       <b-col>
         <navbar/>
@@ -10,7 +10,7 @@
         <router-view/>
       </b-col>
     </b-row>
-  </b-container>
+  </div>
 </template>
 
 <script>
@@ -21,3 +21,4 @@ export default {
     components: { Navbar }
 };
 </script>
+
