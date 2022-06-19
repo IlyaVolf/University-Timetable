@@ -57,9 +57,6 @@ def teacher(id):
         return jsonify(error = str("Only dispatcher has access")), 401
 
     response_object = {'response': 'success'}
-    if (currentUser.role != 3):
-        if (currentUser.role == 0 or currentUser.role == 1):
-            return jsonify(error = str("Only dispatcher has access")), 401
 
     if request.method == 'GET':
         dbManager = DatabaseManager()
@@ -821,7 +818,6 @@ import random
 def addUser():
     if (currentUser.role != 0 and currentUser.role != 1):
         return jsonify(error = str("Only dispatcher has access")), 401
-
     response_object = {'response': 'success'}
     if request.method == 'POST':
         name = request.args.get('name')
@@ -900,7 +896,7 @@ def login():
 @app.route('/changePassword', methods=['POST'])
 def changePassword():
     if (currentUser.role == 3):
-        return jsonify(error = str("You need to log in first")), 401
+        return jsonify(error = str("You need to login first")), 401
 
     oldPassword = request.args.get('oldPassword')
     newPassword = request.args.get('newPassword')
@@ -920,7 +916,7 @@ def logout():
     global currentUser
 
     if (currentUser.role == 3):
-        return jsonify(error = str("You need to log in first")), 401
+        return jsonify(error = str("You need to login first")), 401
         
     logout_user()
     currentUser = User.User(role=3)

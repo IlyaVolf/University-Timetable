@@ -3,6 +3,12 @@ from flask_login import UserMixin, login_user, logout_user, login_required
 import sqlite3
 import datetime
 
+mapRoles = {
+    0: "Main Dispatcher",
+    1: "Dispatcher",
+    2: "Teacher",
+    3: "Unauthorized"
+}
 
 # Извне:
 # @login_manager.user_loader
@@ -48,14 +54,16 @@ import datetime
 class User(UserMixin):
 # role 0 - главный диспетчер, 1 - диспетчер, 2 - препод (требует teacher.id)
 #class User:
-    def __init__(self, id=None, name=None, email=None, passwordHash=None, role=None, teacherId=None, status=None,
+    def __init__(self, id=None, name=None, email=None, passwordHash=None, role=None, teacherId=None, teacher=None,status=None,
                  updatedDate=None, createdDate=None, signedUpDate=None):
         self.id = id
         self.name = name
         self.email = email
         self.passwordHash = passwordHash
         self.role = role
+        self.roleStr = mapRoles[self.role]
         self.teacherId = teacherId
+        self.teacher = teacher
         self.status = status
         self.updatedDate = updatedDate
         self.createdDate = createdDate

@@ -14,7 +14,10 @@ def shortenName(name):
     token = name.split(" ")
     if len(token) == 3:
         return token[0] + token[1][0] + ". " + token[2][0] + "."
-    return token[0] + token[1][0] + "."
+    if len(token) == 2:
+        if (token[1] != ""):
+            return token[0] + token[1][0] + "."
+    return token[0]
 
 def daysToWorkBeautify(daysToWork):
     mapp = {1: "Mon", 2: "Tue", 3: "Wen", 4: "Thu", 5: "Fri", 6: "Sat"}
@@ -36,7 +39,8 @@ def daysToWorkBeautify(daysToWork):
                         string = string + "" + clazz
                         if (i != 7):
                             string = string = string + ","
-
-        string = string + "; "
+        if not flag:
+            string = string + "no"
+        string = string + ";\n"
 
     return string

@@ -60,7 +60,9 @@ def serialiseUser(user: User):
         'email': user.email,
         'passwordHash': user.passwordHash,
         'role': user.role,
+        'roleStr': user.roleStr,
         'teacherId': user.teacherId,
+        'teacher': user.teacher,
         'status': user.status
     }
 
@@ -74,6 +76,7 @@ def serialiseSubject(subject: Subject):
         'typeOfClass': subject.typeOfClass,
         'frequency': subject.frequency,
         'teacherId': subject.teacherId,
+        'teacher': subject.teacher,
         'amountOfGroups': subject.amountOfGroups,
         'generated': subject.generated
     }

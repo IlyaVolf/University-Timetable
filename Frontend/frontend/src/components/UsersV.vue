@@ -24,7 +24,7 @@
               <th scope="col">Email</th>
              <!-- <th scope="col">Password hash</th>-->
               <th scope="col">Role</th>
-              <th scope="col">TeacherId</th>
+              <!-- <th scope="col">Teacher</th> -->
             </tr>
           </thead>
           <tbody>
@@ -35,8 +35,8 @@
               <td>{{user.name}}</td>
               <td>{{user.email}}</td>
               <!--<td>{{user.passwordHash}}</td>-->
-              <td>{{user.role}}</td>
-              <td>{{user.teacherId}}</td>
+              <td>{{user.roleStr}}</td>
+              <!-- <td>{{user.teacher}}</td> -->
               <td>
               </td>
               <td>
@@ -89,17 +89,6 @@
                     placeholder="Enter email">
       </b-form-input>
     </b-form-group>
-      
-    <b-form-group id="form-passwordHash-group"
-                  label="passwordHash:"
-                  label-for="form-passwordHash-input">
-          <b-form-input id="form-passwordHash-input"
-                        type="text"
-                        v-model="addUserForm.passwordHash"
-                        required
-                        placeholder="Enter passwordHash">
-        </b-form-input>
-      </b-form-group>
 
       <b-form-group id="form-role-group"
                   label="role:"
@@ -118,7 +107,6 @@
           <b-form-input id="form-teacherId-input"
                         type="text"
                         v-model="addUserForm.teacherId"
-                        required
                         placeholder="Enter teacherId">
         </b-form-input>
       </b-form-group>
@@ -237,7 +225,7 @@ methods: {
     },
     // 2 Add Faculty Button
     addUser(payload) {
-      const path = 'http://127.0.0.1:5000/users?name=${payload.name}&email=${payload.email}&role=${payload.role}';
+      const path = `http://127.0.0.1:5000/users?name=${payload.name}&email=${payload.email}&role=${payload.role}`;
       axios.post(path, payload)
         .then(() => {
           this.getUsers();
@@ -281,7 +269,7 @@ methods: {
       this.$refs.addUserModal.hide();
       const payload = {
         name: this.addUserForm.name,
-        email: this.addUserForm.name,
+        email: this.addUserForm.email,
         passwordHash: this.addUserForm.passwordHash,
         role: this.addUserForm.role,
         teacherId:this.addUserForm.teacherId,
@@ -297,7 +285,7 @@ methods: {
     this.$refs.editUserModal.hide();
     const payload = {
         sname: this.editForm.name,
-        email: this.editForm.name,
+        email: this.editForm.email,
         passwordHash: this.editForm.passwordHash,
         role: this.editForm.role,
         teacherId:this.editForm.teacherId,
