@@ -13,7 +13,7 @@
         
          <!-- Alert -->
         <!-- Add Teacher button -->
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.teacher-modal>Add Subject</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.subject-modal>Add Subject</button>
         <br><br>
         <!-- Add a bootstrap table -->
         <table class="table table-hover">

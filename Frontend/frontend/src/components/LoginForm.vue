@@ -63,9 +63,8 @@ import axios from 'axios';
 					if(error.response.data.error != null) {
 						alert("Error: " + error.response.data.error)
 						console.error(error);
-						if(error.response.status == 401) {
-              				window.location = 'http://127.0.0.1:8080/login';
-            			}
+					if(error.response.status == 401)
+						{window.location = 'http://127.0.0.1:8080/login';}
 					}
 				});
 		},
@@ -81,9 +80,8 @@ import axios from 'axios';
 			.catch((error) => {
 				console.log('Igorr');
 				console.error(error);
-				if(error.response.status == 401) {
-              		window.location = 'http://127.0.0.1:8080/login';
-           		}
+				if(error.response.status == 401)
+				{window.location = 'http://127.0.0.1:8080/login';}
 		});
   },
     // 3 Submit form validator in the template @submit="onSubmit"  
