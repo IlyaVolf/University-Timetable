@@ -122,7 +122,7 @@ export default {
     methods: {
         // 1 GET METHOD
         getTeachers() {
-            const path = 'http://localhost:5000/teacherconstraints';
+            const path = 'http://127.0.0.1:5000/teacherconstraints';
             axios.get(path)
                 .then((res) => {
                 this.teacher = res.data.teacher;
@@ -158,7 +158,7 @@ export default {
     // 4 Update Alert Message 
     // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
         updateTeacher(id, payload) {
-        const path = `http://localhost:5000/teacherconstraints/?daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
+        const path = `http://127.0.0.1:5000/teacherconstraints/?daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
         axios.put(path, payload)    
             .then(() => {
             this.getTeachers();
