@@ -1,7 +1,6 @@
 from operator import ge
 import os
 from webbrowser import get
-#from PrologSolver.entities.GeneratedClass import GeneratedClass
 from flask import Flask, jsonify, make_response, request
 from flask_cors import CORS
 import generator
