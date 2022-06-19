@@ -15,6 +15,7 @@
         <!-- Add Teacher button -->
         <button type="button" class="btn btn-success btn-sm" @click="generate()">Generate</button>
         <button type="button" class="btn btn-success btn-sm" @click="overgenerate()">Overgenerate</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.generatedClass-modal>Add Incremental </button>
         <br><br>
         <!-- Add a bootstrap table -->
         <table class="table table-hover">
@@ -51,6 +52,12 @@
               <td>{{generatedClass.day}}</td>
               <td>{{generatedClass.classNumber}}</td>
               <td>{{generatedClass.teacherId}}</td>
+           <td>
+                <div class="btn-group" role="group">
+                   <!-- 2 Handle update button click -->
+                  <button type="button" class="btn btn-danger btn-sm" @click="deleteGenereatedClass(genereatedClass)">Delete</button>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -60,6 +67,151 @@
 
       </div>
     </div>
+
+    <!-- Start of Modal 1 -->
+    <b-modal ref="addGeneratedClassModal"
+         id="genereatedClass-modal"
+         title="Add a new genereatedClass" hide-backdrop
+         hide-footer
+         >
+    <b-form @submit="onSubmit" @reset="onReset" class="w-100">
+    <b-form-group id="form-faculty-genereatedClass"
+                  label="faculty:"
+                  label-for="form-faculty-input">
+      <b-form-input id="form-faculty-input"
+                    type="text"
+                    v-model="addGeneratedClassForm.faculty"
+                    required
+                    placeholder="Enter faculty">
+      </b-form-input>
+    </b-form-group>
+
+    <b-form-group id="form-educationalProgram-genereatedClass"
+                  label="educationalProgram:"
+                  label-for="form-educationalProgram-input">
+          <b-form-input id="form-educationalProgram-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.educationalProgram"
+                        required
+                        placeholder="Enter educationalProgram">
+        </b-form-input>
+      </b-form-group>
+      
+    <b-form-group id="form-specialization-genereatedClass"
+                  label="specialization:"
+                  label-for="form-specialization-input">
+          <b-form-input id="form-specialization-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.specialization"
+                        required
+                        placeholder="Enter specialization">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-subject-genereatedClass"
+                  label="subject:"
+                  label-for="form-subject-input">
+          <b-form-input id="form-subject-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.subject"
+                        required
+                        placeholder="Enter subject">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-semester-genereatedClass"
+                  label="semester:"
+                  label-for="form-semester-input">
+          <b-form-input id="form-semester-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.semester"
+                        required
+                        placeholder="Enter semester">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-teacher-genereatedClass"
+                  label="teacher:"
+                  label-for="form-teacher-input">
+          <b-form-input id="form-teacher-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.teacher"
+                        required
+                        placeholder="Enter teacher">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-typeOfClass-genereatedClass"
+                  label="typeOfClass:"
+                  label-for="form-typeOfClass-input">
+          <b-form-input id="form-typeOfClass-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.typeOfClass"
+                        required
+                        placeholder="Enter typeOfClass">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-auditory-genereatedClass"
+                  label="auditory:"
+                  label-for="form-auditory-input">
+          <b-form-input id="form-auditory-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.auditory"
+                        required
+                        placeholder="Enter auditory">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-groups-genereatedClass"
+                  label="groups:"
+                  label-for="form-groups-input">
+          <b-form-input id="form-groups-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.groups"
+                        required
+                        placeholder="Enter groups">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-day-generatedClass"
+                  label="day:"
+                  label-for="form-day-input">
+          <b-form-input id="form-day-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.day"
+                        required
+                        placeholder="Enter day">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-classNumber-generatedClass"
+                  label="classNumber:"
+                  label-for="form-classNumber-input">
+          <b-form-input id="form-classNumber-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.classNumber"
+                        required
+                        placeholder="Enter classNumber">
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group id="form-teacherId-generatedClass"
+                  label="teacherId:"
+                  label-for="form-teacherId-input">
+          <b-form-input id="form-teacherId-input"
+                        type="text"
+                        v-model="addGeneratedClassForm.teacherId"
+                        required
+                        placeholder="Enter teacherId">
+        </b-form-input>
+      </b-form-group>
+
+      <b-button type="submit" variant="outline-info">Submit</b-button>
+      <b-button type="reset" variant="outline-danger">Reset</b-button>
+    </b-form>
+  </b-modal>
+  <!-- End of modal 1 -->
   </div>
   </div>
 </template>
@@ -72,6 +224,20 @@ export default {
   data() {
     return {
       generatedClasses: [],
+      addGeneratedClassForm: {
+        faculty: '',
+        educationalProgram: '',
+        specialization:'',
+        subject:'',
+        semester:'',
+        teacher:'',
+        typeOfClass: '',
+        auditory: '',
+        groups: '',
+        day: '',
+        classNumber: '',
+        teacherId: '',
+      },
     };
   },
   methods: {
@@ -91,6 +257,88 @@ export default {
             }
           }
         });
+    },
+
+
+    addGeneratedClasses(payload) {
+      const path = `http://127.0.0.1:5000/addman/faculty=${payload.faculty}&educationalProgram=${payload.educationalProgram}&specialization=${payload.specialization}&subject=${payload.subject}&semester=${payload.semester}&teacher=${payload.teacher}&typeOfClass=${payload.typeOfClass}&auditory=${payload.auditory}&groups=${payload.groups}&day=${payload.day}&classNumber=${payload.classNumber}&teacherId=${payload.teacherId}`;
+      axios.post(path, payload)
+        .then(() => {
+          this.getSubjects();
+          
+          // for message alert
+          this.message = 'Faculty added !';
+          
+          // to show message when faculty is added
+          this.showMessage = true;
+  
+        })
+        .catch((error) => {
+          if(error.response.data.error != null) {
+            alert("Error: " + error.response.data.error)
+            console.error(error);
+            if(error.response.status == 401) {
+              window.location = 'http://127.0.0.1:8080/login';
+            }
+          }
+          this.getSubjects();
+        });
+    },
+     // 5 initForm - add ediForm after the update method
+     initForm() {
+        this.addGeneratedClassForm.faculty = '';
+        this.addGeneratedClassForm.educationalProgram = '';
+        this.addGeneratedClassForm.specialization = '';
+        this.addGeneratedClassForm.subject = '';
+        this.addGeneratedClassForm.semester = '';
+        this.addGeneratedClassForm.teacher = '';
+        this.addGeneratedClassForm.typeOfClass = '';
+        this.addGeneratedClassForm.auditory = '';
+        this.addGeneratedClassForm.groups = '';
+        this.addGeneratedClassForm.day = '';
+        this.addGeneratedClassForm.classNumber = '';
+        this.addGeneratedClassForm.teacherId = '';
+        this.editForm.id = '';
+        this.editForm.faculty = '';
+        this.editForm.educationalProgram = '';
+        this.editForm.specialization = '';
+        this.editForm.subject = '';
+        this.editForm.semester = '';
+        this.editForm.teacher = '';
+        this.editForm.typeOfClass = '';
+        this.editForm.auditory = '';
+        this.editForm.groups = '';
+        this.editForm.day = '';
+        this.editForm.classNumber = '';
+        this.editForm.teacherId = '';
+        
+      }, 
+    // 3 Submit form validator in the template @submit="onSubmit"  
+    onSubmit(e) {
+      e.preventDefault();
+      this.$refs.addGeneratedClassModal.hide();
+      const payload = {
+        faculty: this.addGeneratedClassForm.faculty,
+        educationalProgram: this.addGeneratedClassForm.educationalProgram,
+        specialization: this.addGeneratedClassForm.specialization,
+        subject: this.addGeneratedClassForm.subject,
+        semester: this.addGeneratedClassForm.semester,
+        teacher: this.addGeneratedClassForm.teacher,
+        typeOfClass: this.addGeneratedClassForm.typeOfClass,
+        auditory: this.addGeneratedClassForm.auditory,
+        groups: this.addGeneratedClassForm.groups,
+        day: this.addGeneratedClassForm.day,
+        classNumber: this.addGeneratedClassForm.classNumber,
+        teacherId: this.addGeneratedClassForm.teacherId,
+      };
+      this.addGeneratedClasses(payload);
+      this.initForm();
+    },
+
+    onReset(e) {
+      e.preventDefault();
+      this.$refs.addGeneratedClassForm.hide();
+      this.initForm();
     },
     generate(payload) {
       const path = 'http://127.0.0.1:5000/generate';

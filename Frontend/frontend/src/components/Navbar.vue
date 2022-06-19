@@ -12,35 +12,35 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'schedule'}">
-             home
+             Home
             </router-link>
           </li>
           <template v-if="userRole == 2">
             <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'TeacherConstraints'}">
-             teacherConstraints
+             Teacher Constraints
             </router-link>
             </li>
           </template>
           <template v-if="userRole == 0 || userRole == 1">
             <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'FacultiesV'}">
-             faculties
+             Faculties
             </router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'TeachersV'}">
-             teachers
+             Teachers
             </router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'GroupsV'}">
-             groups
+             Groups
             </router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'ClassroomsV'}">
-             classrooms
+             Classrooms
             </router-link>
           </li>
           <li class="nav-item">
@@ -68,12 +68,11 @@
              Users
             </router-link>
           </li>
-          <!--
           <li class="nav-item">
             <router-link class="nav-link" :to="{name: 'ConstraintsV'}">
-             constraints
+             Constraints
             </router-link>
-          </li>-->
+          </li>
           </template>
 
         </ul>

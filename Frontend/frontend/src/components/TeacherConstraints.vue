@@ -20,7 +20,6 @@
               <!-- table header cells -->
               <th scope="col">Days can Work</th>
               <th scope="col">Days want Work</th>
-              <th scope="col">Weight</th>
             </tr>
           </thead>
           <tbody>
@@ -29,7 +28,6 @@
               <!-- td : table data -->
               <td>{{teacher.daysCanWork}}</td>
               <td>{{teacher.daysWantWork}}</td>
-              <td>{{teacher.weight}}</td>
               <td>
               </td>
               <td>
@@ -80,17 +78,6 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="form-weight-edit-group"
-                  label="Weight:"
-                  label-for="form-weight-edit-input">
-        <b-form-input id="form-weight-edit-input"
-                      type="text"
-                      v-model="editForm.weight"
-                      required
-                      placeholder="Enter weight">
-        </b-form-input>
-      </b-form-group>
-
     <b-button-group>
       <b-button type="submit" variant="outline-info">Update</b-button>
       <b-button type="reset" variant="outline-danger">Cancel</b-button>
@@ -114,7 +101,6 @@ export default {
             id: '',
             daysCanWork: '',
             daysWantWork: '',
-            weight: '',
         },
         };
     },
@@ -142,8 +128,6 @@ export default {
             this.editForm.id = '';
             this.editForm.daysCanWork = '';
             this.editForm.daysWantWork = '';
-            this.editForm.weight = '';
-            
         }, 
         
     // MODAL 2
@@ -154,14 +138,13 @@ export default {
             const payload = {
                 daysCanWork: this.editForm.daysCanWork,
                 daysWantWork: this.editForm.daysWantWork,
-                weight: this.editForm.weight,
             };
             this.updateTeacher(this.editForm.id, payload);
         },
     // 4 Update Alert Message 
     // Once the update is effective, we will get a message telling us that Teacher info Updated, and display the list of teachers after the update
         updateTeacher(id, payload) {
-        const path = `http://127.0.0.1:5000/teacherconstraints/?daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}&weight=${payload.weight}`;
+        const path = `http://127.0.0.1:5000/teacherconstraints/?daysCanWork=${payload.daysCanWork}&daysWantWork=${payload.daysWantWork}`;
         axios.put(path, payload)    
             .then(() => {
             this.getTeachers();

@@ -1,4 +1,4 @@
-<template>
+ <template>
 <div class="jumbotron vertical-center">
   <div class="container">
     <!-- Bootswatch -->
@@ -344,7 +344,7 @@ methods: {
     // 3 Submit form validator in the template @submit="onSubmit"  
     onSubmit(e) {
       e.preventDefault();
-      this.$refs.addSubjectsModal.hide();
+      this.$refs.addSubjectModal.hide();
       const payload = {
         specializationId: this.addSubjectForm.specializationId,
         name: this.addSubjectForm.name,

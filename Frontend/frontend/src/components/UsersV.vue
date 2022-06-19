@@ -176,7 +176,6 @@
           <b-form-input id="form-teacherId-edit-input"
                         type="text"
                         v-model="editForm.teacherId"
-                        required
                         placeholder="Enter teacherId">
         </b-form-input>
       </b-form-group>
