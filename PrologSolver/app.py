@@ -884,7 +884,7 @@ def login():
     dbManager.close()
 
     if not user.checkPassword(password):
-        return  jsonify({'error': str("wrong password")})
+        return jsonify(error = "wrong password"), 400
 
     login_user(user, remember=remember)
 
