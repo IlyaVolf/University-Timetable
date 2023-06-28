@@ -1,5 +1,5 @@
 # University Timetable Maker
-Constraint solver written on Java + Prolog
+Constraint solver written on Python + Prolog
 
 ## Авторы
 
