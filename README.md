@@ -35,4 +35,4 @@ E-mail: i.volf@g.nsu.ru
 
 Telegram: [@ilya_volf](https://t.me/Ilya_Volf)
 
-Java, Prolog разработчик
+Android-разработчик (Kotlin, Java)
