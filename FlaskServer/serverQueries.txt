@@ -1,0 +1,228 @@
+---- Teacher ----
+Доступ для диспетчера
+
+Add: curl -X POST "http://127.0.0.1:5000/teachers?name=Shvab+Irina&daysCanWork=1+2+3+4+5+6+7_1+2+3+4+5+6+7_1+2+3+4+5+6+7_0_0_0&daysWantWork=1+2+3+4+5+6+7_1+2+3+4+5+6+7_1+2+3+4+5+6+7_0_0_0&weight=1"
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/teachers/17"
+
+Update: curl -X PUT "http://127.0.0.1:5000/teachers/17?name=Shvab+Irina+Vasilievna&daysCanWork=1+2+3+4+5+6+7_1+2+3+4+5+6+7_1+2+3+4+5+6+7_0_0_0&daysWantWork=1+2+3+4+5+6+7_1+2+3+4+5+6+7_1+2+3+4+5+6+7_0_0_0&weight=1"
+
+Get: curl -X GET "http://127.0.0.1:5000/teachers/17"
+
+GetAll: curl -X GET "http://127.0.0.1:5000/teachers"
+
+
+
+---- Classroom ----
+Доступ для диспетчера
+
+Add: curl -X POST "http://127.0.0.1:5000/classrooms?number=9999&capacity=100&typesOfClass=lec+pr"
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/classrooms/12"
+
+Update: curl -X PUT "http://127.0.0.1:5000/classrooms/12?number=888+MB&capacity=2&typesOfClass=lec+pr"
+
+Get: curl -X GET "http://127.0.0.1:5000/classrooms/12"
+
+GetAll: curl -X GET "http://127.0.0.1:5000/classrooms"
+
+
+
+---- Faculty ----
+Доступ для диспетчера
+
+Add: curl -X POST "http://127.0.0.1:5000/faculties?name=Department+of+IT"
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/faculties/2"
+
+Update: curl -X PUT "http://127.0.0.1:5000/faculties/2?name=Department+of+IT"
+
+Get: curl -X GET "http://127.0.0.1:5000/faculties/2"
+
+GetAll: curl -X GET "http://127.0.0.1:5000/faculties"
+
+
+
+---- EducationalProgram ----
+Доступ для диспетчера
+
+Add: curl -X POST "http://127.0.0.1:5000/educationalPrograms?facultyId=1&name=BACH_09-03-01_CS"
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/educationalPrograms/2"
+
+Update: curl -X PUT "http://127.0.0.1:5000/educationalPrograms/2?facultyId=1&name=BACH_09-03-01_CS"
+
+Get: curl -X GET "http://127.0.0.1:5000/educationalPrograms/2"
+
+GetAll: curl -X GET "http://127.0.0.1:5000/educationalPrograms"
+
+
+
+---- Group ----
+Доступ для диспетчера
+
+Add: curl -X POST "http://127.0.0.1:5000/groups?specializationId=1&name=19213-2&amountOfStudents=12&yearOfStudy=3"
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/groups/30"
+
+Update: curl -X PUT "http://127.0.0.1:5000/groups/30?specializationId=1&name=19215&amountOfStudents=12&yearOfStudy=3"
+
+Get: curl -X GET "http://127.0.0.1:5000/groups/30"
+
+GetAll: curl -X GET "http://127.0.0.1:5000/groups"
+
+
+
+---- Subject ----
+Доступ для диспетчера
+
+Add: curl -X POST "http://127.0.0.1:5000/subjects?specializationId=1&name=Interface design&semesters=5&typeOfClass=lec&frequency=1&teacherId=16&amountOfGroups=2"
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/subjects/23"
+
+Update: curl -X PUT "http://127.0.0.1:5000/subjects/23?specializationId=1&name=Methods+of+deep+throat&semesters=6&typeOfClass=lec&frequency=1&teacherId=8&amountOfGroups=2"
+
+Get: curl -X GET "http://127.0.0.1:5000/subjects/23"
+
+GetAll: curl -X GET "http://127.0.0.1:5000/subjects"
+
+
+
+---- Specialization ----
+Доступ для диспетчера
+Add: curl -X POST "http://127.0.0.1:5000/specializations?educationalProgramId=1&name=Noviy+potok"
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/specializations/3"
+
+Update: curl -X PUT "http://127.0.0.1:5000/specializations/3?educationalProgramId=2&name=Noviy+potok"
+
+Get: curl -X GET "http://127.0.0.1:5000/specializations/3"
+
+GetAll: curl -X GET "http://127.0.0.1:5000/specializations"
+
+GetByEP: curl -X GET "http://127.0.0.1:5000/specializations?educationalProgramId=1"
+
+
+
+---- Constraints ----
+Доступ для диспетчера
+Add: curl -X POST "http://127.0.0.1:5000/constraints?firstClassStarts=9_0&classDuration=90&shortBrakeDuration=5&largeBrakeDuration=15&studyDaysInWeek=6&studyDaysInWeekForStudents=6&studyDaysInWeekForTeachers=5&classesPerDay=7&classesPerDayStudents=3&classesPerDayTeachers=3&lunchBrake=5&gaps=6&classroomFillness=3&semester=1"
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/constraints"
+
+Update: curl -X PUT "http://127.0.0.1:5000/constraints?firstClassStarts=9_0&classDuration=90&shortBrakeDuration=5&largeBrakeDuration=15&studyDaysInWeek=6&studyDaysInWeekForStudents=6&studyDaysInWeekForTeachers=5&classesPerDay=7&classesPerDayStudents=3&classesPerDayTeachers=3&lunchBrake=5&gaps=6&classroomFillness=3&semester=1"
+
+Get: curl -X GET "http://127.0.0.1:5000/constraints"
+
+
+
+---- Users ----
+Доступ для диспетчера
+Add: curl -X POST "http://127.0.0.1:5000/users?name=aa&email=33@.ru&role=1" Дисп
+                  "http://127.0.0.1:5000/users?name=Permyakov Ruslan Anatolievich&email=22@.ru&role=2&teacherId=1" Препод. Для него обязателен teacherId! Имя должно совпадать именем по teacherId
+
+Delete: curl -X DELETE "http://127.0.0.1:5000/users/3"
+
+Update: curl -X PUT "http://127.0.0.1:5000/users/3?name=aa&email=33@.ru&role=1" Дисп
+
+Get: curl -X GET "http://127.0.0.1:5000/users/3"
+
+GetAll: curl -X GET "http://127.0.0.1:5000/users"
+
+
+
+---- Current user ----
+Доступ для диспетчера
+Get: curl -X GET "http://127.0.0.1:5000/currentuser"
+
+
+---- Get schedule ----
+Доступ для всех
+
+Get all faculties: curl -X GET "http://127.0.0.1:5000/schedule/faculties"
+
+Get all groups of a faculty: curl -X GET "http://127.0.0.1:5000/schedule/faculties/1"
+
+Get schedule for group: curl -X GET "http://127.0.0.1:5000/schedule/groups/19213"
+
+Get all teachers: curl -X GET "http://127.0.0.1:5000/schedule/teachers"
+
+Get schedule for teacher: curl -X GET "http://127.0.0.1:5000/schedule/teachers/1"
+
+
+---- Constraints for teacher ----
+Доступ для препода
+
+Get constraints for logged-in teacher: curl -X GET "http://127.0.0.1:5000/teacherconstraints"
+
+Put constraints for logged-in teacher: curl -X PUT "http://127.0.0.1:5000/teacherconstraints/daysCanWork=1+2+3+4+5+6+7_1+2+3+4+5+6+7_1+2+3+4+5+6+7_0_0_0&daysWantWork=1+2+3+4+5+6+7_1+2+3+4+5+6+7_1+2+3+4+5+6+7_0_0_0&weight=1"
+
+
+---- Generation ----
+Доступ для диспетчера
+
+Простая генерация curl -X GET "http://127.0.0.1:5000/generate"
+
+Догенерация curl -X GET "http://127.0.0.1:5000/overgenerate"
+
+Удаление занятия curl -X GET "http://127.0.0.1:5000/removeman/2"
+
+Добавление занятия вручную curl -X GET "http://127.0.0.1:5000/addman/faculty=Department+of+IT&educationalProgram=BACH_09-03-01_CS&specializationNoviy+potok&subject=MMO&semester=1&teacher=Permyakov Ruslan Anatolievich&typeOfClass=pr&auditory=1155&groups=[19213,19214]&day=4&classNumber=2&teacherId=1"
+Working example for Ilya:
+    clazz = GeneratedClass(
+        a.id,
+        a.faculty,
+        a.educationalProgram,
+        "Computer Science and Systems Engineering",
+        "Interface design",
+        5,
+        "Derzho Marina Anatolievna",
+        "lec",
+        "1156",
+        "[19213,19214]",
+        6,
+        4,
+        16
+    )
+
+
+
+---- Login ----
+Доступ если не вошел
+LOGIN curl -X POST "http://127.0.0.1:5000/login?email=ss@nsu.ru&password=aaaa"
+Перенаправляемся после входа сразу на галвную страницу
+
+Доступ если вошел
+LOGOUT curl -X POST "http://127.0.0.1:5000/logout"
+Перенаправляемся после выхода сразу на галвную страницу
+
+Доступ если вошел
+CHANGE PASSWORD curl -X POST "http://127.0.0.1:5000/changePassword?oldPassword=1234&newPassword=12345"
+Перенаправляемся после этого сразу на галвную страницу
+
+
+---- Others ----
+Доступ для диспетчера
+
+Get generated classes: curl -X GET "http://127.0.0.1:5000/generatedClasses"
+
+Get generated class by id: curl -X GET "http://127.0.0.1:5000/generatedClasses/2"
+
+Get groups of class by id: curl -X GET "http://127.0.0.1:5000/groupsOfClass/2"
+
+Year shift right: curl -X PUT "http://127.0.0.1:5000/yearShiftRight"
+
+Year shift left: curl -X PUT "http://127.0.0.1:5000/yearShiftLeft"
+
+
+
+ШАПКА:
+
+Неавторизованный role = 3:
+Home,Login
+
+Преподаватель role = 2:
+Home, Teacher Constraints, ChangePassword, Logout
+
+Диспетчер role = 0 and role = 1:
+Home, Faculties, Educational Programs, Specializations, Groups, Classrooms, Subjects, Constrainsts, Table, Users, ChangePassword, Logout
