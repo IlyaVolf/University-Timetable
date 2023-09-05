@@ -1,4 +1,4 @@
-# University Timetable Maker
+# University Timetable Generator
 Constraint solver written on Python + Prolog
 
 ## Авторы
