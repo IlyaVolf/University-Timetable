@@ -1,6 +1,8 @@
 # University Timetable Generator
 Constraint solver written on Python + Prolog
 
+Презентация: [Presentation Final.pptx](https://github.com/IlyaVolf/University-Timetable/blob/master/Presentation%20Final.pptx)
+
 ## Авторы
 
 <img src="https://habrastorage.org/webt/xn/wq/r_/xnwqr_c12neoliwun446oljbewq.png" alt="Кирилл Прокофьев" align="left" width="150"/>
